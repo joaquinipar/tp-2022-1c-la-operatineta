@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <commons/log.h>
+#include <utils/hello.h>
 
 int main(int argc, char* argv[]) {
 
@@ -12,6 +13,7 @@ int main(int argc, char* argv[]) {
     log_info(logger, "INFO LOG!");
     log_error(logger, "PRUEBA!");
 
+    hello_world();
 
     return 0;
 }
