@@ -5,8 +5,13 @@
 int main(int argc, char* argv[]) {
 
     puts("Hello world!!");
-    t_log* logger = log_create("./log.txt", "Consola", 1, LOG_LEVEL_ERROR);
+
+    t_log* logger = log_create("./log.txt", "Consola", 1, LOG_LEVEL_INFO);
+    
+    log_debug(logger, "DEBUG LOG!");
+    log_info(logger, "INFO LOG!");
     log_error(logger, "PRUEBA!");
+
 
     return 0;
 }
