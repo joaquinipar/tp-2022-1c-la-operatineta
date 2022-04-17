@@ -1,7 +1,4 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <commons/log.h>
-#include <utils/hello.h>
+#include "main.h"
 
 int main(int argc, char* argv[]) {
 
@@ -13,7 +10,13 @@ int main(int argc, char* argv[]) {
     log_info(logger, "INFO LOG!");
     log_error(logger, "PRUEBA!");
 
-    hello_world();
+    //hello_world(); perdon luis pero no anda mas el hello world :(
+
+    iniciar_config_consola("../config/ejemplo.config");
+    print_config();
+
+    destruir_estructura_consola_config();
+    log_destroy(logger);
 
     return 0;
 }
