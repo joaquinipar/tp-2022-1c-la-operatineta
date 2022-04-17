@@ -18,7 +18,6 @@ int main(int argc, char* argv[]) {
     print_config();
 
     destruir_estructura_consola_config();
-    log_destroy(logger);
 
     return 0;
 }
