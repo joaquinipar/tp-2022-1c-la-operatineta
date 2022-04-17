@@ -6,6 +6,7 @@ int main(int argc, char* argv[]) {
 
     puts("Hello world!!");
 
+    // Se hace una sola vez a nivel aplicacion
     logger_set_module("CONSOLA");
     logger_set_loglevel(LOG_LEVEL_DEBUG);
 
