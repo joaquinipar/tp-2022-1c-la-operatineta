@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <utils/hello.h>
+#include <utils/logger.h>
 #include <commons/log.h>
 #include "config_consola.h"
 

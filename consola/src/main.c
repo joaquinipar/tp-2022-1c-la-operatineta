@@ -1,6 +1,4 @@
 #include "main.h"
-#include <utils/hello.h>
-#include <utils/logger.h>
 
 int main(int argc, char* argv[]) {
 
