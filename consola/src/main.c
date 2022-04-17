@@ -1,18 +1,21 @@
 #include "main.h"
+#include <utils/logger.h>
 
 int main(int argc, char* argv[]) {
 
     puts("Hello world!!");
 
+    logger_set_module("CONSOLA");
+
     t_log* logger = log_create("./log.txt", "Consola", 1, LOG_LEVEL_INFO);
     
-    log_debug(logger, "DEBUG LOG!");
-    log_info(logger, "INFO LOG!");
-    log_error(logger, "PRUEBA!");
+    debug_log("main.c", "DEBUG LOG!");
+    info_log("main.c", "INFO LOG!");
+    error_log("main.c", "PRUEBA!");
 
     //hello_world(); perdon luis pero no anda mas el hello world :(
 
-    iniciar_config_consola("../config/ejemplo.config");
+    iniciar_config_consola("../../config/ejemplo.config");
     print_config();
 
     destruir_estructura_consola_config();
