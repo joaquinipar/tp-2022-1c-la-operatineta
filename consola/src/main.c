@@ -1,4 +1,5 @@
 #include "main.h"
+#include <utils/hello.h>
 #include <utils/logger.h>
 
 int main(int argc, char* argv[]) {
@@ -7,13 +8,11 @@ int main(int argc, char* argv[]) {
 
     logger_set_module("CONSOLA");
 
-    t_log* logger = log_create("./log.txt", "Consola", 1, LOG_LEVEL_INFO);
-    
     debug_log("main.c", "DEBUG LOG!");
     info_log("main.c", "INFO LOG!");
     error_log("main.c", "PRUEBA!");
 
-    //hello_world(); perdon luis pero no anda mas el hello world :(
+    hello_world();
 
     iniciar_config_consola("../../config/ejemplo.config");
     print_config();
