@@ -7,6 +7,7 @@ int main(int argc, char* argv[]) {
     puts("Hello world!!");
 
     logger_set_module("CONSOLA");
+    logger_set_loglevel(LOG_LEVEL_DEBUG);
 
     debug_log("main.c", "DEBUG LOG!");
     info_log("main.c", "INFO LOG!");

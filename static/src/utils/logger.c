@@ -3,13 +3,18 @@
 
 char *modulo = "DEFAULT_MODULE(cambiar con logger_set_module())";
 char *logs_path = "./logs.log";
+t_log_level loglevel = LOG_LEVEL_INFO;
 
 void logger_set_module(char *nombre_modulo) {
     modulo = nombre_modulo;
 }
 
+void logger_set_loglevel(t_log_level level) {
+  loglevel = level;
+};
+
 void info_log(char *ubicacion, char *mensaje) {
-  t_log *logger = log_create(logs_path, modulo, TRUE, LOG_LEVEL_DEBUG);
+  t_log *logger = log_create(logs_path, modulo, TRUE, loglevel);
 
   char *log = string_from_format("%s: %s", ubicacion, mensaje);
   log_info(logger, log);
@@ -19,7 +24,7 @@ void info_log(char *ubicacion, char *mensaje) {
 }
 
 void error_log(char *ubicacion, char *mensaje) {
-  t_log *logger = log_create(logs_path, modulo, TRUE, LOG_LEVEL_DEBUG);
+  t_log *logger = log_create(logs_path, modulo, TRUE, loglevel);
 
   char *log = string_from_format("%s: %s", ubicacion, mensaje);
   log_error(logger, log);
@@ -29,7 +34,7 @@ void error_log(char *ubicacion, char *mensaje) {
 }
 
 void debug_log(char *ubicacion, char *mensaje) {
-  t_log *logger = log_create(logs_path, modulo, TRUE, LOG_LEVEL_DEBUG);
+  t_log *logger = log_create(logs_path, modulo, TRUE, loglevel);
 
   char *log = string_from_format("%s: %s", ubicacion, mensaje);
   log_debug(logger, log);
@@ -39,7 +44,7 @@ void debug_log(char *ubicacion, char *mensaje) {
 }
 
 void warning_log(char *ubicacion, char *mensaje) {
-  t_log *logger = log_create(logs_path, modulo, TRUE, LOG_LEVEL_DEBUG);
+  t_log *logger = log_create(logs_path, modulo, TRUE, loglevel);
 
   char *log = string_from_format("%s: %s", ubicacion, mensaje);
   log_warning(logger, log);
@@ -49,7 +54,7 @@ void warning_log(char *ubicacion, char *mensaje) {
 }
 
 void trace_log(char *ubicacion, char *mensaje) {
-  t_log *logger = log_create(logs_path, modulo, TRUE, LOG_LEVEL_DEBUG);
+  t_log *logger = log_create(logs_path, modulo, TRUE, loglevel);
 
   char *log = string_from_format("%s: %s", ubicacion, mensaje);
   log_trace(logger, log);

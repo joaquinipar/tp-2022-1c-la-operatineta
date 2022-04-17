@@ -6,6 +6,7 @@
 #include <stdlib.h>
 
 void logger_set_module(char *modulo);
+void logger_set_loglevel(t_log_level level);
 void destruir_logger();
 void debug_log(char *ubicacion, char *mensaje);
 void info_log(char *ubicacion, char *mensaje);
