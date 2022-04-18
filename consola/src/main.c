@@ -4,19 +4,20 @@ int main(int argc, char* argv[]) {
 
     puts("Hello world!!");
 
-    t_log* logger = log_create("./log.txt", "Consola", 1, LOG_LEVEL_INFO);
-    
-    log_debug(logger, "DEBUG LOG!");
-    log_info(logger, "INFO LOG!");
-    log_error(logger, "PRUEBA!");
+    // Se hace una sola vez a nivel aplicacion
+    logger_set_module("CONSOLA");
+    logger_set_loglevel(LOG_LEVEL_DEBUG);
 
-    //hello_world(); perdon luis pero no anda mas el hello world :(
+    debug_log("main.c", "DEBUG LOG!");
+    info_log("main.c", "INFO LOG!");
+    error_log("main.c", "PRUEBA!");
 
-    iniciar_config_consola("../config/ejemplo.config");
+    hello_world();
+
+    iniciar_config_consola("../../config/ejemplo.config");
     print_config();
 
     destruir_estructura_consola_config();
-    log_destroy(logger);
 
     return 0;
 }
