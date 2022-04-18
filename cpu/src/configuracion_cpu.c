@@ -20,8 +20,8 @@ void procesar_archivo_config_cpu(t_config *una_config_cpu) {
   }
 }
 
-tipo_config_cpu *crear_estructura_cpu_config() {
-  tipo_config_cpu *config_cpu = malloc(sizeof(tipo_config_cpu));
+config_cpu_t *crear_estructura_cpu_config() {
+  config_cpu_t *config_cpu = malloc(sizeof(config_cpu_t));
   config_cpu->reemplazo_tlb = NULL;
   config_cpu->ip_memoria = NULL;
   return config_cpu;
@@ -38,12 +38,14 @@ void cargar_archivo_config_cpu(t_config* una_config_cpu) {
   cpu_config->ip_memoria = obtener_string_arch_config(una_config_cpu, "IP_MEMORIA");
   cpu_config->reemplazo_tlb = obtener_string_arch_config(una_config_cpu, "REEMPLAZO_TLB");
  
+
 }
 
 void destruir_estructura_cpu_config() {
 
   free(cpu_config->ip_memoria );
   free(cpu_config->reemplazo_tlb );
+  free(cpu_config); 
 
 }
 

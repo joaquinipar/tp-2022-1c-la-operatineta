@@ -8,7 +8,7 @@
 #include <commons/error.h>
 #include <commons/string.h>
 
-typedef struct tipo_config_cpu {
+typedef struct config_cpu_t {
    int entradas_tlb;
    char* reemplazo_tlb;
    int retardo_noop;
@@ -16,13 +16,13 @@ typedef struct tipo_config_cpu {
    int puerto_memoria;
    int puerto_escucha_dispatch;
    int puerto_escucha_interrupt; 
-}tipo_config_cpu;
+}config_cpu_t;
 
-tipo_config_cpu* cpu_config;
+config_cpu_t* cpu_config;
 
 void iniciar_config_cpu(char *direccion);
 void procesar_archivo_config_cpu(t_config *una_config_cpu);
-tipo_config_cpu *crear_estructura_cpu_config();
+config_cpu_t *crear_estructura_cpu_config();
 void cargar_archivo_config_cpu(t_config *una_config_cpu);
 void destruir_estructura_cpu_config();
 void terminar_proceso_configuracion(char *MensajeError);

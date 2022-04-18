@@ -1,4 +1,4 @@
-#include "main.h"
+#include "../include/main.h"
 
 
 int main(int argc, char* argv[]) {
@@ -6,5 +6,7 @@ int main(int argc, char* argv[]) {
 
     iniciar_config_cpu("./cpu.config");
 
+
+    cerrar_cpu();
     return 0;
 }
