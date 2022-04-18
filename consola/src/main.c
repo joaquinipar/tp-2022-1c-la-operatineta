@@ -1,6 +1,4 @@
-#include "main.h"
-#include <parser.h>
-
+#include "../include/main.h"
 
 
 int main(int argc /*cantidad de argumentos*/, char* argv[]/*path instruccion +tamanio proceso+ arch config */) {
@@ -28,6 +26,7 @@ int main(int argc /*cantidad de argumentos*/, char* argv[]/*path instruccion +ta
 	};
 
 	list_iterate(lista_de_instrucciones, (void*)printear_lista);
+	list_destroy_and_destroy_elements(lista_de_instrucciones, (void*)free);
 
     puts("Hello world!!");
 

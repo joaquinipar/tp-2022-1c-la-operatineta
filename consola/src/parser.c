@@ -1,4 +1,4 @@
-#include "parser.h"
+#include "../include/parser.h"
 
 void cargar_argumento(instruccion_t* instruccion, char** keyAndValue){
 
@@ -93,6 +93,8 @@ t_list *config_create_parser(char *path) {
 
 
 			free(keyAndValue[0]);
+			free(keyAndValue[1]);
+			free(keyAndValue[2]);
 			free(keyAndValue);
 		}
 	}

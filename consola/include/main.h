@@ -6,5 +6,6 @@
 #include <utils/hello.h>
 #include <commons/log.h>
 #include "config_consola.h"
+#include "parser.h"
 
 #endif //CONSOLA_MAIN_H
