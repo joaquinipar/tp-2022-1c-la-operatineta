@@ -7,10 +7,13 @@
 #include <commons/config.h>
 #include <commons/error.h>
 #include <commons/string.h>
+#include <utils/logger.h>
+
+typedef enum algoritmo_reemplazo_tlb_t { FIFO, LRU } algoritmo_reemplazo_tlb_t;
 
 typedef struct config_cpu_t {
    int entradas_tlb;
-   char* reemplazo_tlb;
+   algoritmo_reemplazo_tlb_t reemplazo_tlb;
    int retardo_noop;
    char* ip_memoria;
    int puerto_memoria;
@@ -28,6 +31,7 @@ void destruir_estructura_cpu_config();
 void terminar_proceso_configuracion(char *MensajeError);
 char *obtener_string_arch_config(t_config *configuracion, char *clave);
 int obtener_int_arch_config(t_config *configuracion, char *clave);
+algoritmo_reemplazo_tlb_t obtener_algoritmo_enum(char *algoritmo);
 
 
 

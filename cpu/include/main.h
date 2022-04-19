@@ -7,5 +7,6 @@
 #include <stdlib.h>
 #include "configuracion_cpu.h"
 #include "cerrar_cpu.h"
+#include <utils/logger.h>
 
 #endif /* INCLUDE_MAIN_H_ */
