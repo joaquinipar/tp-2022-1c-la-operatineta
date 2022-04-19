@@ -2,12 +2,12 @@
 
 tipo_config_kernel *crear_estructura_kernel_config() {
     tipo_config_kernel *config_kernel = malloc(sizeof(tipo_config_kernel));
-    config_kernel->ip_memoria = NULL;
-    config_kernel->puerto_memoria = NULL;
-    config_kernel->ip_cpu = NULL;
-    config_kernel->puerto_cpu_dispatch = NULL;
-    config_kernel->puerto_cpu_interrupt = NULL;
-    config_kernel->puerto_escucha = NULL;
+    config_kernel->ip_memoria = NULL;  
+    config_kernel->puerto_memoria = NULL;   //es numerico
+    config_kernel->ip_cpu = NULL;   
+    config_kernel->puerto_cpu_dispatch = NULL; //es numerico
+    config_kernel->puerto_cpu_interrupt = NULL; //es numerico
+    config_kernel->puerto_escucha = NULL; //es numerico
     /*
     config_kernel->algoritmo_planificacion = -1;
     config_kernel->estimacion_inicial = -1;
@@ -36,7 +36,10 @@ int obtener_int_arch_config(t_config *configuracion, char *clave) {
     return valor;
 }
 
-double obtener_double_arch_config(t_config *configuracion, char *clave) {
+
+//ESta funcion para que esta ¡??? 
+
+double obtener_double_arch_config(t_config *configuracion, char *clave) {  
 
     double valor;
 
@@ -124,13 +127,9 @@ void iniciar_config_kernel(char *direccion) {
 
 char *obtener_string_arch_config(t_config *configuracion, char *clave) {
     char *valor = NULL;
-    if (config_has_property(configuracion, clave)) // Comprueba que el archivo de
-        // configuracion contenga la
-        // clave solicitada.
-    {
+    if (config_has_property(configuracion, clave)) 
         valor = string_duplicate(config_get_string_value(
-                configuracion, clave)); // se le asigna a la variable valor el valor
-        // correspondiente a la clave solicitada
+                configuracion, clave)); 
         if (valor == NULL)
             terminar_proceso_configuracion("Error: Archivo de configuracion sin "
                                            "valores definidos de Tipo String");
