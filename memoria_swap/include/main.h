@@ -5,6 +5,7 @@
 #include <commons/string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <utils/logger.h>
 #include "configuracion_mem_swap.h"
 #include "cerrar_mem_swap.h"
 

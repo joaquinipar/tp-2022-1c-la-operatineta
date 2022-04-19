@@ -7,6 +7,7 @@
 #include <commons/config.h>
 #include <commons/error.h>
 #include <commons/string.h>
+#include <utils/logger.h>
 typedef enum algoritmo_t { CLOCK, CLOCKMOD } algoritmo_t;
 
 typedef struct {
