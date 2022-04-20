@@ -7,5 +7,6 @@
 #include <commons/log.h>
 #include "config_consola.h"
 #include "parser.h"
+#include "serializacion.h"
 
 #endif //CONSOLA_MAIN_H
