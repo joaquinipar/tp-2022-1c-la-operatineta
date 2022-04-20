@@ -58,8 +58,8 @@ double obtener_double_arch_config(t_config *configuracion, char *clave) {
 
 
 void cargar_archivo_config_kernel(t_config *una_config_kernel) {
-    // TODO Log
-    printf("config_kernel.c@cargar_archivo_config_kernel Se carga estructura de configuracion de Kernel");
+
+    debug_log("config_kernel.c@cargar_archivo_config_kernel","Se carga estructura de configuracion de Kernel");
 
     kernel_config = crear_estructura_kernel_config();
 
@@ -67,19 +67,20 @@ void cargar_archivo_config_kernel(t_config *una_config_kernel) {
             obtener_string_arch_config(una_config_kernel, "IP_MEMORIA");
 
     kernel_config->puerto_memoria =
-            obtener_string_arch_config(una_config_kernel, "PUERTO_MEMORIA");
+            string_itoa(obtener_int_arch_config(una_config_kernel, "PUERTO_MEMORIA"));
+
 
     kernel_config->ip_cpu =
             obtener_string_arch_config(una_config_kernel, "IP_CPU");
 
     kernel_config->puerto_cpu_dispatch =
-            obtener_string_arch_config(una_config_kernel, "PUERTO_CPU_DISPATCH");
+            string_itoa(obtener_int_arch_config(una_config_kernel, "PUERTO_CPU_DISPATCH"));
 
     kernel_config->puerto_cpu_interrupt =
-            obtener_string_arch_config(una_config_kernel, "PUERTO_CPU_INTERRUPT");
+            string_itoa(obtener_int_arch_config(una_config_kernel, "PUERTO_CPU_INTERRUPT"));
 
     kernel_config->puerto_escucha =
-            obtener_string_arch_config(una_config_kernel, "PUERTO_ESCUCHA");
+            string_itoa(obtener_int_arch_config(una_config_kernel, "PUERTO_ESCUCHA"));
 
     kernel_config->algoritmo_planificacion =
         parse_algoritmo_planificacion(obtener_string_arch_config(una_config_kernel, "ALGORITMO_PLANIFICACION"));
@@ -101,14 +102,14 @@ void cargar_archivo_config_kernel(t_config *una_config_kernel) {
 }
 
 void procesar_archivo_config_kernel(t_config *una_config_kernel) {
-    // TODO Log
-    printf("config_kernel.c@procesar_archivo_config_kernel | Se comienza a procesar Archivo de Configuracion");
+
+    debug_log("config_kernel.c@procesar_archivo_config_kernel "," Se comienza a procesar Archivo de Configuracion");
     int configElements = config_keys_amount(una_config_kernel);
 
     if (configElements == 0) {
-        // TODO Log error
-        printf(
-                "config_kernel.c@procesar_archivo_config_kernel | No hay claves en el archivo. - Archivo de configuración inválido.");
+
+        error_log(
+                "config_kernel.c@procesar_archivo_config_kernel","No hay claves en el archivo. - Archivo de configuración inválido.");
         exit(EXIT_FAILURE);
     } else {
         cargar_archivo_config_kernel(una_config_kernel);
@@ -127,15 +128,15 @@ void iniciar_config_kernel(char *direccion) {
 
 char *obtener_string_arch_config(t_config *configuracion, char *clave) {
     char *valor = NULL;
-    if (config_has_property(configuracion, clave)) 
+    if (config_has_property(configuracion, clave)){
         valor = string_duplicate(config_get_string_value(
-                configuracion, clave)); 
+                configuracion, clave));
+
         if (valor == NULL)
             terminar_proceso_configuracion("Error: Archivo de configuracion sin "
                                            "valores definidos de Tipo String");
     } else
-        terminar_proceso_configuracion("Error: Archivo de configuracion "
-                                       "incompleto. Falta clave de tipo string ");
+        terminar_proceso_configuracion("Error: Archivo de configuracion incompleto. Falta clave de tipo string ");
 
     return valor;
 }
@@ -151,16 +152,16 @@ algoritmo_p parse_algoritmo_planificacion(char *algoritmo) {
     algoritmo_p algoritmo_planificacion;
 
     if (!strcmp(algoritmo, "FIFO")) {
-        // TODO Log
-        printf("config_kernel.c@parse_algoritmo_planificacion Algoritmo de planificacion: FIFO");
+
+        debug_log("config_kernel.c@parse_algoritmo_planificacion","Algoritmo de planificacion: FIFO");
         algoritmo_planificacion = FIFO;
     } else if (!strcmp(algoritmo, "SRT")) {
-        // TODO Log
-        printf("config_kernel.c@parse_algoritmo_planificacion Algoritmo de planificacion: SRT");
+
+        debug_log("config_kernel.c@parse_algoritmo_planificacion","Algoritmo de planificacion: SRT");
         algoritmo_planificacion = SRT;
     } else {
-        // TODO Log
-        printf("config_kernel.c@parse_algoritmo_planificacion Algoritmo de planificacion no disponible. Se setea por default FIFO");
+
+        error_log("config_kernel.c@parse_algoritmo_planificacion","Algoritmo de planificacion no disponible. Se setea por default FIFO");
         algoritmo_planificacion = FIFO;
     }
 
@@ -168,8 +169,8 @@ algoritmo_p parse_algoritmo_planificacion(char *algoritmo) {
 }
 
 void destruir_estructura_kernel_config() {
-    // TODO Log
-    printf("config_kernel.c@destruir_estructura_kernel_config Se destruye la estructura de configuracion");
+
+    info_log("config_kernel.c@destruir_estructura_kernel_config","Se destruye la estructura de configuracion");
 
 
     free(kernel_config->ip_memoria);
