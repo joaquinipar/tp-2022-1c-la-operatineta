@@ -3,3 +3,7 @@ obj/
 *.log
 .vscode/
 .idea/
+.cproject
+.project
+.xml
+.settings
