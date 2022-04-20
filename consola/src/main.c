@@ -1,7 +1,23 @@
 #include "../include/main.h"
 
+/*
+    Para ejecutar la consola, el binario deberá recibir 3 argumentos
+        * Ruta al archivo de instrucciones
+        * Tamaño del proceso
+        * Ruta al archivo de config
 
+    ej:
+    $ cd bin
+    $ ./consola.out ../instrucciones/ejemplo.txt 123 ../config/ejemplo.config
+*/
 int main(int argc /*cantidad de argumentos*/, char* argv[]/*path instruccion +tamanio proceso+ arch config */) {
+
+    setup_logger();
+
+    hello_world();
+
+    iniciar_config_consola(argv[3]);
+    print_config();
 
 	char* path_instruction;
 	int tamanio_proceso;
@@ -26,25 +42,21 @@ int main(int argc /*cantidad de argumentos*/, char* argv[]/*path instruccion +ta
 	};
 
 	list_iterate(lista_de_instrucciones, (void*)printear_lista);
+
+	uint32_t codop = 100; // TODO
+
+	//SERIALIZAR
+	void* stream = serializar_lista_de_instrucciones(lista_de_instrucciones, codop);
+
+	//DESERIALIZAR
+	t_list* instrucciones_deserializadas = deserializar_lista_de_instrucciones(stream);
+
+	free(stream);
+
+	list_destroy_and_destroy_elements(instrucciones_deserializadas, (void*)free);
 	list_destroy_and_destroy_elements(lista_de_instrucciones, (void*)free);
 
-    
-
-    // Se hace una sola vez a nivel aplicacion
-    logger_set_module("CONSOLA");
-    logger_set_loglevel(LOG_LEVEL_DEBUG);
-    info_log("main.c", "Bienvenido a CONSOLA!!!");
-
-    debug_log("main.c", "DEBUG LOG!");
-    info_log("main.c", "INFO LOG!");
-    error_log("main.c", "PRUEBA!");
-
-    hello_world();
-
-    iniciar_config_consola("./ejemplo.config");
-    print_config();
-    info_log("main.c", "Se comienza a cerrar aplicacion CONSOLA ");
-    destruir_estructura_consola_config();
+    cerrar_consola();
 
     return 0;
 }
