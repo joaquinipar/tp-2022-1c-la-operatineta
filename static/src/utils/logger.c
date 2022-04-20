@@ -1,4 +1,4 @@
-#include "../../include/utils/logger.h"
+#include <utils/logger.h>
 #define TRUE 1
 
 char *modulo = "DEFAULT_MODULE(cambiar con logger_set_module())";
