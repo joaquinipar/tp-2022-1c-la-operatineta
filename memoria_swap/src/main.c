@@ -6,6 +6,7 @@ int main(int argc, char* argv[]) {
     info_log("main.c", "Bienvenido a Memoria - Swamp!!");
 
     iniciar_config_mem_swap("./mem_swap.config");
+    iniciar_server_mem_swap();
     cerrar_mem_swap();
 
     return 0;

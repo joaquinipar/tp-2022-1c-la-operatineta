@@ -16,9 +16,9 @@ typedef struct config_cpu_t {
    algoritmo_reemplazo_tlb_t reemplazo_tlb;
    int retardo_noop;
    char* ip_memoria;
-   int puerto_memoria;
-   int puerto_escucha_dispatch;
-   int puerto_escucha_interrupt; 
+   char* puerto_memoria;
+   char* puerto_escucha_dispatch;
+   char* puerto_escucha_interrupt; 
 }config_cpu_t;
 
 config_cpu_t* cpu_config;

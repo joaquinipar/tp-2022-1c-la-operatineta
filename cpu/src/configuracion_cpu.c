@@ -33,14 +33,28 @@ void cargar_archivo_config_cpu(t_config* una_config_cpu) {
   cpu_config = crear_estructura_cpu_config();
   cpu_config->entradas_tlb = obtener_int_arch_config(una_config_cpu, "ENTRADAS_TLB");
   cpu_config->retardo_noop = obtener_int_arch_config(una_config_cpu, "RETARDO_NOOP");
-  cpu_config->puerto_memoria = obtener_int_arch_config(una_config_cpu, "PUERTO_MEMORIA");
-  cpu_config->puerto_escucha_dispatch = obtener_int_arch_config(una_config_cpu,"PUERTO_ESCUCHA_DISPATCH");
-  cpu_config->puerto_escucha_interrupt = obtener_int_arch_config(una_config_cpu,"PUERTO_ESCUCHA_INTERRUPT");
+
   cpu_config->ip_memoria = obtener_string_arch_config(una_config_cpu, "IP_MEMORIA");
 
   char* algoritmo = obtener_string_arch_config(una_config_cpu, "REEMPLAZO_TLB");
   cpu_config->reemplazo_tlb = obtener_algoritmo_enum(algoritmo);
   free(algoritmo);
+
+  int puerto_mem= obtener_int_arch_config(una_config_cpu, "PUERTO_MEMORIA");
+  char* puerto_memoria = string_itoa(puerto_mem);
+  cpu_config->puerto_memoria = string_duplicate(puerto_memoria);
+  free(puerto_memoria); 
+
+  int puerto_disp= obtener_int_arch_config(una_config_cpu, "PUERTO_ESCUCHA_DISPATCH");
+  char* puerto_escucha_dispatch = string_itoa(puerto_disp);
+  cpu_config->puerto_escucha_dispatch = string_duplicate(puerto_memoria);
+  free(puerto_escucha_dispatch); 
+
+  int puerto_escucha_interrup= obtener_int_arch_config(una_config_cpu, "PUERTO_ESCUCHA_INTERRUPT");
+  char* puerto_escucha_interrupt = string_itoa(puerto_escucha_interrup);
+  cpu_config->puerto_escucha_interrupt = string_duplicate(puerto_escucha_interrupt);
+  free(puerto_escucha_interrupt); 
+
 
 }
 

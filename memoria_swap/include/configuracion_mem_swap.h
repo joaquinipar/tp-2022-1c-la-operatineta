@@ -17,7 +17,8 @@ typedef struct {
    int retardo_memoria;
    int marcos_por_proceso;
    int retardo_swap;
-   int puerto_escucha;
+   char* puerto_escucha;
+   char* ip_escucha;
    algoritmo_t algoritmo_reeemplazo;
    char* path_swap;
   

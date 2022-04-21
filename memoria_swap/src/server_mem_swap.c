@@ -10,6 +10,7 @@ void iniciar_server_mem_swap() {
   socket_server_mem= iniciar_servidor("server_mem_swap.c@iniciar_server_mem_swap","", ip, puerto);
 
   if (socket_server_mem != -1) {
+    debug_log("server_mem_swap.c@iniciar_server_mem_swap", "Server Memoria inicializado");
     char *msg_log = string_from_format("Servidor Memoria escuchando conexiones con exito en ip: %s, puerto: %s", ip,puerto);
     info_log("server_mem_swap.c@iniciar_server_mem_swap", msg_log);
     free(msg_log);
@@ -23,7 +24,6 @@ void iniciar_server_mem_swap() {
 
   escuchar_conexiones_nuevas(socket_server_mem);
 
-  //debug_log("server_mem_swap.c@iniciar_server_mem_swap", "Server Memoria inicializado");
 }
 
 
