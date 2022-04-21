@@ -1,5 +1,18 @@
 #include "../include/configuracion_mem_swap.h"
 
+void iniciar_config(int argc, char* argv[]){
+    printf("cantidad: %i",argc);
+    if(argc == 1){
+        // Caso donde no se paso un archivo de config por parametro
+        warning_log("main.c", "No se envió la ruta del archivo de configuración por parametro. Apunto al default ./mem_swap.config");
+        iniciar_config_mem_swap("./mem_swap.config");
+    }
+    else{
+        // Caso donde le pasamos la ruta del config por parametro
+        iniciar_config_mem_swap(argv[1]);
+    }
+}
+
 void iniciar_config_mem_swap(char *direccion){
 
   t_config* una_config_mem_swap = config_create(direccion);

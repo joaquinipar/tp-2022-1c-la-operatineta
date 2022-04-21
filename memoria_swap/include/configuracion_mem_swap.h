@@ -26,6 +26,7 @@ typedef struct {
 
 config_mem_t* mem_swap_config;
 
+void iniciar_config(int argc, char* argv[]);
 void iniciar_config_mem_swap(char *direccion);
 void procesar_archivo_config_mem_swap(t_config *una_config_mem_swap);
 config_mem_t *crear_estructura_mem_swap_config();

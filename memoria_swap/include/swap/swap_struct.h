@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 #include <stdint.h> 
-#include <utils/logger.h>
+#include "../../../static/include/utils/logger.h"
 
 typedef struct{
 	// El indice del array representa el numero de marco
