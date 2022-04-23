@@ -1,9 +1,15 @@
+# Original project path
+PROJ_PATH=..
+
+# Excluded source files (eg: main() function)
+EXCLUDE=main.c
+
 # Libraries
-LIBS=static commons
+LIBS=cunit static commons
 
 # Custom libraries' paths
-SHARED_LIBPATHS=../../so-commons-library
-STATIC_LIBPATHS=../static
+SHARED_LIBPATHS=
+STATIC_LIBPATHS=../../static
 
 # Compiler flags
 CDEBUG=-g -Wall -DDEBUG

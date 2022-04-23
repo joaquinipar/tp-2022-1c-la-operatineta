@@ -127,15 +127,17 @@ void iniciar_config_kernel(char *direccion) {
 
 char *obtener_string_arch_config(t_config *configuracion, char *clave) {
     char *valor = NULL;
-    if (config_has_property(configuracion, clave)) 
+    if (config_has_property(configuracion, clave)) {
         valor = string_duplicate(config_get_string_value(
                 configuracion, clave)); 
-        if (valor == NULL)
+        if (valor == NULL) {
             terminar_proceso_configuracion("Error: Archivo de configuracion sin "
                                            "valores definidos de Tipo String");
-    } else
+        }
+    } else {
         terminar_proceso_configuracion("Error: Archivo de configuracion "
                                        "incompleto. Falta clave de tipo string ");
+    }
 
     return valor;
 }
