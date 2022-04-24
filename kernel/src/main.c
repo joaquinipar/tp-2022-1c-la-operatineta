@@ -1,13 +1,14 @@
-#include "config_kernel.h"
+#include "../include/main.h"
 
 
 int main(int argc, char* argv[]) {
-    
-    iniciar_config_kernel("../config/ejemplo.config");
+    logger_set_module("KERNEL"); 
+    logger_set_loglevel(LOG_LEVEL_DEBUG);
+    info_log("main.c", "Bienvenido a KERNEL!!");
 
-    print_config();
+    iniciar_config(argc,argv);
 
-
+    cerrar_kernel(); 
 
     return 0;
 }

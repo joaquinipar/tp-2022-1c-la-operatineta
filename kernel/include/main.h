@@ -5,5 +5,6 @@
 #include <stdio.h>
 #include <utils/logger.h>
 #include "config_kernel.h"
+#include "cerrar_kernel.h"
 
 #endif //KERNEL_MAIN_H
