@@ -26,22 +26,16 @@ int main(int argc /*cantidad de argumentos*/, char* argv[]/*path instruccion +ta
 	path_instruction = argv[1];
 	tamanio_proceso = atoi(argv[2]);
 	path_arch_config = argv[3];
+    info_log("main.c@main", "Path de instrucciones");
+	info_log("main.c@main", path_instruction);
+    info_log("main.c@main", "Tamaño del proceso");
+    info_log("main.c@main", argv[2]);
+    info_log("main.c@main", "Path del archivo de configuración");
+    info_log("main.c@main", path_arch_config);
 
-	printf("%s", path_instruction);
-	printf("%d", tamanio_proceso);
-	printf("%s", path_arch_config);
-	
-	t_list* lista_de_instrucciones;
+	t_list* lista_de_instrucciones = config_create_parser(path_instruction);
 
-	lista_de_instrucciones = config_create_parser(path_instruction);
-
-	void printear_lista(instruccion_t* una_instruccion){
-
-		printf("%d %d %d\n", una_instruccion->instruccion, una_instruccion->argumentos[0], una_instruccion->argumentos[1]);
-
-	};
-
-	list_iterate(lista_de_instrucciones, (void*)printear_lista);
+	list_iterate(lista_de_instrucciones, (void*) &printear_instruccion);
 
 	uint32_t codop = 100; // TODO
 
@@ -53,8 +47,8 @@ int main(int argc /*cantidad de argumentos*/, char* argv[]/*path instruccion +ta
 
 	free(stream);
 
-	list_destroy_and_destroy_elements(instrucciones_deserializadas, (void*)free);
-	list_destroy_and_destroy_elements(lista_de_instrucciones, (void*)free);
+	list_destroy_and_destroy_elements(instrucciones_deserializadas, (void*)&free);
+	list_destroy_and_destroy_elements(lista_de_instrucciones, (void*)&free);
 
     cerrar_consola();
 

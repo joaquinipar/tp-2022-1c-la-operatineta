@@ -18,6 +18,7 @@
 
 void* serializar_lista_de_instrucciones(t_list*, uint32_t);
 t_list* deserializar_lista_de_instrucciones (void*);
+void printear_instruccion(instruccion_t* una_instruccion);
 
 
 #endif /* INCLUDE_SERIALIZACION_H_ */

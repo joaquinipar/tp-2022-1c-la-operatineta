@@ -5,10 +5,6 @@ void setup_logger(){
     logger_set_module("CONSOLA");
     logger_set_loglevel(LOG_LEVEL_DEBUG);
     info_log("main.c", "Bienvenido a CONSOLA!!!");
-
-    debug_log("main.c", "DEBUG LOG!");
-    info_log("main.c", "INFO LOG!");
-    error_log("main.c", "PRUEBA!");
 }
 
 void cerrar_consola(){

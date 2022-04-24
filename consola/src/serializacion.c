@@ -55,7 +55,6 @@ t_list* deserializar_lista_de_instrucciones (void* stream){
 	uint32_t codop_deserializado;
 	uint32_t list_size_deserializado;
 
-
 	//CODOP TODO
 	memcpy(&codop_deserializado, stream, sizeof(uint32_t));
 	desplazamiento+=sizeof(uint32_t);
@@ -63,33 +62,60 @@ t_list* deserializar_lista_de_instrucciones (void* stream){
 	memcpy(&list_size_deserializado, stream+desplazamiento, sizeof(uint32_t));
 	desplazamiento+=sizeof(uint32_t);
 
-	printf("El CODOP ES: %i \n" , codop_deserializado);
-	printf("El LIST_SIZE ES: %i \n" , list_size_deserializado);
-
+    debug_log("serializacion.c@deserializar_lista_de_instrucciones", "El CODOP es:");
+    char* log_codop_serializado = string_itoa(codop_deserializado);
+    debug_log("serializacion.c@deserializar_lista_de_instrucciones", log_codop_serializado);
+    debug_log("serializacion.c@deserializar_lista_de_instrucciones", "El LIST_SIZE es:");
+    char* log_list_size = string_itoa(list_size_deserializado);
+    debug_log("serializacion.c@deserializar_lista_de_instrucciones", log_list_size);
 
 	for(int i=0; i< list_size_deserializado ; i++){
 
 		instruccion_t* instruccion_a_cargar = malloc(sizeof(instruccion_t));
 
 		memcpy(&(instruccion_a_cargar->instruccion),stream + desplazamiento ,sizeof(uint32_t)  ) ;
-		printf("La instruccion tiene valor ENUM: %i \n" , instruccion_a_cargar->instruccion);
+        debug_log("serializacion.c@deserializar_lista_de_instrucciones","La instruccion tiene valor ENUM:");
+        char* log_instruccion_enum = string_itoa(instruccion_a_cargar->instruccion);
+        debug_log("serializacion.c@deserializar_lista_de_instrucciones", log_instruccion_enum);
 		desplazamiento+=sizeof(uint32_t);
 
 
 		memcpy(&(instruccion_a_cargar->argumentos[0]),stream + desplazamiento ,sizeof(int32_t) ) ;
-		printf("La instruccion tiene parametro 0 : %i \n" , instruccion_a_cargar->argumentos[0]);
+        debug_log("serializacion.c@deserializar_lista_de_instrucciones","La instruccion tiene parametro 0 :");
+        char* log_primer_valor = string_itoa(instruccion_a_cargar->argumentos[0]);
+        debug_log("serializacion.c@deserializar_lista_de_instrucciones", log_primer_valor);
 		desplazamiento+=sizeof(int32_t);
 
 		memcpy(&(instruccion_a_cargar->argumentos[1]),stream + desplazamiento ,sizeof(int32_t) ) ;
-		printf("La instruccion tiene parametro 1 : %i \n" , instruccion_a_cargar->argumentos[1]);
+        debug_log("serializacion.c@deserializar_lista_de_instrucciones","La instruccion tiene parametro 1 :");
+        char* log_segundo_valor = string_itoa(instruccion_a_cargar->argumentos[1]);
+        debug_log("serializacion.c@deserializar_lista_de_instrucciones", log_segundo_valor);
 		desplazamiento+=sizeof(int32_t);
 
 
 		list_add( instrucciones_deserializadas, instruccion_a_cargar);
 
+        free(log_instruccion_enum);
+        free(log_primer_valor);
+        free(log_segundo_valor);
 	}
 
+    free(log_codop_serializado);
+    free(log_list_size);
 
 	return instrucciones_deserializadas;
 
 }
+
+void printear_instruccion(instruccion_t* una_instruccion){
+    char* inst_name = string_itoa(una_instruccion->instruccion);
+    char* inst_first_value = string_itoa(una_instruccion->argumentos[0]);
+    char* inst_second_value = string_itoa(una_instruccion->argumentos[1]);
+    debug_log("serializacion.c@printear_lista", "Instruccion(numero):");
+    debug_log("serializacion.c@printear_lista",  inst_first_value);
+    debug_log("serializacion.c@printear_lista", "Valores:");
+    debug_log("serializacion.c@printear_lista", inst_second_value);
+    free(inst_name);
+    free(inst_first_value);
+    free(inst_second_value);
+};
