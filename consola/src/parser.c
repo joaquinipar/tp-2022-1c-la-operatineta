@@ -47,7 +47,7 @@ t_list *config_create_parser(char *path) {
 	FILE* file = fopen(path, "r");
 
 	if (file == NULL) {
-        error_log("parser.c@config_create_parser", "fopen returned null.")
+        error_log("parser.c@config_create_parser", "fopen returned null.");
 		return NULL;
 	}
 
