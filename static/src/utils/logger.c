@@ -62,3 +62,54 @@ void trace_log(char *ubicacion, char *mensaje) {
 
   log_destroy(logger);
 }
+
+void format_info_log(char* ubicacion, char* format, ...) {
+    char* formatted_string;
+    va_list arguments;
+    va_start(arguments, format);
+    formatted_string = string_from_vformat(format, arguments);
+    va_end(arguments);
+    info_log(ubicacion, formatted_string);
+    free(formatted_string);
+}
+
+void format_debug_log(char* ubicacion, char* format, ...) {
+    char* formatted_string;
+    va_list arguments;
+    va_start(arguments, format);
+    formatted_string = string_from_vformat(format, arguments);
+    va_end(arguments);
+    debug_log(ubicacion, formatted_string);
+    free(formatted_string);
+}
+
+void format_warning_log(char* ubicacion, char* format, ...) {
+    char* formatted_string;
+    va_list arguments;
+    va_start(arguments, format);
+    formatted_string = string_from_vformat(format, arguments);
+    va_end(arguments);
+    warning_log(ubicacion, formatted_string);
+    free(formatted_string);
+}
+
+void format_trace_log(char* ubicacion, char* format, ...) {
+    char* formatted_string;
+    va_list arguments;
+    va_start(arguments, format);
+    formatted_string = string_from_vformat(format, arguments);
+    va_end(arguments);
+    trace_log(ubicacion, formatted_string);
+    free(formatted_string);
+}
+
+void format_error_log(char* ubicacion, char* format, ...) {
+    char* formatted_string;
+    va_list arguments;
+    va_start(arguments, format);
+    formatted_string = string_from_vformat(format, arguments);
+    va_end(arguments);
+    error_log(ubicacion, formatted_string);
+    free(formatted_string);
+}
+

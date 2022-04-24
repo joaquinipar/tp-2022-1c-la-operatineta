@@ -13,5 +13,10 @@ void info_log(char *ubicacion, char *mensaje);
 void error_log(char *ubicacion, char *mensaje);
 void warning_log(char *ubicacion, char *mensaje);
 void trace_log(char *ubicacion, char *mensaje);
+void format_info_log(char* ubicacion, char* format, ...);
+void format_debug_log(char* ubicacion, char* format, ...);
+void format_warning_log(char* ubicacion, char* format, ...);
+void format_trace_log(char* ubicacion, char* format, ...);
+void format_error_log(char* ubicacion, char* format, ...);
 
 #endif
