@@ -1,8 +1,28 @@
 #include "../include/configuracion_cpu.h"
 
-void iniciar_config_cpu(char *direccion) {
+void iniciar_config(int argc, char* argv[]){
+       if (argc < 2) {
+        fprintf(stderr, "Se esperaba: %s [CONFIG_PATH]\n", argv[0]);
+        //exit(1);
+    }
+    if(argc == 1){
+        // Caso donde no se paso un archivo de config por parametro
+        warning_log("main.c", "No se envió la ruta del archivo de configuración por parametro. Apunto al default ./cpu.config");
+        iniciar_config_cpu("./cpu.config");
+    }
+    else{
+        // Caso donde le pasamos la ruta del config por parametro
+        iniciar_config_cpu(argv[1]);
+    }
+}
+
+void iniciar_config_cpu(char*direccion) {
 
   t_config* una_config_cpu = config_create(direccion);
+
+  	if(una_config_cpu == NULL){
+	  error_log("configuracion_cpu.c@iniciar_config_cpu", "Lectura invalida del Archivo de Configuracion de CPU");
+    }
 
   procesar_archivo_config_cpu(una_config_cpu);
 
@@ -25,6 +45,10 @@ void procesar_archivo_config_cpu(t_config *una_config_cpu) {
 config_cpu_t *crear_estructura_cpu_config() {
   config_cpu_t *config_cpu = malloc(sizeof(config_cpu_t));
   config_cpu->ip_memoria = NULL;
+  config_cpu->ip_escucha=NULL;
+  config_cpu->puerto_memoria=NULL;
+  config_cpu->puerto_escucha_dispatch=NULL;
+  config_cpu->puerto_escucha_interrupt=NULL;
   return config_cpu;
 }
 
@@ -33,20 +57,38 @@ void cargar_archivo_config_cpu(t_config* una_config_cpu) {
   cpu_config = crear_estructura_cpu_config();
   cpu_config->entradas_tlb = obtener_int_arch_config(una_config_cpu, "ENTRADAS_TLB");
   cpu_config->retardo_noop = obtener_int_arch_config(una_config_cpu, "RETARDO_NOOP");
-  cpu_config->puerto_memoria = obtener_int_arch_config(una_config_cpu, "PUERTO_MEMORIA");
-  cpu_config->puerto_escucha_dispatch = obtener_int_arch_config(una_config_cpu,"PUERTO_ESCUCHA_DISPATCH");
-  cpu_config->puerto_escucha_interrupt = obtener_int_arch_config(una_config_cpu,"PUERTO_ESCUCHA_INTERRUPT");
+
   cpu_config->ip_memoria = obtener_string_arch_config(una_config_cpu, "IP_MEMORIA");
+  cpu_config->ip_escucha = obtener_string_arch_config(una_config_cpu, "IP_ESCUCHA");
 
   char* algoritmo = obtener_string_arch_config(una_config_cpu, "REEMPLAZO_TLB");
   cpu_config->reemplazo_tlb = obtener_algoritmo_enum(algoritmo);
   free(algoritmo);
 
+  int puerto_mem= obtener_int_arch_config(una_config_cpu, "PUERTO_MEMORIA");
+  char* puerto_memoria = string_itoa(puerto_mem);
+  cpu_config->puerto_memoria = string_duplicate(puerto_memoria);
+  free(puerto_memoria); 
+
+  int puerto_disp= obtener_int_arch_config(una_config_cpu, "PUERTO_ESCUCHA_DISPATCH");
+  char* puerto_dispatch = string_itoa(puerto_disp);
+  cpu_config->puerto_escucha_dispatch = string_duplicate(puerto_dispatch);
+  free(puerto_dispatch); 
+
+  int puerto_escucha_interrup= obtener_int_arch_config(una_config_cpu, "PUERTO_ESCUCHA_INTERRUPT");
+  char* puerto_interrupt = string_itoa(puerto_escucha_interrup);
+  cpu_config->puerto_escucha_interrupt = string_duplicate(puerto_interrupt);
+  free(puerto_interrupt); 
+
 }
 
 void destruir_estructura_cpu_config() {
   info_log("configuracion_cpu.c@destruir_estructura_cpu_config", "Se destruye la estructura de configuracion CPU");
-  free(cpu_config->ip_memoria );
+  free(cpu_config->ip_memoria);
+  free(cpu_config->ip_escucha);
+  free(cpu_config->puerto_memoria);
+  free(cpu_config->puerto_escucha_dispatch);
+  free(cpu_config->puerto_escucha_interrupt);
   free(cpu_config); 
 
 }

@@ -15,14 +15,16 @@ typedef struct config_cpu_t {
    int entradas_tlb;
    algoritmo_reemplazo_tlb_t reemplazo_tlb;
    int retardo_noop;
+   char* ip_escucha; 
    char* ip_memoria;
-   int puerto_memoria;
-   int puerto_escucha_dispatch;
-   int puerto_escucha_interrupt; 
+   char* puerto_memoria;
+   char* puerto_escucha_dispatch;
+   char* puerto_escucha_interrupt; 
 }config_cpu_t;
 
 config_cpu_t* cpu_config;
 
+void iniciar_config(int argc, char* argv[]); 
 void iniciar_config_cpu(char *direccion);
 void procesar_archivo_config_cpu(t_config *una_config_cpu);
 config_cpu_t *crear_estructura_cpu_config();

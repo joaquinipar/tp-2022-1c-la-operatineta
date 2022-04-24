@@ -1,5 +1,5 @@
 # Custom libraries' paths
-SHARED_LIBPATHS=
+SHARED_LIBPATHS= 
 STATIC_LIBPATHS=
 
 # Compiler flags

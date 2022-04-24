@@ -1,4 +1,6 @@
 bin/
 obj/
 *.log
-.vscode/
+../.cproject
+../.project
+.idea
