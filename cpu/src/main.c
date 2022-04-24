@@ -14,6 +14,23 @@ int main(int argc, char* argv[]) {
 
     iniciar_config(argc,argv);
 
+    int *server_exit_code = NULL;
+    pthread_t hilo_dispatch = iniciar_server_dispatch();
+    pthread_t hilo_interrupt = iniciar_server_interrupt();
+    
+    pthread_join(hilo_dispatch, (void *)server_exit_code);
+    char *exit_msg = string_from_format("El servidor de Dispatch finalizo con exit code: %p", server_exit_code);
+    info_log("cpu/main.c@main", exit_msg);
+    free(exit_msg);
+
+    int *server_exit_code_inter = NULL;
+    pthread_join(hilo_interrupt, (void *)server_exit_code_inter);
+  
+    char *exit_msg_interrupt = string_from_format("El servidor de Interrupt finalizo con exit code: %p", server_exit_code_inter);
+    info_log("cpu/main.c@main", exit_msg_interrupt);
+    free(exit_msg_interrupt);
+
+
 
     cerrar_cpu();
     return 0;
