@@ -1,8 +1,27 @@
 #include "../include/configuracion_mem_swap.h"
 
+void iniciar_config(int argc, char* argv[]){
+       if (argc < 2) {
+        fprintf(stderr, "Se esperaba: %s [CONFIG_PATH]\n", argv[0]);
+        //exit(1);
+    }
+    if(argc == 1){
+        // Caso donde no se paso un archivo de config por parametro
+        warning_log("main.c", "No se envió la ruta del archivo de configuración por parametro. Apunto al default ./memoria.config");
+        iniciar_config_mem_swap("./memoria.config");
+    }
+    else{
+        // Caso donde le pasamos la ruta del config por parametro
+        iniciar_config_mem_swap(argv[1]);
+    }
+}
+
 void iniciar_config_mem_swap(char *direccion){
 
   t_config* una_config_mem_swap = config_create(direccion);
+    	if(una_config_mem_swap == NULL){
+	  error_log("configuracion_mem_swap.c@iniciar_config_mem_swap", "Ocurrio un error al intentar abrir el Archivo de Configuracion de CPU");
+    }
 
   procesar_archivo_config_mem_swap(una_config_mem_swap);
 
@@ -26,6 +45,8 @@ config_mem_t *crear_estructura_mem_swap_config(){
 
   config_mem_t* config_mem_swap = malloc(sizeof(config_mem_t));
   config_mem_swap->path_swap = NULL;
+  config_mem_swap->puerto_escucha = NULL;
+  config_mem_swap->ip_escucha= NULL;
   return config_mem_swap;
 }
 void cargar_archivo_config_mem_swap(t_config *una_config_mem_swap){
@@ -37,18 +58,26 @@ void cargar_archivo_config_mem_swap(t_config *una_config_mem_swap){
  mem_swap_config->retardo_memoria =obtener_int_arch_config(una_config_mem_swap, "RETARDO_MEMORIA");
  mem_swap_config->marcos_por_proceso =obtener_int_arch_config(una_config_mem_swap, "MARCOS_POR_PROCESO");
  mem_swap_config->retardo_memoria =obtener_int_arch_config(una_config_mem_swap, "RETARDO_SWAP");
- mem_swap_config->puerto_escucha =obtener_int_arch_config(una_config_mem_swap, "PUERTO_ESCUCHA");
+ 
  mem_swap_config->path_swap =obtener_string_arch_config(una_config_mem_swap, "PATH_SWAP");
  
 char* algoritmo = obtener_string_arch_config(una_config_mem_swap, "ALGORITMO_REEMPLAZO");
 mem_swap_config->algoritmo_reeemplazo = obtener_algoritmo_enum(algoritmo);
 free(algoritmo);
 
+mem_swap_config->ip_escucha=obtener_string_arch_config(una_config_mem_swap, "IP_ESCUCHA");
+
+int puerto_escucha =obtener_int_arch_config(una_config_mem_swap, "PUERTO_ESCUCHA");
+char* puerto_esc = string_itoa(puerto_escucha);
+mem_swap_config->puerto_escucha = string_duplicate(puerto_esc);
+free(puerto_esc); 
+
 }
 void destruir_estructura_mem_swap_config(){
     info_log("configuracion_mem_swap.c@destruir_estructura_mem_swap_config", "Se destruye la estructura de configuracion MEMORIA - SWAP");
-
     free(mem_swap_config->path_swap);
+    free(mem_swap_config->puerto_escucha);
+   free(mem_swap_config->ip_escucha);
     free(mem_swap_config);
 }
 

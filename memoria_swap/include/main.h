@@ -8,5 +8,6 @@
 #include <utils/logger.h>
 #include "configuracion_mem_swap.h"
 #include "cerrar_mem_swap.h"
+#include "server_mem.h"
 
 #endif /* INCLUDE_MAIN_H_ */

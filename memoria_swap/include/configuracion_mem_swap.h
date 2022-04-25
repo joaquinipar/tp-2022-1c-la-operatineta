@@ -17,14 +17,15 @@ typedef struct {
    int retardo_memoria;
    int marcos_por_proceso;
    int retardo_swap;
-   int puerto_escucha;
+   char* puerto_escucha;
+   char* ip_escucha;
    algoritmo_t algoritmo_reeemplazo;
    char* path_swap;
   
 }config_mem_t;
 
 config_mem_t* mem_swap_config;
-
+void iniciar_config(int argc, char* argv[]);
 void iniciar_config_mem_swap(char *direccion);
 void procesar_archivo_config_mem_swap(t_config *una_config_mem_swap);
 config_mem_t *crear_estructura_mem_swap_config();
