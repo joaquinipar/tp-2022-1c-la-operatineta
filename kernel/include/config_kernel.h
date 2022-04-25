@@ -8,6 +8,7 @@
 #include <commons/error.h>
 #include <string.h>
 #include <utils/logger.h>
+#include "setup.h"
 
 typedef enum {FIFO, SRT} algoritmo_p_t;
 

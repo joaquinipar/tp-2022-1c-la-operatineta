@@ -84,7 +84,8 @@ void destruir_estructura_consola_config() {
 }
 
 void print_config() {
-    printf("\n");
-    printf("%s\n",consola_config->ip_kernel);
-    printf("%d\n",consola_config->puerto_kernel);
+    debug_log("config_consola.c@print_config",consola_config->ip_kernel);
+    char* puerto_kernel_temp_string = string_itoa(consola_config->puerto_kernel);
+    debug_log("config_consola.c@print_config", puerto_kernel_temp_string);
+    free(puerto_kernel_temp_string);
 }
