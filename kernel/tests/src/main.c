@@ -15,7 +15,7 @@ void test_suma () {
 int main(void)
 {
     CU_initialize_registry();
-    CU_pSuite prueba=CU_add_suite("Suitedeprueba",NULL,NULL);
+    CU_pSuite prueba=CU_add_suite("Tests de Kernel",NULL,NULL);
     //CU_basic_set_mode();
 
     CU_add_test(prueba,"uno", test_suma);
