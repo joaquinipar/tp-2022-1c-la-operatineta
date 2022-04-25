@@ -9,14 +9,10 @@
 #include <stdint.h>
 #include <commons/collections/list.h>
 #include "../include/parser.h"
+#include <utils/protocolo_comunicacion.h>
 
 
-
-
-
-
-
-void* serializar_lista_de_instrucciones(t_list*, uint32_t);
+uint32_t serializar_lista_de_instrucciones(t_list*, uint32_t, void**);
 t_list* deserializar_lista_de_instrucciones (void*);
 void printear_instruccion(instruccion_t* una_instruccion);
 

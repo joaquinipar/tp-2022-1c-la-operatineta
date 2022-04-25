@@ -2,30 +2,29 @@
 
 
 
-void* serializar_lista_de_instrucciones (t_list* lista_de_instrucciones , uint32_t codop){
+uint32_t serializar_lista_de_instrucciones (t_list* lista_de_instrucciones , uint32_t codop, void **stream){
 
-	void* stream;
 	//CODOP + LIST_SIZE + (UINT32 + INT32 + INT32)*
-
 
 	uint32_t cantidad_lista_instrucciones = (uint32_t) list_size(lista_de_instrucciones);
 	uint32_t tamanio_codop = sizeof(uint32_t);
 	uint32_t tamanio_instruccion = sizeof(uint32_t) + sizeof(int32_t) + sizeof(int32_t);
+	uint32_t tamanio_stream = tamanio_codop + cantidad_lista_instrucciones + (cantidad_lista_instrucciones * tamanio_instruccion);
 
 
-	stream = malloc(tamanio_codop + cantidad_lista_instrucciones + (cantidad_lista_instrucciones * tamanio_instruccion));
+	*stream = malloc(tamanio_stream);
 
 	int desplazamiento = 0;
 
 	memcpy(stream, &codop , tamanio_codop);
-	desplazamiento+= sizeof(codop);
+	desplazamiento+= sizeof(uint32_t);
 
 	memcpy(stream + desplazamiento, &cantidad_lista_instrucciones , sizeof(uint32_t));
 	desplazamiento+= sizeof(uint32_t);
 
 
 
-	void cargar_instruccion_a_stream(instruccion_t* una_instruccion){
+	void cargar_instruccion_a_stream(instruccion_t* una_instruccion) {
 
 		memcpy(stream + desplazamiento,&(una_instruccion->instruccion),sizeof(uint32_t) );
 		desplazamiento+= sizeof(uint32_t);
@@ -42,7 +41,7 @@ void* serializar_lista_de_instrucciones (t_list* lista_de_instrucciones , uint32
 
 
 
-	return stream;
+	return tamanio_stream;
 }
 
 

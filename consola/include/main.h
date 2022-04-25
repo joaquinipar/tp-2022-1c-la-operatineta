@@ -9,5 +9,6 @@
 #include "parser.h"
 #include "serializacion.h"
 #include "setup.h"
+#include "conexion_a_kernel.h"
 
 #endif //CONSOLA_MAIN_H

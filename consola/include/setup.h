@@ -2,6 +2,7 @@
 #define CONSOLA_SETUP_H
 
 #include <utils/logger.h>
+#include "config_consola.h"
 
 void setup_logger();
 void cerrar_consola();

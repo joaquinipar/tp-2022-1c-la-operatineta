@@ -22,8 +22,7 @@ pthread_t iniciar_server_kernel() {
 
   free(msg_log);
 
-  pthread_create(&hilo_server, NULL, (void *)escuchar_conexiones_nuevas,
-                 (void *)socket_servidor);
+  pthread_create(&hilo_server, NULL, (void *)escuchar_conexiones_nuevas, (void *)socket_servidor);
 
 
   return hilo_server;
@@ -70,9 +69,13 @@ int escuchar_conexiones_nuevas(int server_socket) {
 
 bool recibir_mensaje_proceso_nuevo(int cliente_socket) {
   debug_log("server_kernel.c@recibir_mensaje_proceso_nuevo","Procesando nuevo proceso");
-  op_code_t codigo_operacion;
+  uint32_t codigo_operacion;
 
-  if (recv(cliente_socket, &codigo_operacion, sizeof(op_code_t), 0) !=sizeof(op_code_t) || codigo_operacion != NUEVO_PROCESO) {
+  ssize_t recibido = recv(cliente_socket, &codigo_operacion, sizeof(uint32_t), 0);
+
+  format_info_log("server_kernel.c@recibir_mensaje_proceso_nuevo", "BYTES RECIBIDOS: %d", recibido);
+
+  if (recibido != sizeof(uint32_t) || codigo_operacion != (uint32_t)NUEVO_PROCESO) {
     error_log("server_kernel.c@recibir_mensaje_proceso_nuevo", "El codOp no corresponde a crear proceso (NUEVO_PROCESO)!");
     return false;
   }

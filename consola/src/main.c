@@ -37,17 +37,12 @@ int main(int argc /*cantidad de argumentos*/, char* argv[]/*path instruccion +ta
 
 	list_iterate(lista_de_instrucciones, (void*) &printear_instruccion);
 
-	uint32_t codop = 100; // TODO
-
-	//SERIALIZAR
-	void* stream = serializar_lista_de_instrucciones(lista_de_instrucciones, codop);
+    enviar_proceso_a_kernel(lista_de_instrucciones);
 
 	//DESERIALIZAR
-	t_list* instrucciones_deserializadas = deserializar_lista_de_instrucciones(stream);
+	//t_list* instrucciones_deserializadas = deserializar_lista_de_instrucciones(stream);
 
-	free(stream);
-
-	list_destroy_and_destroy_elements(instrucciones_deserializadas, (void*)&free);
+	//list_destroy_and_destroy_elements(instrucciones_deserializadas, (void*)&free);
 	list_destroy_and_destroy_elements(lista_de_instrucciones, (void*)&free);
 
     cerrar_consola();
