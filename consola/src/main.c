@@ -1,14 +1,14 @@
 #include "../include/main.h"
 
 /*
-    Para ejecutar la consola, el binario deberá recibir 3 argumentos
+    Para ejecutar la consola, make start (args en settings.mk) o sino el binario deberá recibir 3 argumentos
         * Ruta al archivo de instrucciones
         * Tamaño del proceso
         * Ruta al archivo de config
 
     ej:
     $ cd bin
-    $ ./consola.out ../instrucciones/ejemplo.txt 123 ../config/ejemplo.config
+    $ ./consola.out ../instrucciones/instrucciones.txt 123 ../config/ejemplo.config
 */
 int main(int argc /*cantidad de argumentos*/, char* argv[]/*path instruccion +tamanio proceso+ arch config */) {
 
