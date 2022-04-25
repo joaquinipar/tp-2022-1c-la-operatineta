@@ -3,7 +3,7 @@
 bool enviar_proceso_nuevo(int socket, void* stream, uint32_t tamanio_stream) {
   format_info_log("conexion_a_kernel.c@enviar_proceso_nuevo", "tamanio de stream: %d", tamanio_stream);
 
-  //int send_result = send(socket, stream, tamanio_stream, false);
+  int send_result = send(socket, stream, tamanio_stream, false);
 
   
 
@@ -48,7 +48,7 @@ void enviar_proceso_a_kernel(t_list *lista_de_instrucciones) {
 
 	int socket = conectar_con_servidor();
 
-  format_debug_log("conexion_a_kernel.c@enviar_proceso_a_kernel", "socket obtenido: %d", socket);
+    format_debug_log("conexion_a_kernel.c@enviar_proceso_a_kernel", "socket obtenido: %d", socket);
 
 	if (socket != -1) {
     debug_log("conexion_a_kernel.c@enviar_proceso_a_kernel", "Servidora conectada, enviando proceso...");

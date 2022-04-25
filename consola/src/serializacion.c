@@ -16,23 +16,23 @@ uint32_t serializar_lista_de_instrucciones (t_list* lista_de_instrucciones , uin
 
 	int desplazamiento = 0;
 
-	memcpy(stream, &codop , tamanio_codop);
+	memcpy(*stream, &codop , tamanio_codop);
 	desplazamiento+= sizeof(uint32_t);
 
-	memcpy(stream + desplazamiento, &cantidad_lista_instrucciones , sizeof(uint32_t));
+	memcpy(*stream + desplazamiento, &cantidad_lista_instrucciones , sizeof(uint32_t));
 	desplazamiento+= sizeof(uint32_t);
 
 
 
 	void cargar_instruccion_a_stream(instruccion_t* una_instruccion) {
 
-		memcpy(stream + desplazamiento,&(una_instruccion->instruccion),sizeof(uint32_t) );
+		memcpy(*stream + desplazamiento,&(una_instruccion->instruccion),sizeof(uint32_t) );
 		desplazamiento+= sizeof(uint32_t);
 
-		memcpy(stream + desplazamiento,&(una_instruccion->argumentos[0]),sizeof(int32_t) );
+		memcpy(*stream + desplazamiento,&(una_instruccion->argumentos[0]),sizeof(int32_t) );
 		desplazamiento+= sizeof(int32_t);
 
-		memcpy(stream + desplazamiento,&(una_instruccion->argumentos[1]),sizeof(int32_t) );
+		memcpy(*stream + desplazamiento,&(una_instruccion->argumentos[1]),sizeof(int32_t) );
 		desplazamiento+= sizeof(int32_t);
 
 	};
