@@ -21,7 +21,7 @@ void iniciar_config_cpu(char*direccion) {
   t_config* una_config_cpu = config_create(direccion);
 
   	if(una_config_cpu == NULL){
-	  error_log("configuracion_cpu.c@iniciar_config_cpu", "Lectura invalida del Archivo de Configuracion de CPU");
+	  error_log("configuracion_cpu.c@iniciar_config_cpu", "Ocurrio un error al intentar abrir el Archivo de Configuracion de CPU");
     }
 
   procesar_archivo_config_cpu(una_config_cpu);

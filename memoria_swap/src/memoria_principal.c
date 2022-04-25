@@ -1,0 +1,1 @@
+#include "../include/memoria_principal.h"

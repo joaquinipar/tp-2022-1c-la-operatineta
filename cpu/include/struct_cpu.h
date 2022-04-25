@@ -14,5 +14,11 @@ typedef struct {
 }pcb_t;
 
 
+typedef struct {
+	uint32_t cant_entradas_tabla;
+	uint32_t tamanio_pagina;
+} t_mensaje_pong_memoria;
+
+
 
 #endif /* CPU_INCLUDE_STRUCT_CPU_H_ */
