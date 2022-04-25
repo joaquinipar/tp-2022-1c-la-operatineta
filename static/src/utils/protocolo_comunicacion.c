@@ -23,3 +23,8 @@ bool send_prueba(int socket) {
   }
   return true;
 }
+
+bool send_codigo_op(int socket, op_code_t cop) {
+  size_t size = sizeof(op_code_t);
+  return send(socket, &cop, size, 0) != -1;
+}
