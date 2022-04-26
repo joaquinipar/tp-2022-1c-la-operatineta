@@ -1,6 +1,10 @@
 #ifndef CPU_INCLUDE_TLB_H_
 #define CPU_INCLUDE_TLB_H_
 
+#include <stdint.h>
+#include <utils/logger.h>
+#include "configuracion_cpu.h"
+
 typedef struct {
   // indice del array seran las entradas de la tlb
   uint32_t id_proceso;
