@@ -59,8 +59,7 @@ int escuchar_conexiones_nuevas_dispatch(int server_socket) {
 
     if (cliente_socket != -1) {
       info_log("server_dispatch.c@escuchar_conexiones_nuevas_dispatch","Cliente nuevo conectado");
-      while (procesar_conexion_dispatch(cliente_socket))
-        ;
+      while (procesar_conexion_dispatch(cliente_socket));
       continue;
     }
 
@@ -99,6 +98,28 @@ bool procesar_conexion_dispatch(int cliente_socket) {
     return true;
     break;
   }
+
+  /*
+  case EJECUTAR:{
+     1-Aca se debe recibir el pcb que envia Kernel. 
+     recv(cliente_socket, &pid, sizeof(uint32_t), false) (Asi por cada dato que se envia);
+
+      typedef struct {
+  uint32_t pid;
+  t_list*  lista_instrucciones;
+  uint32_t tamanio;
+  uint32_t program_counter;
+   }pcb_t;
+     2- pcb_t* un_pcb_actualizado = iniciar_ciclo_instruction(enviar por parametro todos los datos recibidos); 
+
+     3- enviar el pcb actualizado
+
+   
+
+    return true; 
+    break;
+  }
+  */
 
   // Errores con las conexiones
   case CLIENTE_DESCONECTADO:

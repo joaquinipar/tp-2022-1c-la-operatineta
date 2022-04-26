@@ -1,27 +1,29 @@
 #include "../include/configuracion_mem_swap.h"
 
 void iniciar_config(int argc, char* argv[]){
-       if (argc < 2) {
-        fprintf(stderr, "Se esperaba: %s [CONFIG_PATH]\n", argv[0]);
-        //exit(1);
+
+    if (argc < 2) {
+      fprintf(stderr, "Se esperaba: %s [CONFIG_PATH]\n", argv[0]);
+      //exit(1);
     }
+
     if(argc == 1){
-        // Caso donde no se paso un archivo de config por parametro
-        warning_log("main.c", "No se envió la ruta del archivo de configuración por parametro. Apunto al default ./memoria.config");
-        iniciar_config_mem_swap("./memoria.config");
-    }
-    else{
-        // Caso donde le pasamos la ruta del config por parametro
-        iniciar_config_mem_swap(argv[1]);
+      // Caso donde no se paso un archivo de config por parametro
+      warning_log("main.c", "No se envió la ruta del archivo de configuración por parametro. Apunto al default ./memoria.config");
+      iniciar_config_mem_swap("./memoria.config");
+    } else {
+      // Caso donde le pasamos la ruta del config por parametro
+      iniciar_config_mem_swap(argv[1]);
     }
 }
 
 void iniciar_config_mem_swap(char *direccion){
 
   t_config* una_config_mem_swap = config_create(direccion);
-    	if(una_config_mem_swap == NULL){
-	  error_log("configuracion_mem_swap.c@iniciar_config_mem_swap", "Ocurrio un error al intentar abrir el Archivo de Configuracion de CPU");
-    }
+
+  if(una_config_mem_swap == NULL) {
+    error_log("configuracion_mem_swap.c@iniciar_config_mem_swap", "Ocurrio un error al intentar abrir el Archivo de Configuracion de CPU");
+  }
 
   procesar_archivo_config_mem_swap(una_config_mem_swap);
 
