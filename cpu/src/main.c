@@ -5,8 +5,6 @@
         OP2->  make start (Se incluyo en la config de las settings el argumento - Parado en la carpeta CPU)
         */
 
-
-
 int main(int argc, char* argv[]) {
     logger_set_module("CPU"); 
     logger_set_loglevel(LOG_LEVEL_DEBUG);
