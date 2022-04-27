@@ -1,5 +1,5 @@
-#ifndef __MAIN_H
-#define __MAIN_H
+#ifndef __MAIN_TESTS_H
+#define __MAIN_TESTS_H
 
 #include <stdio.h>
 #include <stdbool.h>
