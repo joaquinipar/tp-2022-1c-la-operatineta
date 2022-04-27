@@ -1,6 +1,6 @@
 #include "../../include/swap/swap.h"
 
-archivo_pid_t* crear_archivo_pid_t(int pid, uint32_t tam_proceso){
+archivo_pid_t* crear_archivo_pid(int pid, uint32_t tam_proceso){
     archivo_pid_t* archivo = malloc(sizeof(archivo_pid_t));
     archivo->pid = pid;
     archivo->path_archivo = obtener_ruta_swap_proceso(pid);
@@ -11,4 +11,5 @@ archivo_pid_t* crear_archivo_pid_t(int pid, uint32_t tam_proceso){
 
     return archivo;
 }
+
 

@@ -23,4 +23,7 @@ char* obtener_ruta_swap_proceso(int pid);
 */
 int crear_archivo_swap(archivo_pid_t* archivo);
 
+
+
+
 #endif //MEMORIA_SWAP_SWAP_HELPER_H
