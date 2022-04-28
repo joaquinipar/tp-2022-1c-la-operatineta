@@ -92,14 +92,15 @@ bool procesar_conexion(int cliente_socket) {
     break;
   }
   /*Crea las estructuras adm en memoria y devuelve el nro de tabla del 1er nivel"*/
-  case VALUE_TAB_PAG:{ 
+  case VALUE_TAB_PAG:{
+  // | codop | pid | tamanio
     uint32_t pid;
     recv(cliente_socket, &pid, sizeof(uint32_t), false);
     uint32_t tamanio;
     recv(cliente_socket, &tamanio, sizeof(uint32_t), false);
-    uint32_t value_tab_pag = inicio_proceso(pid); 
+    uint32_t value_tab_pag = inicio_proceso(pid, tamanio);
     
-    return true, 
+    return true;
     break; 
   }
   // Errores con las conexiones

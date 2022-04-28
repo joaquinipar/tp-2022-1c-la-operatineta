@@ -12,4 +12,8 @@ archivo_pid_t* crear_archivo_pid(int pid, uint32_t tam_proceso){
     return archivo;
 }
 
+void iniciar_swap() {
+    list_archivos_swap = list_create();
+}
+
 

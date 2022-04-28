@@ -7,5 +7,9 @@
 #include "struct_mem.h"
 #include "memoria_principal.h"
 #include "swap/swap.h"
+#include "memoria_principal_helper.h"
+
+uint32_t inicio_proceso(uint32_t pid, uint32_t tamanio);
+
 
 #endif /* MEMORIA_SWAP_INCLUDE_MEMORIA_API_H_ */

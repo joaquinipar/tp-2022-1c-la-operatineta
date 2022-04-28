@@ -3,6 +3,7 @@
 
 #include <utils/logger.h>
 #include "configuracion_mem_swap.h"
+#include "memoria_principal.h"
 
 void cerrar_mem_swap();
 

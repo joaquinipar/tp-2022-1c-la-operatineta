@@ -28,7 +28,7 @@ void iniciar_memoria_principal(){
   // Coloco toda la memoria en mem->cant_memoria_ppal_libre = '\0'
   format_info_log("memoria_principal.c@iniciar_memoria_principal", "Cantidad de memoria libre es: %d", mem_swap_config->tam_memoria);
 
-  iniciar_array_mem(); 
+  //iniciar_array_mem(); ya lo estas haciendo en el crear_mem_principal()
 
 }
 
@@ -77,30 +77,19 @@ void crear_array_1er_table() {
   debug_log("memoria_principal.c@crear_array_mem", "Finaliza la inicializacion de la estructura adm Array de Marcos");
 }
 
-void crear_lista_procesos() {
-  list_tablas_1er_nivel = list_create();
-  trace_log("proceso.c@crear_lista_procesos","Se crea la lista global de tablas de 1er nivel");
+/**
+* @NAME: iniciar_listas_globales_de_tablas
+* @DESC: Inicia las listas de tablas, tanto de primer nivel como de segundo nivel.
+*/
+void iniciar_listas_globales_de_tablas() {
+    lista_tablas_1er_nivel = list_create();
+    lista_tablas_2do_nivel = list_create();
+    trace_log("proceso.c@iniciar_listas_globales_de_tablas","Se inicia la lista global de tablas de 1er nivel");
+    trace_log("proceso.c@iniciar_listas_globales_de_tablas","Se inicia la lista global de tablas de 2do nivel");
 }
 
-int agregar_un_proceso_a_list_tablas_1er_nivel(uint32_t pid, uint32_t tamani) {
+void inicializar_tablas() {
 
-  int resultado_busqueda = buscar_proceso_en_lista_tablas_1ernivel(pid);
-
-  // resultado_busqueda = 0  No encontro el proceso en la LGTP
-  // resultado_busqueda = 1  Encontro el proceso en la LGTP
-
-  // True -> Caso que no encontro el proceso en la lista global de los procesos.
-  // Se crea el proceso
-  // False -> Caso que lo encontro. No se debe crear proceso.
-  if (resultado_busqueda == 0) {
-    /*Se crea la tabla de paginas de 1er nivel del proceso*/
-
-
-    return 1;
-  } 
-
-
-
-
-  }
+    lista_tablas_1er_nivel = list_create();
+    lista_tablas_2do_nivel = list_create();
 }

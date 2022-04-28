@@ -1,3 +1,4 @@
+#include <swap/swap.h>
 #include "../include/configuracion_mem_swap.h"
 
 void iniciar_config(int argc, char* argv[]){

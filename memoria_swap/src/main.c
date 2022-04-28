@@ -7,7 +7,12 @@ int main(int argc, char* argv[]) {
 
     iniciar_config(argc,argv);
 
+    iniciar_swap();
+    inicializar_tablas();
     iniciar_memoria_principal();
+
+
+
 
 
 
