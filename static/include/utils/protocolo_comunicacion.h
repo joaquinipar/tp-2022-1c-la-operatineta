@@ -20,10 +20,10 @@ typedef enum op_code_t {
   EJECUTAR,/*Mensaje de Kernel a CPU */
 
   /*Kernel a Memoria*/
-  READ,   /*Mensaje de CPU a memoria */
+  READ,   /*Mensaje de CPU a memoria */ 
   WRITE, /**Mensaje de CPU a memoria */
   COPY,/*Mensaje de CPU a memoria*/ 
-  VALUE_TAB_PAG, /*Mensaje de valor de la tabla a Kernel*/
+  VALUE_TAB_PAG, /*Mensaje de valor de la tabla a Kernel*/ 
   CERRAR_PROCESO, //TODO CONSULTAR QUIEN LO ENVIA
   SUSPENDER_PROCESO, /*Mensaje de suspension de proceso enviado por Kernel a Memoria*/
   PING_PONG_MEMORIA,   /*Mensaje de CPU a memoria pidiendo datos -> cant de entradas + tam de pagina */
