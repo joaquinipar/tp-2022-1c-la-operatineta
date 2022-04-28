@@ -71,7 +71,7 @@ bool procesar_conexion(int cliente_socket) {
   }
 
   char *mensaje_recibido_log =
-      string_from_format("CodOp recibido: %d", codigo_operacion);
+      string_from_format("OPCODE recibido: %d", codigo_operacion);
   trace_log("server_swamp.c@procesar_conexion", mensaje_recibido_log);
   free(mensaje_recibido_log);
 
@@ -79,12 +79,12 @@ bool procesar_conexion(int cliente_socket) {
 
   switch (codigo_operacion) {
 
-  case PRUEBA: {
+  case OPCODE_PRUEBA: {
     char *mensaje_log =
         string_from_format("Recepcion Op Code Nro %d\n", codigo_operacion);
     info_log("server_swamp.c@procesar_conexion", mensaje_log);
     free(mensaje_log);
-    send_ack(cliente_socket, ACK_OK);
+    send_ack(cliente_socket, OPCODE_ACK_OK);
     return true;
     break;
   }
@@ -186,7 +186,7 @@ bool procesar_conexion(int cliente_socket) {
       break;
   }
   // Errores con las conexiones
-  case CLIENTE_DESCONECTADO:
+  case OPCODE_CLIENTE_DESCONECTADO:
     error_log("server_swamp.c@procesar_conexion_swamp",
               "Cliente desconectado de Servidor Memoria");
     return false;
