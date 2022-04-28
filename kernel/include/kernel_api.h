@@ -11,6 +11,6 @@
 #include "struct.h"
 #include "proceso.h"
 
-bool admitir_proceso_nuevo(uint32_t pid, int socket);
+bool admitir_proceso_nuevo(int socket);
 
 #endif /* KERNEL_INCLUDE_KERNEL_API_H_ */

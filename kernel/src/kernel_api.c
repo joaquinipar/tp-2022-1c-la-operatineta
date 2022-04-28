@@ -1,10 +1,12 @@
 #include "../include/kernel_api.h"
 
-bool admitir_proceso_nuevo(uint32_t pid, int socket) {
+pid_t pid_count = 0;
 
-  char *mensaje = string_from_format("Admitiendo proceso nuevo con id: %d al sistema", pid);
-  debug_log("kernel/kernel_api@admitir_proceso_nuevo", mensaje);
-  free(mensaje);
+bool admitir_proceso_nuevo(int socket) {
+
+  pid_t pid = ++pid_count;
+
+  format_debug_log("kernel/kernel_api@admitir_proceso_nuevo", "Admitiendo proceso nuevo con id: %d al sistema", pid);
 
   //pcb_t* proceso = crear_proceso(pid, socket, socket_memoria);
 

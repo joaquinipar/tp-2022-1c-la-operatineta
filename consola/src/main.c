@@ -26,6 +26,7 @@ int main(int argc /*cantidad de argumentos*/, char* argv[]/*path instruccion +ta
 	path_instruction = argv[1];
 	tamanio_proceso = atoi(argv[2]);
 	path_arch_config = argv[3];
+
     info_log("main.c@main", "Path de instrucciones");
 	info_log("main.c@main", path_instruction);
     info_log("main.c@main", "Tamaño del proceso");

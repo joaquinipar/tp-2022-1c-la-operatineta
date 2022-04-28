@@ -5,7 +5,7 @@ pcb_t* crear_proceso(int pid, int socket) {
   pcb_t* nuevo_proceso = malloc(sizeof(pcb_t));
   nuevo_proceso->pid = pid;
   nuevo_proceso->socket = socket;
-  nuevo_proceso->estado = NEW;
+  nuevo_proceso->estado = ESTADO_PROCESO_NEW;
   //nuevo_proceso->estimacion_anterior = kernel_config->estimacion_inicial;
   //nuevo_proceso->ultima_rafaga = 0;
   //nuevo_proceso->tiempo_espera = 0;
