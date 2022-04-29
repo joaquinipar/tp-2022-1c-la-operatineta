@@ -8,7 +8,8 @@
 #include "struct_mem.h"
 
 
-int  buscar_proceso_en_lista_tablas_1er_nivel(int pid);
+entrada_1er_nivel_t*  buscar_tabla_1er_nivel_de_un_proceso(int pid);
+int proceso_presente_en_lista_tabla_1er_nivel(int pid);
 entrada_1er_nivel_t* buscar_proceso_en_lista_tablas_2do_nivel(int pid);
 entrada_1er_nivel_t* crear_tabla_1er_nivel_inicializada(uint32_t pid);
 void inicializar_tabla_1er_nivel(entrada_1er_nivel_t* tabla_1er_nivel, uint32_t pid);

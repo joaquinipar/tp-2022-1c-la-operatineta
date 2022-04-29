@@ -1,6 +1,25 @@
 #include "../include/memoria_principal_helper.h"
 
-int buscar_proceso_en_lista_tablas_1er_nivel(int pid){
+/**
+* @NAME: buscar_tabla_1er_nivel_de_un_proceso
+* @DESC: Busca la tabla de 1er nivel de un proceso en la lista de tablas de primer nivel.
+ * ATENCIÓN: No se debe liberar lo que retorna esta función, ya que está en una lista.
+*/
+entrada_1er_nivel_t* buscar_tabla_1er_nivel_de_un_proceso(int pid){
+
+    int _encontrar_proceso_en_tabla_global(entrada_1er_nivel_t* tabla){
+        //format_info_log("memoria_principal_helper.c@buscar_proceso_en_lista_tablas_1er_nivel","%i %i", pid, tabla->pid);
+        return pid == tabla->pid;
+    }
+
+    return list_find(lista_tablas_1er_nivel, (void*)&_encontrar_proceso_en_tabla_global);
+}
+
+/**
+* @NAME: buscar_proceso_en_lista_tablas_1er_nivel
+* @DESC: Busca la tabla de un proceso en la lista de tablas de 1er nivel. Retorna 1 si lo encontro, 0 si no lo encontro.
+*/
+int proceso_presente_en_lista_tabla_1er_nivel(int pid){
 
     int _encontrar_proceso_en_tabla_global(entrada_1er_nivel_t* tabla){
         //format_info_log("memoria_principal_helper.c@buscar_proceso_en_lista_tablas_1er_nivel","%i %i", pid, tabla->pid);
@@ -77,5 +96,13 @@ int32_t obtener_cant_paginas_a_utilizar(int32_t tamanio_total_size) {
     return cant_total_page;
 }
 
+int buscar_proceso_en_lista_tablas_1er_nivel(uint32_t pid, uint32_t nro_entrada_1er_nivel){
 
+    int _encontrar_proceso_en_tabla_global(entrada_1er_nivel_t* tabla){
+        //format_info_log("memoria_principal_helper.c@buscar_proceso_en_lista_tablas_1er_nivel","%i %i", pid, tabla->pid);
+        return pid == tabla->pid;
+    }
+
+    return list_find(lista_tablas_1er_nivel, (void*)&_encontrar_proceso_en_tabla_global) != NULL;
+}
 

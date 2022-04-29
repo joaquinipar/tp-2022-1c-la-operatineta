@@ -1,10 +1,5 @@
 #include "../include/memoria_api.h"
 
-/**
-* @NAME: inicio_proceso
-* @DESC: Inicializa un proceso creando sus tablas de paginas (1er y 2do nivel) y su archivo de swap. Agrega
- * las tablas y el archivo de swap a sus correspondientes listas. Retorna
-*/
 uint32_t inicio_proceso(uint32_t pid, uint32_t tamanio){
     info_log("memoria_api.c@inicio_struct_adm", "Se inicia las estructuras administrativas del proceso"); 
 
@@ -50,3 +45,24 @@ uint32_t inicio_proceso(uint32_t pid, uint32_t tamanio){
     return posicion_tabla_1er_nivel_en_lista_global; // TODO te parece bien este return?
 }
 
+uint32_t buscar_nro_tabla_2do_nivel (uint32_t pid, uint32_t nro_tabla_1er_nivel, uint32_t nro_entrada_1er_nivel) {
+
+    entrada_1er_nivel_t * tabla_1er_nivel = list_get(lista_tablas_1er_nivel, nro_tabla_1er_nivel); // no hacer free
+    if(tabla_1er_nivel == NULL){
+        format_error_log("memoria_api.c@buscar_nro_tabla_2do_nivel", "%s%d%s", "PID: ", pid, ", no está presente en la lista de tablas de paginas");
+        return -1;
+    }
+
+    return tabla_1er_nivel[nro_entrada_1er_nivel].nro_tabla_2do_nivel;
+}
+
+void* leer(uint32_t direccion_fisica) {
+    void* contenido = malloc(sizeof (uint32_t));
+    memcpy( contenido ,mem_ppal->memoria_principal + direccion_fisica, sizeof(uint32_t));
+    return contenido;
+}
+
+void escribir(uint32_t direccion_fisica, void* contenido){
+
+    memcpy(mem_ppal->memoria_principal + direccion_fisica, contenido, sizeof(uint32_t));
+}

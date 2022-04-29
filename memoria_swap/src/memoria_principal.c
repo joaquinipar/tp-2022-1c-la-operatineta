@@ -77,10 +77,6 @@ void crear_array_1er_table() {
   debug_log("memoria_principal.c@crear_array_mem", "Finaliza la inicializacion de la estructura adm Array de Marcos");
 }
 
-/**
-* @NAME: iniciar_listas_globales_de_tablas
-* @DESC: Inicia las listas de tablas, tanto de primer nivel como de segundo nivel.
-*/
 void iniciar_listas_globales_de_tablas() {
     lista_tablas_1er_nivel = list_create();
     lista_tablas_2do_nivel = list_create();
