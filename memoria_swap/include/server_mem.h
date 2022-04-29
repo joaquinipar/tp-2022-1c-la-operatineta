@@ -6,6 +6,7 @@
 #include <utils/protocolo_comunicacion.h>
 #include <signal.h>
 #include "configuracion_mem_swap.h"
+#include "memoria_api.h"
 
 int socket_server_mem; 
 
