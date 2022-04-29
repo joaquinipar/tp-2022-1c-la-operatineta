@@ -35,5 +35,15 @@ void* leer(uint32_t direccion_fisica);
  */
 void escribir(uint32_t direccion_fisica, void* contenido);
 
+/**
+ * @name obtener_marco_de_tabla_2do_nivel
+ * @desc Ingresa en la entrada (nro_pagina) de la tabla de segundo nivel (nro_tabla_2do_nivel) y devuelve el marco
+ * @param pid
+ * @param nro_tabla_2do_nivel
+ * @param nro_pagina
+ * @return uint32_t
+ */
+uint32_t obtener_marco_de_tabla_2do_nivel(uint32_t pid, uint32_t nro_tabla_2do_nivel, uint32_t nro_pagina);
+
 
 #endif /* MEMORIA_SWAP_INCLUDE_MEMORIA_API_H_ */

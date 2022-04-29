@@ -66,3 +66,22 @@ void escribir(uint32_t direccion_fisica, void* contenido){
 
     memcpy(mem_ppal->memoria_principal + direccion_fisica, contenido, sizeof(uint32_t));
 }
+
+uint32_t obtener_marco_de_tabla_2do_nivel(uint32_t pid, uint32_t nro_tabla_2do_nivel, uint32_t nro_pagina) {
+
+    tabla_2do_nivel_t* tabla_2do_nivel = list_get(lista_tablas_2do_nivel, nro_tabla_2do_nivel);
+
+    if(tabla_2do_nivel == NULL){
+        format_error_log("memoria_api.c@obtener_marco_de_tabla_2do_nivel","%s%d", "No se encontro el numero de tabla: ", nro_tabla_2do_nivel);
+        return -1;
+    }
+    else if (tabla_2do_nivel[nro_pagina].pid != pid) {
+        format_error_log("memoria_api.c@obtener_marco_de_tabla_2do_nivel", "%s%d%s%d",
+                         "Accediste a la tabla de segundo nivel del proceso: ",
+                         tabla_2do_nivel[nro_pagina].pid,
+                         " pero esperaba el proceso: ",
+                         pid);
+    }
+
+    return tabla_2do_nivel[nro_pagina].contenido_tabla_2do_nivel->marco;
+}

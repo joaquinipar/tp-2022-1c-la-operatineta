@@ -117,10 +117,29 @@ bool procesar_conexion(int cliente_socket) {
 
       /* Envio | CODOP | PID | numero_tabla_2do_nivel */
 
-      int res = send_codigo_op_con_numero(ACCESO_1ER_NIVEL, pid, numero_tabla_2do_nivel);
+      int res = send_codigo_op_con_numeros(cliente_socket, ACCESO_1ER_NIVEL, pid, numero_tabla_2do_nivel);
 
       if(res != 1){
-          error_log("server_mem.c", "Ocurrió un error al enviar la respuesta de ACCESO_1ER_NIVEL");
+          error_log("server_mem.c@procesar_conexion", "Ocurrió un error al enviar la respuesta de ACCESO_1ER_NIVEL");
+      }
+
+      return true;
+      break;
+  }
+  case ACCESO_2DO_NIVEL:{
+
+      uint32_t pid;
+      recv(cliente_socket, &pid, sizeof(uint32_t), false);
+      uint32_t nro_tabla_2do_nivel;
+      recv(cliente_socket, &nro_tabla_2do_nivel, sizeof(uint32_t), false);
+      uint32_t nro_pagina;
+      recv(cliente_socket, &nro_pagina, sizeof(uint32_t), false);
+
+      uint32_t marco = obtener_marco_de_tabla_2do_nivel(pid, nro_tabla_2do_nivel, nro_pagina);
+
+      int res = send_codigo_op_con_numeros(cliente_socket, ACCESO_2DO_NIVEL, pid, marco);
+      if(res != 1){
+          error_log("server_mem.c@procesar_conexion", "Ocurrió un error al enviar la respuesta de ACCESO_2DO_NIVEL");
       }
 
       return true;
