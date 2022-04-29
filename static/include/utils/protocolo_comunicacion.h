@@ -13,19 +13,22 @@ typedef enum op_code_t {
   ACK_OK,
   ACK_ERROR,
   PRUEBA,
-  NUEVO_PROCESO,  
-  EJECUTAR,
-  EXIT, 
-  READ,
-  WRITE,
-  COPY,
-  VALUE_TAB_PAG, 
-  CERRAR_PROCESO,
-  SUSPENDER_PROCESO,
-  PING_MEMORIA,
-  PONG_MEMORIA,
-  TRADUCIR
 
+  /*Consola a Kernel*/
+  NUEVO_PROCESO,   
+  /*Kernel a CPU*/
+  EJECUTAR,/*Mensaje de Kernel a CPU */
+
+  /*Kernel a Memoria*/
+  READ,   /*Mensaje de CPU a memoria */ 
+  WRITE, /**Mensaje de CPU a memoria */
+  VALUE_TAB_PAG, /*Mensaje de valor de la tabla a Kernel*/ 
+  CERRAR_PROCESO, //TODO CONSULTAR QUIEN LO ENVIA
+  SUSPENDER_PROCESO, /*Mensaje de suspension de proceso enviado por Kernel a Memoria*/
+  PING_PONG_MEMORIA,   /*Mensaje de CPU a memoria pidiendo datos -> cant de entradas + tam de pagina */
+  ACCESO_1ER_NIVEL, /*Mensaje de CPU a memoria pidiendo datos -> se trata de una tabla de primer nivel, el número de la tabla de segundo nivel. */
+  ACCESO_2DO_NIVEL  /*Mensaje de CPU a memoria pidiendo datos -> Si se trata de una tabla de segundo nivel, el número de marco correspondiente. */
+ 
 }op_code_t;
 
 
