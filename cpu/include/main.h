@@ -10,5 +10,6 @@
 #include "cerrar_cpu.h"
 #include "server_dispatch.h"
 #include "server_interrupt.h"
+#include "conexion_client.h"
 
 #endif /* INCLUDE_MAIN_H_ */
