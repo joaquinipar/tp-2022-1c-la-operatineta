@@ -8,7 +8,9 @@
 #include <utils/logger.h>
 #include "configuracion_cpu.h"
 #include "cerrar_cpu.h"
+#include "struct_cpu.h"
 #include "server_dispatch.h"
 #include "server_interrupt.h"
+#include "ciclo_decode_fetch.h"
 
 #endif /* INCLUDE_MAIN_H_ */
