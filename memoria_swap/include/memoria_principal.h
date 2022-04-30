@@ -27,6 +27,8 @@ t_list* lista_tablas_2do_nivel;
 void iniciar_memoria_principal(); 
 mem_principal_t *crear_mem_principal();
 void destruir_estructura_mem_principal();
+void crear_array_mem(); 
+void destruir_array_mem(); 
 /**
 * @NAME: iniciar_listas_globales_de_tablas
 * @DESC: Inicia las listas de tablas, tanto de primer nivel como de segundo nivel.
@@ -34,5 +36,7 @@ void destruir_estructura_mem_principal();
 void iniciar_listas_globales_de_tablas();
 void inicializar_tablas();
 void crear_array_mem();
+
+void destruir_listas_globales_de_tablas(); 
 
 #endif /* MEMORIA_SWAP_INCLUDE_MEMORIA_PRINCIPAL_H_ */

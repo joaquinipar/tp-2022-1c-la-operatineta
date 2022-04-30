@@ -16,4 +16,7 @@ void iniciar_swap() {
     list_archivos_swap = list_create();
 }
 
+void destruir_list_swap(){
+    list_destroy_and_destroy_elements(list_archivos_swap, (void*)free); 
+}
 
