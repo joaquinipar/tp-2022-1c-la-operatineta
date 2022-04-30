@@ -16,7 +16,7 @@ void destruir_estructura_mem_principal() {
 
 
 void iniciar_memoria_principal(){
-  info_log("memoria_principal.c@iniciar_memoria_principal", "Comienza Inicio de Memoria Principal");
+  debug_log("memoria_principal.c@iniciar_memoria_principal", "Comienza Inicio de Memoria Principal");
   mem_ppal = crear_mem_principal();
   mem_ppal->memoria_principal = malloc(mem_swap_config->tam_memoria);
 
@@ -25,17 +25,16 @@ void iniciar_memoria_principal(){
   }
   memset(mem_ppal->memoria_principal, '\0', mem_swap_config->tam_memoria);
   // Coloco toda la memoria en mem->cant_memoria_ppal_libre = '\0'
-  format_info_log("memoria_principal.c@iniciar_memoria_principal", "Cantidad de memoria libre es: %d", mem_swap_config->tam_memoria);
+  format_debug_log("memoria_principal.c@iniciar_memoria_principal", "Cantidad de memoria libre es: %d", mem_swap_config->tam_memoria);
 
   crear_array_mem(); 
+  debug_log("memoria_principal.c@iniciar_memoria_principal", "Finaliza Inicio de Memoria Principal");
 
 }
 
-
-
 void crear_array_mem() {
 
-  info_log("memoria_principal.c@crear_array_mem", "Comienza la inicializacion de la estructura adm Array de Marcos");
+  debug_log("memoria_principal.c@crear_array_mem", "Comienza la inicializacion de la estructura adm Array de Marcos");
 
   mem_ppal->cant_marcos = mem_swap_config->tam_memoria / mem_swap_config->tam_pagina;
   //Calcula la cant de marcos de la mem ppal
@@ -83,8 +82,9 @@ void iniciar_listas_globales_de_tablas() {
     trace_log("proceso.c@iniciar_listas_globales_de_tablas","Se inicia la lista global de tablas de 2do nivel");
 }
 
-void inicializar_tablas() {
+void destruir_listas_globales_de_tablas(){
+   list_destroy(lista_tablas_1er_nivel); 
+   list_destroy_and_destroy_elements(lista_tablas_2do_nivel, (void*)free);
 
-    lista_tablas_1er_nivel = list_create();
-    lista_tablas_2do_nivel = list_create();
 }
+

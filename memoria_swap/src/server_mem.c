@@ -5,12 +5,12 @@ void iniciar_server_mem_swap() {
   char *ip = mem_swap_config->ip_escucha;
   char *puerto = mem_swap_config->puerto_escucha;
 
-  info_log("server_mem_swap.c@iniciar_server_mem_swap", "Inicializando el Servidor Memoria");
+  debug_log("server_mem_swap.c@iniciar_server_mem_swap", "Inicializando el Servidor Memoria");
 
   socket_server_mem= iniciar_servidor("server_mem_swap.c@iniciar_server_mem_swap","", ip, puerto);
 
   if (socket_server_mem != -1) {
-    debug_log("server_mem_swap.c@iniciar_server_mem_swap", "Server Memoria inicializado");
+    info_log("server_mem_swap.c@iniciar_server_mem_swap", "Server Memoria inicializado");
     char *msg_log = string_from_format("Servidor Memoria escuchando conexiones con exito en ip: %s, puerto: %s", ip,puerto);
     info_log("server_mem_swap.c@iniciar_server_mem_swap", msg_log);
     free(msg_log);
@@ -42,7 +42,7 @@ int escuchar_conexiones_nuevas(int server_socket) {
 
 
   while (escuchar == true) {
-    info_log("server_mem_swap.c@escuchar_conexiones_nuevas","Escuchando conexiones nuevas");    
+    info_log("server_mem_swap.c@escuchar_conexiones_nuevas","Escuchando conexiones nuevas en el Servidor de Memoria");    
 
     int cliente_socket = esperar_cliente(server_socket, "Memoria", "server.c@escuchar_cliente");
     
@@ -199,4 +199,9 @@ bool procesar_conexion(int cliente_socket) {
     return false;
     break;
   }
+}
+
+
+void cerrar_server_memoria(){
+  liberar_conexion(&socket_server_mem,"server.c@cerrar_server_memoria"); 
 }

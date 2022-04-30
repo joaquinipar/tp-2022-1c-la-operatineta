@@ -18,5 +18,6 @@ t_list* list_archivos_swap;
 
 archivo_pid_t* crear_archivo_pid(int pid, uint32_t tam_proceso);
 void iniciar_swap();
+void destruir_list_swap(); 
 
 #endif //MEMORIA_SWAP_SWAP_H
