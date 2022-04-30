@@ -6,6 +6,7 @@
 #include <CUnit/CUnit.h>
 
 #include "configuracion_mem_swap.tests.h"
+#include "botonera/botonera.h"
 
 
 #endif

@@ -10,7 +10,7 @@
 
 int socket_server_mem; 
 
-void iniciar_server_mem_swap();  
+void iniciar_server_mem_swap(char* ip, char* puerto);
 int escuchar_conexiones_nuevas(int server_socket);
 bool procesar_conexion(int cliente_socket);
 
