@@ -25,7 +25,6 @@ typedef struct {
   uint32_t estimacion_rafaga;
   estado_proceso_t estado; 
   uint32_t socket; 
-
 }pcb_t;
 
 

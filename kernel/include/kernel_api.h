@@ -10,7 +10,10 @@
 #include "config_kernel.h"
 #include "struct.h"
 #include "proceso.h"
+#include <pthread.h>
 
-bool admitir_proceso_nuevo(int socket);
+void inicializar_kernel_api();
+bool ejecutar_proceso_nuevo(pcb_t *proceso);
+pid_t obtener_siguiente_pid ();
 
 #endif /* KERNEL_INCLUDE_KERNEL_API_H_ */

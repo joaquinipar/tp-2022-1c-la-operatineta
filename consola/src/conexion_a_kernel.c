@@ -38,6 +38,7 @@ int conectar_con_servidor() {
 void enviar_proceso_a_kernel(t_list *lista_de_instrucciones) {
 	uint32_t codop = (uint32_t) OPCODE_NUEVO_PROCESO;
 	void *stream;
+  
   debug_log("conexion_a_kernel.c@enviar_proceso_a_kernel", "Serializando proceso a enviar al kernel");
 	uint32_t tamanio_stream = serializar_lista_de_instrucciones(lista_de_instrucciones, codop, &stream);
 

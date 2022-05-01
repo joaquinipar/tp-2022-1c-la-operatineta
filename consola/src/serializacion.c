@@ -2,7 +2,7 @@
 
 
 
-uint32_t serializar_lista_de_instrucciones (t_list* lista_de_instrucciones , uint32_t codop, void **stream){
+uint32_t serializar_lista_de_instrucciones (t_list* lista_de_instrucciones , uint32_t codop, void **stream) {
 
 	//CODOP + LIST_SIZE + (UINT32 + INT32 + INT32)*
 
@@ -21,8 +21,6 @@ uint32_t serializar_lista_de_instrucciones (t_list* lista_de_instrucciones , uin
 
 	memcpy(*stream + desplazamiento, &cantidad_lista_instrucciones , sizeof(uint32_t));
 	desplazamiento+= sizeof(uint32_t);
-
-
 
 	void cargar_instruccion_a_stream(instruccion_t* una_instruccion) {
 
@@ -45,7 +43,7 @@ uint32_t serializar_lista_de_instrucciones (t_list* lista_de_instrucciones , uin
 }
 
 
-t_list* deserializar_lista_de_instrucciones (void* stream){
+t_list* deserializar_lista_de_instrucciones (void* stream) {
 
 
 	//DESARMAR STREAM
@@ -107,14 +105,7 @@ t_list* deserializar_lista_de_instrucciones (void* stream){
 }
 
 void printear_instruccion(instruccion_t* una_instruccion){
-    char* inst_name = string_itoa(una_instruccion->instruccion);
-    char* inst_first_value = string_itoa(una_instruccion->argumentos[0]);
-    char* inst_second_value = string_itoa(una_instruccion->argumentos[1]);
-    debug_log("serializacion.c@printear_lista", "Instruccion(numero):");
-    debug_log("serializacion.c@printear_lista",  inst_first_value);
-    debug_log("serializacion.c@printear_lista", "Valores:");
-    debug_log("serializacion.c@printear_lista", inst_second_value);
-    free(inst_name);
-    free(inst_first_value);
-    free(inst_second_value);
+    format_debug_log("serializacion.c@printear_lista", "Instruccion(numero): %d", una_instruccion->instruccion);
+    format_debug_log("serializacion.c@printear_lista", "argumento 1: %d",   una_instruccion->argumentos[0]);
+    format_debug_log("serializacion.c@printear_lista", "argumento 2: %d",  una_instruccion->argumentos[1]);
 };

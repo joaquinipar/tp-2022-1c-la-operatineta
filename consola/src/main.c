@@ -19,25 +19,22 @@ int main(int argc /*cantidad de argumentos*/, char* argv[]/*path instruccion +ta
     iniciar_config_consola(argv[3]);
     print_config();
 
-	char* path_instruction;
-	int tamanio_proceso;
-	char* path_arch_config;
+	char* path_instruction = argv[1];
+	int tamanio_proceso = atoi(argv[2]);
+	char* path_arch_config = argv[3];;
 
-	path_instruction = argv[1];
-	tamanio_proceso = atoi(argv[2]);
-	path_arch_config = argv[3];
+    format_info_log("main.c@main", "Path de instrucciones: %s", path_instruction);
+    format_info_log("main.c@main", "Tamaño del proceso: %d", argv[2]);
+    format_info_log("main.c@main", "Path del archivo de configuración: %s", path_arch_config);
 
-    info_log("main.c@main", "Path de instrucciones");
-	info_log("main.c@main", path_instruction);
-    info_log("main.c@main", "Tamaño del proceso");
-    info_log("main.c@main", argv[2]);
-    info_log("main.c@main", "Path del archivo de configuración");
-    info_log("main.c@main", path_arch_config);
+	debug_log("main.c@main", "Parseando lista de instrucciones");
+    t_list* lista_de_instrucciones = config_create_parser(path_instruction);
 
-	t_list* lista_de_instrucciones = config_create_parser(path_instruction);
+	debug_log("main.c@main", "Imprimiendo lista de instrucciones");
+    list_iterate(lista_de_instrucciones, (void*) &printear_instruccion);
 
-	list_iterate(lista_de_instrucciones, (void*) &printear_instruccion);
-
+    
+	debug_log("main.c@main", "Enviando lista de instrucciones a kernel");
     enviar_proceso_a_kernel(lista_de_instrucciones);
 
 	//DESERIALIZAR
