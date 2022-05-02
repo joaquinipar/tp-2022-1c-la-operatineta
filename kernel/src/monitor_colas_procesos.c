@@ -182,7 +182,7 @@ void encolar_proceso_en_listos(pcb_t *proceso) {
 
   list_add(cola_listos, proceso);
   proceso->estado = ESTADO_PROCESO_READY;
-  proceso_iniciar_espera(proceso);
+  //proceso_iniciar_espera(proceso);
 
   pthread_mutex_unlock(&procesos_listos_mutex);
 
@@ -199,7 +199,7 @@ pcb_t *desencolar_proceso_listo() {
   pthread_mutex_lock(&procesos_listos_mutex);
 
   pcb_t *proceso = list_remove(cola_listos, 0);
-  proceso_finalizar_espera(proceso);
+  //proceso_finalizar_espera(proceso);
 
   pthread_mutex_unlock(&procesos_listos_mutex);
 
@@ -212,35 +212,15 @@ void ordenar_cola_listos() {
 
 	void iterator(pcb_t* proceso)
 	{
-		//printf("PID proceso: %d\n", proceso->pid);
-		//printf("Ultima rafaga: %d\n", proceso->ultima_rafaga);
-		//printf("Proxima ráfaga estimada: %d\n\n", proxima_rafaga_estimada(proceso));
-
-		char *mensaje = string_from_format(
-		      "Proceso pid: %d", proceso->pid);
-		  info_log("monitor_colas_procesos.c@ordenar_cola_listos", mensaje);
-
-		char *mensaje1 = string_from_format(
-			  "Ultima rafaga: %d", proceso->ultima_rafaga);
-		  info_log("monitor_colas_procesos.c@ordenar_cola_listos", mensaje1);
-
-		char *mensaje2 = string_from_format(
-			  "Proxima ráfaga estimada: %d", proxima_rafaga_estimada(proceso));
-		  info_log("monitor_colas_procesos.c@ordenar_cola_listos", mensaje2);
-
-		char *mensaje3 = string_from_format(
-			  "Estimación anterior: %d", proceso->estimacion_anterior);
-		  info_log("monitor_colas_procesos.c@ordenar_cola_listos", mensaje3);
-
-		free(mensaje);
-		free(mensaje1);
-		free(mensaje2);
-		free(mensaje3);
+    format_info_log("monitor_colas_procesos.c@ordenar_cola_listos", "Proceso pid: %d", proceso->pid);
+    format_info_log("monitor_colas_procesos.c@ordenar_cola_listos", "Ultima rafaga: %d", proceso->duracion_ultima_rafaga);
+    format_info_log("monitor_colas_procesos.c@ordenar_cola_listos", "Proxima ráfaga estimada: %d", proxima_rafaga_estimada(proceso));
+    format_info_log("monitor_colas_procesos.c@ordenar_cola_listos", "Estimación anterior: %d", proceso->estimacion);
 	}
 
 	void actualizar_estimacion_anterior(pcb_t* proceso)
 	{
-		proceso->estimacion_anterior = proxima_rafaga_estimada(proceso);
+		proceso->estimacion = proxima_rafaga_estimada(proceso);
 	}
 
 	//list_iterate(cola_listos, (void*) iterator);
@@ -383,7 +363,7 @@ void encolar_proceso_en_bloqueados(pcb_t *proceso) {
   pthread_mutex_lock(&procesos_bloqueados_mutex);
 
   list_add(cola_bloqueados, proceso);
-  proceso->estado = BLOCKED;
+  proceso->estado = ESTADO_PROCESO_BLOCKED;
 
   pthread_mutex_unlock(&procesos_bloqueados_mutex);
 
@@ -481,7 +461,7 @@ void encolar_proceso_en_bloqueados_suspendidos(pcb_t *proceso) {
   pthread_mutex_lock(&procesos_bloqueados_suspendidos_mutex);
 
   list_add(cola_bloqueados_suspendidos, proceso);
-  proceso->estado = BLOCKED_SUSPENDED;
+  proceso->estado = ESTADO_PROCESO_BLOCKED_SUSPENDED;
 
   pthread_mutex_unlock(&procesos_bloqueados_suspendidos_mutex);
 
@@ -544,7 +524,7 @@ void encolar_proceso_en_suspendidos_listos(pcb_t *proceso) {
   pthread_mutex_lock(&procesos_suspendidos_listos_mutex);
 
   list_add(cola_suspendidos_listos, proceso);
-  proceso->estado = SUSPENDED_ESTADO_PROCESO_READY;
+  proceso->estado = ESTADO_PROCESO_SUSPENDED_READY;
 
   pthread_mutex_unlock(&procesos_suspendidos_listos_mutex);
 
@@ -635,7 +615,7 @@ void encolar_proceso_en_terminados(pcb_t *proceso) {
   pthread_mutex_lock(&procesos_terminados_mutex);
 
   list_add(cola_terminados, proceso);
-  proceso->estado = EXIT;
+  proceso->estado = ESTADO_PROCESO_EXIT;
 
   pthread_mutex_unlock(&procesos_terminados_mutex);
 
@@ -703,7 +683,6 @@ void mover_proceso_en_ejecucion_a_terminados(uint32_t pid) {
     return;
   }
 
-  proceso_liberar_semaforos(proceso);
   encolar_proceso_en_terminados(proceso);
 
   pthread_mutex_unlock(&procesos_terminados_mutex);
@@ -730,7 +709,6 @@ void mover_proceso_de_bloqueados_a_terminados(uint32_t pid) {
     return;
   }
 
-  proceso_liberar_semaforos(proceso);
   encolar_proceso_en_terminados(proceso);
 }
 
@@ -892,30 +870,32 @@ int proxima_rafaga_estimada(pcb_t *proceso) {
 
   // Fórmula SJF	pr = ur * alpha + (1 - alpha) * t estimado ur
 
-  return proceso->ultima_rafaga * kernel_config->alfa +
-         (1 - kernel_config->alfa) * proceso->estimacion_anterior;
+  return proceso->duracion_ultima_rafaga * kernel_config->alfa +
+         (1 - kernel_config->alfa) * proceso->estimacion;
 }
 
 int response_ratio(pcb_t *proceso) {
 
-  // Fórmula HRRN	rr = (pr + espera) / pr
+  return 0;
 
-  return (proxima_rafaga_estimada(proceso) + proceso->tiempo_espera) /
-         proxima_rafaga_estimada(proceso);
+  // TODO: implementar SJF
+  /* return (proxima_rafaga_estimada(proceso) + proceso->tiempo_espera) /
+         proxima_rafaga_estimada(proceso); */
 }
 
+// TODO: implementar
 void actualizar_espera_listos() {
 
-  int cantidad_listos;
-  pcb_t *proceso;
+  //int cantidad_listos;
+  //pcb_t *proceso;
 
   pthread_mutex_lock(&procesos_listos_mutex);
 
-  cantidad_listos = list_size(cola_listos);
+  /* cantidad_listos = list_size(cola_listos);
   for (int i = 0; i < cantidad_listos; i++) {
     proceso = list_get(cola_listos, i);
-    proceso_finalizar_espera(proceso);
-  }
+    //proceso_finalizar_espera(proceso);
+  } */
 
   pthread_mutex_unlock(&procesos_listos_mutex);
 }
@@ -1045,7 +1025,7 @@ t_list *get_procesos() {
 
 t_list *get_procesos_bloqueados() {
   bool esta_bloqueado(pcb_t *proc) {
-    return proc->estado == BLOCKED;
+    return proc->estado == ESTADO_PROCESO_BLOCKED;
   }
 
   if (list_size(procesos) < 1) {

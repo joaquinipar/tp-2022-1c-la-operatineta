@@ -1,11 +1,8 @@
 #include "../include/proceso.h"
 
-static void proceso_reanudar_ejecucion_remota();
-
 pthread_mutex_t proceso_mutex;
 
 void inicializar_monitor_procesos() {
-
 	pthread_mutex_init(&proceso_mutex, NULL);
 }
 
@@ -39,7 +36,6 @@ void proceso_finalizar_rafaga(pcb_t *proceso) {
       timedifference_msec(proceso->rafaga->inicio, proceso->rafaga->fin);
  */
   //printf("\n\nTiempo de ráfaga: %d\n\n", proceso->ultima_rafaga);
-
 }
 
 /* void proceso_iniciar_espera(pcb_t *proceso) {

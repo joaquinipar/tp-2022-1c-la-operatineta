@@ -9,6 +9,7 @@
 #include "config_kernel.h"
 #include "structs.h"
 #include <pthread.h>
+#include "monitor_colas_procesos.h"
 
 void inicializar_kernel_api();
 bool ejecutar_proceso_nuevo(pcb_t *proceso);

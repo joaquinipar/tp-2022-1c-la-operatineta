@@ -1,5 +1,10 @@
 #include "../include/main.h"
 
+void inicializar_kernel(int argc, char* argv[]) {
+    iniciar_config(argc,argv);
+    inicializar_kernel_api();
+    iniciar_monitor_colas_procesos();
+}
 
 int main(int argc, char* argv[]) {
 
@@ -7,8 +12,7 @@ int main(int argc, char* argv[]) {
     logger_set_loglevel(LOG_LEVEL_DEBUG);
     info_log("main.c", "Bienvenido a KERNEL!!");
 
-    iniciar_config(argc,argv);
-    inicializar_kernel_api();
+    inicializar_kernel(argc, argv);
 
     int *server_exit_code = NULL;
 

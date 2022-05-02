@@ -21,12 +21,12 @@ bool ejecutar_proceso_nuevo(pcb_t *proceso) {
 
   format_info_log("kernel/kernel_api@admitir_proceso_nuevo", "Admitiendo proceso nuevo con id: %d al sistema", proceso->pid);
 
-  /*agregar_proceso_a_lista_de_procesos(proceso);
+  agregar_proceso_a_lista_de_procesos(proceso);
 
   if (encolar_proceso_en_nuevos(proceso)) {
     return true;
   }
-*/
+
   return true;
 }
 

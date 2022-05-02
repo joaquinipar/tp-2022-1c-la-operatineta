@@ -100,11 +100,11 @@ bool recibir_mensaje_proceso_nuevo(int cliente_socket) {
   pcb_t *nuevo_proceso = deserealizar_nuevo_proceso(cliente_socket);
 
   if (!ejecutar_proceso_nuevo(nuevo_proceso)) {
-    send_ack(cliente_socket, OPCODE_ACK_ERROR);
+    //send_ack(cliente_socket, OPCODE_ACK_ERROR);
     return false;
   }
 
-  send_ack(cliente_socket, OPCODE_ACK_OK);
+  //send_ack(cliente_socket, OPCODE_ACK_OK);
 
   //TODO : limpiar *nuevo_proceso y sus propiedades
   //list_destroy_and_destroy_elements(nuevo_proceso)
