@@ -6,8 +6,17 @@ int main(int argc, char* argv[]) {
     info_log("main.c", "Bienvenido a Memoria - Swamp!!");
 
     iniciar_config(argc,argv);
-    iniciar_server_mem_swap();
-    cerrar_mem_swap();
 
+    info_log("main.c","Se inicializa estructuras de Memoria"); 
+    iniciar_memoria_principal();
+    iniciar_listas_globales_de_tablas();
+    iniciar_swap();
+
+
+
+
+
+    iniciar_server_mem_swap(mem_swap_config->ip_escucha, mem_swap_config->puerto_escucha);
+    cerrar_mem_swap();
     return 0;
 }
