@@ -4,9 +4,8 @@
 
 void printear_instruccion(instruccion_t* una_instruccion){
 
-    char* inst_name;// = string_itoa(una_instruccion->instruccion);
-    char* inst_first_value = string_itoa(una_instruccion->argumentos[0]);
-    char* inst_second_value = string_itoa(una_instruccion->argumentos[1]);
+    char* inst_name;
+
 
 	switch(una_instruccion->instruccion){
 		case 0:
@@ -29,15 +28,10 @@ void printear_instruccion(instruccion_t* una_instruccion){
 			break;
 	}
 
-    info_log("ciclo_decode_fetch.c@printear_lista", "Instruccion:");
-    info_log("ciclo_decode_fetch.c@printear_lista", inst_name);
-    info_log("ciclo_decode_fetch.c@printear_lista", "Valores parametro 1:");
-    info_log("ciclo_decode_fetch.c@printear_lista",  inst_first_value);
-    info_log("ciclo_decode_fetch.c@printear_lista", "Valores parametro 2:");
-    info_log("ciclo_decode_fetch.c@printear_lista",  inst_second_value);
-    //free(inst_name);
-    free(inst_first_value);
-    free(inst_second_value);
+	format_info_log("ciclo_decode_fetch.c@printear_lista", "Instruccion: %s", inst_name );
+	format_info_log("ciclo_decode_fetch.c@printear_lista", "Valores parametro 1: %d", una_instruccion->argumentos[0]);
+    format_info_log("ciclo_decode_fetch.c@printear_lista", "Valores parametro 2: %d",una_instruccion->argumentos[1]);
+
 };
 
 
@@ -45,19 +39,13 @@ void printear_instruccion(instruccion_t* una_instruccion){
 
 // Funcion que avanza el program counter
 void fetch_instruction(pcb_t* pcb){
-	char* stringProgramCounter = string_itoa(pcb->program_counter);
 
-	info_log("ciclo_decode_fetch.c@fetch_instruction",  "El Program Counter previo al fetch instruction está en:");
-	info_log("ciclo_decode_fetch.c@fetch_instruction",  stringProgramCounter);
-
+	format_info_log("ciclo_decode_fetch.c@fetch_instruction",  "El Program Counter previo al fetch instruction está en: %d", pcb->program_counter);
 
 	pcb->program_counter++;
 
-	stringProgramCounter = string_itoa(pcb->program_counter);
-	info_log("ciclo_decode_fetch.c@fetch_instruction",  "El Program Counter luego del fetch instruction está en:");
-	info_log("ciclo_decode_fetch.c@fetch_instruction",  stringProgramCounter);
+	format_info_log("ciclo_decode_fetch.c@fetch_instruction",  "El Program Counter luego del fetch instruction está en: %d", pcb->program_counter);
 
-	free(stringProgramCounter);
 
 }
 
@@ -83,8 +71,6 @@ instruccion_t* decode(pcb_t* pcb){
 
 
 void fetch_operand(instruccion_t* instruccion_a_analizar){
-	char* stringDireccion_logica_destino = string_itoa(instruccion_a_analizar->argumentos[0]);
-	char* stringdireccion_logica_origen = string_itoa(instruccion_a_analizar->argumentos[1]);
 
 	//Tira warning por no utilizarlos, se dejan comentados
 	//int32_t direccion_logica_destino = instruccion_a_analizar->argumentos[0];
@@ -92,17 +78,11 @@ void fetch_operand(instruccion_t* instruccion_a_analizar){
 
 	//TODO
 	//request_a_memoria_copy();
-
-	info_log("ciclo_decode_fetch.c@fetch_operand",  "Se ha realizado una copia en memoria desde la posicion:");
-	info_log("ciclo_decode_fetch.c@fetch_operand",  stringdireccion_logica_origen);
-
-
-	info_log("ciclo_decode_fetch.c@fetch_operand",  "Hacia la posicion:");
-	info_log("ciclo_decode_fetch.c@fetch_operand",  stringDireccion_logica_destino);
+	format_info_log("ciclo_decode_fetch.c@fetch_operand", "Se ha realizado una copia en memoria desde la posicion: %d", instruccion_a_analizar->argumentos[1]);
+	format_info_log("ciclo_decode_fetch.c@fetch_operand", "Hacia la posicion: %d",instruccion_a_analizar->argumentos[0]);
 
 
-	free(stringdireccion_logica_origen);
-	free(stringDireccion_logica_destino);
+
 
 
 }
@@ -111,7 +91,6 @@ void fetch_operand(instruccion_t* instruccion_a_analizar){
 //retorna 1 si la instrucción es COPY (o 4 según valor ENUM)
 int is_copy_instruction(instruccion_t* instruccion_a_analizar){
 	info_log("ciclo_decode_fetch.c@is_copy_instruction",  "La instruccion que se va a ejecutar es COPY?:");
-
 
 	if(instruccion_a_analizar->instruccion == 4){
 		info_log("ciclo_decode_fetch.c@is_copy_instruction", "Si" );
@@ -129,13 +108,11 @@ int is_copy_instruction(instruccion_t* instruccion_a_analizar){
 
 
 uint32_t execute_instruction(instruccion_t* instruccion_a_ejecutar){
-	char* log;
 	uint32_t CODOP;
 	switch(instruccion_a_ejecutar->instruccion){
 			case 0: //INSTRUCCION NO_OP
-				info_log("ciclo_decode_fetch.c@execute_instruction",  "Se realizará un sleep de: ");
-				log = string_itoa(cpu_config->retardo_noop);
-				info_log("ciclo_decode_fetch.c@execute_instruction",  log);
+				format_info_log("ciclo_decode_fetch.c@execute_instruction",  "Se realizará un sleep de: %d",cpu_config->retardo_noop);
+
 				usleep(cpu_config->retardo_noop);
 				CODOP = 1000;
 				return CODOP;

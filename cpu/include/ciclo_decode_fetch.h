@@ -10,12 +10,6 @@
 
 
 
-typedef struct {
-
-	int32_t instruccion;
-	int32_t argumentos[2];
-
-}instruccion_t;
 
 
 

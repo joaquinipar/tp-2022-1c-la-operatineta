@@ -12,5 +12,6 @@
 #include "server_dispatch.h"
 #include "server_interrupt.h"
 #include "ciclo_decode_fetch.h"
+#include "cpu_api.h"
 
 #endif /* INCLUDE_MAIN_H_ */
