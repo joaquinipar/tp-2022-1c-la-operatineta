@@ -109,11 +109,11 @@ void fetch_operand(instruccion_t* instruccion_a_analizar){
 
 
 //retorna 1 si la instrucción es COPY (o 4 según valor ENUM)
-int is_copy_instruction(instruccion_t* unaInstruccion){
+int is_copy_instruction(instruccion_t* instruccion_a_analizar){
 	info_log("ciclo_decode_fetch.c@is_copy_instruction",  "La instruccion que se va a ejecutar es COPY?:");
 
 
-	if(unaInstruccion->instruccion == 4){
+	if(instruccion_a_analizar->instruccion == 4){
 		info_log("ciclo_decode_fetch.c@is_copy_instruction", "Si" );
 
 		return 1;
@@ -125,6 +125,47 @@ int is_copy_instruction(instruccion_t* unaInstruccion){
 
 	}
 
+}
+
+
+uint32_t execute_instruction(instruccion_t* instruccion_a_ejecutar){
+	char* log;
+	uint32_t CODOP;
+	switch(instruccion_a_ejecutar->instruccion){
+			case 0: //INSTRUCCION NO_OP
+				info_log("ciclo_decode_fetch.c@execute_instruction",  "Se realizará un sleep de: ");
+				log = string_itoa(cpu_config->retardo_noop);
+				info_log("ciclo_decode_fetch.c@execute_instruction",  log);
+				usleep(cpu_config->retardo_noop);
+				CODOP = 1000;
+				return CODOP;
+				break;
+
+
+
+			case 1: //INSTRUCCION I/O
+				CODOP = 1020;
+				return CODOP;
+				break;
+			case 2: //INSTRUCCION READ
+				CODOP = 1030;
+				return CODOP;
+				break;
+			case 3://INSTRUCCION WRITE
+				CODOP = 1030;
+				return CODOP;
+				break;
+			case 4://INSTRUCCION COPY
+				CODOP = 1040;
+				return CODOP;
+				break;
+			case 5://INSTRUCCION EXIT
+				CODOP = 1050;
+				return CODOP;
+				break;
+		}
+
+	return 0;
 }
 
 

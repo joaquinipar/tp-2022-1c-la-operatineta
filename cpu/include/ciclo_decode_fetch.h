@@ -3,6 +3,7 @@
 
 #include "configuracion_cpu.h"
 #include <stdint.h>
+#include <unistd.h>
 #include <utils/logger.h>
 #include "struct_cpu.h"
 //#include <commons/collections/list.h>
@@ -21,6 +22,7 @@ typedef struct {
 int is_copy_instruction(instruccion_t*);
 void fetch_instruction(pcb_t*);
 void fetch_operand(instruccion_t*);
+uint32_t execute_instruction(instruccion_t*);
 instruccion_t* decode(pcb_t*);
 
 
