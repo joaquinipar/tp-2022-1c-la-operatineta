@@ -1,9 +1,6 @@
 #include "../include/server_mem.h"
 
-void iniciar_server_mem_swap() {
-
-  char *ip = mem_swap_config->ip_escucha;
-  char *puerto = mem_swap_config->puerto_escucha;
+void iniciar_server_mem_swap(char* ip, char* puerto) {
 
   debug_log("server_mem_swap.c@iniciar_server_mem_swap", "Inicializando el Servidor Memoria");
 

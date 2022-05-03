@@ -35,6 +35,7 @@ void destruir_array_mem();
 */
 void iniciar_listas_globales_de_tablas();
 void inicializar_tablas();
+void crear_array_mem();
 
 void destruir_listas_globales_de_tablas(); 
 

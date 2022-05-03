@@ -16,8 +16,7 @@ int main(int argc, char* argv[]) {
 
 
 
-
-    iniciar_server_mem_swap();
+    iniciar_server_mem_swap(mem_swap_config->ip_escucha, mem_swap_config->puerto_escucha);
     cerrar_mem_swap();
     return 0;
 }
