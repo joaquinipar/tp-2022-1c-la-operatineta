@@ -761,8 +761,9 @@ bool grado_multiprogramacion_completo()
 
 	if(resultado == true)
 	{
-		debug_log("kernel/grado_de_multiprogramacion_completo.c",
-				  "Grado de multiprogramación completo");
+    info_log("monitor_colas_procesos.c@grado_de_multiprogramacion", "Grado de multiprogramacion completo");
+		/*debug_log("kernel/grado_de_multiprogramacion_completo.c",
+				  "Grado de multiprogramación completo");*/
 	}
 
 	return resultado;
@@ -770,7 +771,7 @@ bool grado_multiprogramacion_completo()
 
 bool grado_de_multiprogramacion_ocupado_por_procesos_bloqueados() {
 
-	bool resultado = ((!lista_de_nuevos_vacia() 		   ||
+	bool resultado = ((/*!lista_de_nuevos_vacia() 		   ||*/
 					   !lista_de_suspendidos_listos_vacia()) &&
 					    lista_de_listos_vacia() 		   &&
 					   !lista_de_bloqueados_vacia() );

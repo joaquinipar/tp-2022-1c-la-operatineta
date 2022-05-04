@@ -10,5 +10,6 @@
 #include "server_kernel.h"
 #include "kernel_api.h"
 #include "monitor_colas_procesos.h"
+#include "planificador_largo_plazo.h"
 
 #endif //KERNEL_MAIN_H
