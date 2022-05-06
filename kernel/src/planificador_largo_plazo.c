@@ -7,6 +7,7 @@ void iniciar_planificador_largo_plazo() {
   pthread_create(&planificador_largo_plazo, NULL,
                  (void *)controlar_grado_de_multiprogramacion, NULL);
   pthread_detach(planificador_largo_plazo);
+
 }
 
 void controlar_grado_de_multiprogramacion() {
@@ -19,19 +20,19 @@ void controlar_grado_de_multiprogramacion() {
 
     if (!grado_multiprogramacion_completo()) {
 
+      info_log("planificador_largo_plazo.c@controlar_grado_de_multiprogramacion", "Grado de multiprogramacion no esta completo, moviendo un proceso a ready");
       mover_proceso_a_listo();
 
-    } else if (grado_de_multiprogramacion_ocupado_por_procesos_bloqueados()) {
+    } else {
 
-      sem_post(&sem_grado_multiprogramacion_completo);
-      sem_wait(&sem_proceso_suspendido);
-      sem_post(&sem_proceso_nuevo);
+      info_log("planificador_largo_plazo.c@controlar_grado_de_multiprogramacion", "Grado de multiprogramacion COMPLETO, moviendo un proceso a suspended-ready");
+      mover_proceso_nuevo_a_suspendido_listo();
 
     }
+
   }
 }
 
 void finalizar_planificador_largo_plazo() {
-
   pthread_cancel(planificador_largo_plazo);
 }

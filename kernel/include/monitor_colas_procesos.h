@@ -62,8 +62,7 @@ void mover_proceso_a_listo();
 pcb_t *mover_proceso_listo_a_ejecucion();
 void mover_ultimo_proceso_bloqueado_a_suspendido();
 void mover_proceso_ejecutando_a_terminados();
-int cantidad_procesos_en_sistema();
-bool grado_de_multiprogramacion_ocupado_por_procesos_bloqueados();
+int cantidad_procesos_en_multiprogramacion();
 bool mayor_prioridad(pcb_t *, pcb_t *);
 int proxima_rafaga_estimada(pcb_t *);
 int response_ratio(pcb_t *);
@@ -72,6 +71,7 @@ pcb_t *buscar_y_sacar_proceso_de_cualquier_cola(uint32_t);
 bool mover_proceso_en_ejecucion_a_bloqueado(int proceso);
 bool grado_multiprogramacion_completo();
 void mover_proceso_de_bloqueados_a_terminados(uint32_t pid);
+void mover_proceso_nuevo_a_suspendido_listo();
 
 // Funciones a eliminar quizás
 int cantidad_procesos_nuevos();

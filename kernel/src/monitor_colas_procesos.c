@@ -20,6 +20,8 @@ pthread_mutex_t procesos_bloqueados_suspendidos_mutex;
 pthread_mutex_t procesos_suspendidos_listos_mutex;
 pthread_mutex_t procesos_terminados_mutex;
 
+int cantidad_procesos_suspendidos_listos();
+
 void iniciar_monitor_colas_procesos() {
   debug_log("monitor_colas_procesos.c@init",
             "Inicializando variables del monitor de colas de procesos");
@@ -88,6 +90,16 @@ pcb_t *buscar_proceso(uint32_t pid) {
   bool buscar_pid(pcb_t * proceso) { return proceso->pid == pid; }
 
   return list_find(procesos, (void *)buscar_pid);
+}
+
+int cantidad_procesos_suspendidos_listos() {
+  int cantidad;
+  pthread_mutex_lock(&procesos_suspendidos_listos_mutex);
+  cantidad = list_size(cola_suspendidos_listos);
+  pthread_mutex_unlock(&procesos_suspendidos_listos_mutex);
+
+  format_debug_log("monitor_colas_procesos@cantidad_procesos_suspendidos_listos", "Cantidad de procesos suspendidos listos: %d", cantidad);
+  return cantidad;
 }
 
 /*  --------------------------- Funciones Cola Nuevos
@@ -533,8 +545,6 @@ void encolar_proceso_en_suspendidos_listos(pcb_t *proceso) {
   info_log("monitor_colas_procesos.c@encolar_proceso_suspendido_listo", mensaje);
   free(mensaje);
 
-  sem_post(&sem_proceso_nuevo);
-
 }
 
 pcb_t *desencolar_proceso_suspendido_listo() {
@@ -636,7 +646,18 @@ void mover_proceso_a_listo() {
 
     proceso = desencolar_proceso_nuevo();
     encolar_proceso_en_listos(proceso);
+
   }
+}
+
+void mover_proceso_nuevo_a_suspendido_listo() {
+  pcb_t *proceso;
+
+  proceso = desencolar_proceso_nuevo();
+  encolar_proceso_en_suspendidos_listos(proceso);
+
+  format_debug_log("monitor_colas_procesos.c@mover_proceso_nuevo_a_suspendido_listo", "Proceso: %d movido a suspendido-listo", proceso->pid);
+  cantidad_procesos_suspendidos_listos();
 }
 
 pcb_t *mover_proceso_listo_a_ejecucion() {
@@ -712,7 +733,7 @@ void mover_proceso_de_bloqueados_a_terminados(uint32_t pid) {
   encolar_proceso_en_terminados(proceso);
 }
 
-int cantidad_procesos_en_sistema() {
+int cantidad_procesos_en_multiprogramacion() {
 
   int cantidad_listos, cantidad_ejecutando, cantidad_bloqueados, cantidad_total;
 
@@ -732,22 +753,22 @@ int cantidad_procesos_en_sistema() {
 
   char *mensaje1 = string_from_format(
       "Cantidad procesos en listos: %d", cantidad_listos);
-  debug_log("monitor_colas_procesos.c@cantidad_procesos_en_sistema", mensaje1);
+  debug_log("monitor_colas_procesos.c@cantidad_procesos_en_multiprogramacion", mensaje1);
   free(mensaje1);
 
   char *mensaje2 = string_from_format(
       "Cantidad procesos ejecutando: %d", cantidad_ejecutando);
-  debug_log("monitor_colas_procesos.c@cantidad_procesos_en_sistema", mensaje2);
+  debug_log("monitor_colas_procesos.c@cantidad_procesos_en_multiprogramacion", mensaje2);
   free(mensaje2);
 
   char *mensaje3 = string_from_format(
       "Cantidad procesos bloqueados: %d", cantidad_bloqueados);
-  debug_log("monitor_colas_procesos.c@cantidad_procesos_en_sistema", mensaje3);
+  debug_log("monitor_colas_procesos.c@cantidad_procesos_en_multiprogramacion", mensaje3);
   free(mensaje3);
 
   char *mensaje = string_from_format(
       "Cantidad procesos en sistema: %d", cantidad_total);
-  debug_log("monitor_colas_procesos.c@cantidad_procesos_en_sistema", mensaje);
+  debug_log("monitor_colas_procesos.c@cantidad_procesos_en_multiprogramacion", mensaje);
   free(mensaje);
 
   return cantidad_total;
@@ -757,7 +778,7 @@ bool grado_multiprogramacion_completo()
 {
 	bool resultado;
 
-	resultado = cantidad_procesos_en_sistema() >= kernel_config->grado_multiprogramacion;
+	resultado = cantidad_procesos_en_multiprogramacion() >= kernel_config->grado_multiprogramacion;
 
 	if(resultado == true)
 	{
@@ -767,22 +788,6 @@ bool grado_multiprogramacion_completo()
 	}
 
 	return resultado;
-}
-
-bool grado_de_multiprogramacion_ocupado_por_procesos_bloqueados() {
-
-	bool resultado = ((/*!lista_de_nuevos_vacia() 		   ||*/
-					   !lista_de_suspendidos_listos_vacia()) &&
-					    lista_de_listos_vacia() 		   &&
-					   !lista_de_bloqueados_vacia() );
-
-	if(resultado)
-	{
-		  debug_log("monitor_colas_procesos.c@grado_de_multiprogramacion_ocupado_por_procesos_bloqueados",
-		            "Grado de multiprogramación ocupado por procesos bloqueados");
-	}
-
-  return resultado;
 }
 
 /**
@@ -952,19 +957,6 @@ int cantidad_procesos_bloqueados_suspendidos() {
   pthread_mutex_lock(&procesos_bloqueados_suspendidos_mutex);
   cantidad = list_size(cola_bloqueados_suspendidos);
   pthread_mutex_unlock(&procesos_bloqueados_suspendidos_mutex);
-
-  return cantidad;
-}
-
-int cantidad_procesos_suspendidos_listos() {
-
-  int cantidad = 0;
-
-  pthread_mutex_lock(&procesos_suspendidos_listos_mutex);
-
-  cantidad = list_size(cola_suspendidos_listos);
-
-  pthread_mutex_unlock(&procesos_suspendidos_listos_mutex);
 
   return cantidad;
 }
