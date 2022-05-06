@@ -41,7 +41,7 @@ bool send_codigo_op_con_numero(int socket, op_code_t cop, uint32_t numero) {
 }
 
 bool send_codigo_op_con_numeros(int socket, op_code_t cop, uint32_t numero1, uint32_t numero2) {
-    size_t size = sizeof (uint32_t) + sizeof (numero1) + sizeof (numero2);
+    size_t size = sizeof (uint32_t) + sizeof (uint32_t) + sizeof (uint32_t);
     void* serializacion = malloc(size);
     uint32_t codop_uint = (uint32_t) cop; // para no enviar tipos dependientes del sistema (o sea int)
     memcpy(serializacion, &codop_uint, sizeof (uint32_t));
@@ -51,12 +51,12 @@ bool send_codigo_op_con_numeros(int socket, op_code_t cop, uint32_t numero1, uin
     return send(socket, serializacion, size, 0) != -1;
 }
 
-bool send_codigo_op_con_contenido(int socket, op_code_t cop, void* contenido) {
-    size_t size = sizeof (uint32_t) + sizeof (contenido);
+bool send_codigo_op_con_contenido(int socket, op_code_t cop, uint32_t contenido) {
+    size_t size = sizeof (uint32_t) + sizeof (uint32_t);
     void* serializacion = malloc(size);
     uint32_t codop_uint = (uint32_t) cop; // para no enviar tipos dependientes del sistema (o sea int)
     memcpy(serializacion, &codop_uint, sizeof (uint32_t));
-    memcpy(serializacion + sizeof (uint32_t), contenido , sizeof (contenido));
+    memcpy(serializacion + sizeof (uint32_t), &contenido , sizeof (uint32_t));
 
     return send(socket, serializacion, size, 0) != -1;
 }

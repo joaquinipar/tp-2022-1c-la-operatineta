@@ -4,6 +4,8 @@
 #include <utils/logger.h>
 #include "configuracion_cpu.h"
 #include "conexion_client.h"
+#include "server_dispatch.h"
+#include "server_interrupt.h"
 
 void cerrar_cpu();
 
