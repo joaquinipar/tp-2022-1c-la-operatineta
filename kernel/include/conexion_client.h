@@ -9,6 +9,8 @@
 
 
 int socket_cliente_kernel;
+int socket_cliente_cpu_dispatch; 
+int socket_cliente_cpu_interrupt; 
 int iniciar_conexion_memoria();
 
 #endif /* KERNEL_INCLUDE_CONEXION_CLIENT_H_ */
