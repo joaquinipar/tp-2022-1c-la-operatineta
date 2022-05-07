@@ -11,24 +11,7 @@
 #include <stdint.h>
 #include <commons/collections/list.h>
 #include <utils/logger.h>
-
-typedef enum{
-
-	NO_OP = 0,
-	IO = 1,
-	READ = 2,
-	WRITE = 3,
-	COPY = 4,
-	EXIT = 5
-
-} instruccion_code_t;
-
-typedef struct {
-
-	instruccion_code_t instruccion;
-	int32_t argumentos[2];
-
-}instruccion_t;
+#include <utils/structs.h>
 
 t_list *config_create_parser(char *path);
 void cargar_argumento(instruccion_t* instruccion, char** keyAndValue);

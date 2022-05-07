@@ -80,11 +80,11 @@ t_list *config_create_parser(char *path) {
 
 			if(strcmp(keyAndValue[0], "NO_OP") == 0){
                 // Caso especial NO_OP. El valor de su parametro lo tomamos como N instrucciones diferentes.
-				for(int i = 0; i < atoi(keyAndValue[1]); i++){
+				for(int i = 0; i < atoi(keyAndValue[1]); i++) {
 
-				instruccion_t* instruccion_a_cargar = malloc(sizeof(instruccion_t));
-				cargar_argumento(instruccion_a_cargar, keyAndValue);
-				list_add( lista_instrucciones, instruccion_a_cargar);
+					instruccion_t* instruccion_a_cargar = malloc(sizeof(instruccion_t));
+					cargar_argumento(instruccion_a_cargar, keyAndValue);
+					list_add( lista_instrucciones, instruccion_a_cargar);
 
 				}
 
@@ -130,7 +130,7 @@ t_list *config_create_parser(char *path) {
 	return lista_instrucciones;
 }
 
-int argumentos_por_instruccion(char* instruccion){
+int argumentos_por_instruccion(char* instruccion) {
     if(strcmp("NO_OP", instruccion) == 0) {
         return 1;
     }

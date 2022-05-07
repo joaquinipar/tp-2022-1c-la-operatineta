@@ -29,9 +29,13 @@ void cargar_archivo_config_consola(t_config *una_config_consola) {
 
     consola_config->ip_kernel = obtener_string_arch_config(una_config_consola, "IP_KERNEL");
 
-    consola_config->puerto_kernel = obtener_int_arch_config(una_config_consola, "PUERTO_KERNEL");
+    int puerto_kernel = obtener_int_arch_config(una_config_consola, "PUERTO_KERNEL");
+    char* str_puerto_kernel = string_itoa(puerto_kernel);
+    consola_config->puerto_kernel = string_duplicate(str_puerto_kernel);
 
+    free(str_puerto_kernel);
 }
+
 tipo_config_consola *crear_estructura_config() {
     tipo_config_consola *config = malloc(sizeof(tipo_config_consola));
     config->ip_kernel = NULL;
@@ -85,7 +89,5 @@ void destruir_estructura_consola_config() {
 
 void print_config() {
     debug_log("config_consola.c@print_config",consola_config->ip_kernel);
-    char* puerto_kernel_temp_string = string_itoa(consola_config->puerto_kernel);
-    debug_log("config_consola.c@print_config", puerto_kernel_temp_string);
-    free(puerto_kernel_temp_string);
+    debug_log("config_consola.c@print_config", consola_config->puerto_kernel);
 }

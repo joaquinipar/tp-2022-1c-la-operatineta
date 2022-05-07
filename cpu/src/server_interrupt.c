@@ -90,18 +90,18 @@ bool procesar_conexion_interrupt(int cliente_socket) {
 
   switch (codigo_operacion) {
 
-  case PRUEBA: {
+  case OPCODE_PRUEBA: {
     char *mensaje_log =
         string_from_format("Server Interrupt - Recepcion Op Code Nro %d\n", codigo_operacion);
     info_log("server_interrupt.c@procesar_conexion_interrupt", mensaje_log);
     free(mensaje_log);
-    send_ack(cliente_socket, ACK_OK);
+    send_ack(cliente_socket, OPCODE_ACK_OK);
     return true;
     break;
   }
 
   // Errores con las conexiones
-  case CLIENTE_DESCONECTADO:
+  case OPCODE_CLIENTE_DESCONECTADO:
     error_log("server_interrupt.c@procesar_conexion_interrupt","Cliente desconectado de Server Interrupt - CPU");
     return false;
   default:
