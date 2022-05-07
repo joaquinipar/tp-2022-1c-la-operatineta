@@ -27,8 +27,9 @@ typedef enum op_code_t {
   SUSPENDER_PROCESO, /*Mensaje de suspension de proceso enviado por Kernel a Memoria*/
   PING_PONG_MEMORIA,   /*Mensaje de CPU a memoria pidiendo datos -> cant de entradas + tam de pagina */
   ACCESO_1ER_NIVEL, /*Mensaje de CPU a memoria pidiendo datos -> se trata de una tabla de primer nivel, el número de la tabla de segundo nivel. */
-  ACCESO_2DO_NIVEL  /*Mensaje de CPU a memoria pidiendo datos -> Si se trata de una tabla de segundo nivel, el número de marco correspondiente. */
- 
+  ACCESO_2DO_NIVEL,  /*Mensaje de CPU a memoria pidiendo datos -> Si se trata de una tabla de segundo nivel, el número de marco correspondiente. */
+
+  __ABORT__ /* Solo usar para tests unitarios. */
 }op_code_t;
 
 

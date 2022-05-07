@@ -11,6 +11,7 @@ int main(void)
     CU_add_test(test_suite_name, "Test Iniciar Config", test_iniciar_config); // test_iniciar_config es lo que se importa y tiene los tests
 
     CU_add_test(test_suite_name, "Test mensaje VALUE_TAB_PAG", probar_VALUE_TAB_PAG);
+    CU_add_test(test_suite_name, "Test mensaje VALUE_TAB_PAG", probar_VALUE_TAB_PAG_con_varios_procesos);
 
     CU_basic_run_tests();
     CU_cleanup_registry();

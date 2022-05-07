@@ -7,6 +7,7 @@
 #include <signal.h>
 #include "configuracion_mem_swap.h"
 #include "memoria_api.h"
+#include "cerrar_mem_swap.h"
 
 int socket_server_mem; 
 

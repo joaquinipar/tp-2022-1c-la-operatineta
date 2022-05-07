@@ -185,6 +185,13 @@ bool procesar_conexion(int cliente_socket) {
       return true;
       break;
   }
+  case __ABORT__: {
+      /* Solo para tests unitarios */
+      //abort();
+      cerrar_mem_swap();
+      shutdown(socket_server_mem, SHUT_RD);
+      raise(SIGINT);
+  }
   // Errores con las conexiones
   case CLIENTE_DESCONECTADO:
     error_log("server_swamp.c@procesar_conexion_swamp",

@@ -3,7 +3,11 @@
 
 #include <stdint.h>
 #include <utils/protocolo_comunicacion.h>
+#include <stdlib.h>
+#include <pthread.h>
 
 int desconectar_cliente(int sockett);
+pthread_t crear_server_botonera_memoria();
+void cerrar_server_botonera_memoria(int sockett);
 
 #endif //MEMORIA_SWAP_BOTONERA_HELPER_H
