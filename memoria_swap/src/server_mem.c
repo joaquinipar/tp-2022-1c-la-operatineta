@@ -1,5 +1,32 @@
 #include "../include/server_mem.h"
 
+bool enviar_mensaje_inicial_configuracion(int cliente_socket){
+  debug_log("server_mem.c@enviar_mensaje_inicial_configuracion", "Solicitud de configuracion inicial CPU - Mensaje PING_PONG_MEMORIA");
+
+    int stream_size = sizeof(uint32_t) + sizeof(uint32_t);
+    void *stream = malloc(stream_size);
+    //op_code_t op_code = PING_PONG_MEMORIA;
+    uint32_t entradas_por_tabla = mem_swap_config->entradas_por_tabla; 
+    uint32_t tamanio_pagina = mem_swap_config->tam_pagina; 
+   
+   // memcpy(stream, &op_code, sizeof(op_code_t));
+    memcpy(stream, &entradas_por_tabla, sizeof(uint32_t));
+    memcpy(stream + sizeof(uint32_t), &tamanio_pagina, sizeof(uint32_t));
+  
+    int send_result = send(cliente_socket, stream, stream_size, false);
+    free(stream); 
+
+      if (send_result != -1) {
+      debug_log("conexion_client.c@enviar_mensaje_read", "Comienza envio de mensaje a CPU - PING_PONG_MEMORIA"); 
+      debug_log("conexion_client.c@enviar_mensaje_inicial_configuracion", "Termina PING_PONG_MEMORIA");
+      return true; 
+    }   
+    error_log("conexion_client.c@enviar_mensaje_read", "[ERROR] Envio mensaje PING_PONG_MEMORIA a CPU ");
+    debug_log("conexion_client.c@enviar_mensaje_read", "Termina mensaje PING_PONG_MEMORIA");
+  return false;
+}
+
+
 void iniciar_server_mem_swap(char* ip, char* puerto) {
 
   debug_log("server_mem_swap.c@iniciar_server_mem_swap", "Inicializando el Servidor Memoria");
@@ -74,8 +101,6 @@ bool procesar_conexion(int cliente_socket) {
       string_from_format("CodOp recibido: %d", codigo_operacion);
   trace_log("server_swamp.c@procesar_conexion", mensaje_recibido_log);
   free(mensaje_recibido_log);
-
-
 
   switch (codigo_operacion) {
 
@@ -180,10 +205,11 @@ bool procesar_conexion(int cliente_socket) {
       break;
   }
   case PING_PONG_MEMORIA: {
+    format_warning_log("main.c@main", "Entradas por tabla: %d - Tamaño de pagina: %d", mem_swap_config->entradas_por_tabla,mem_swap_config->tam_pagina); 
 
-      send_codigo_op_con_numeros(cliente_socket,PING_PONG_MEMORIA, mem_swap_config->entradas_por_tabla, mem_swap_config->tam_pagina);
-      return true;
-      break;
+    send_codigo_op_con_numeros(cliente_socket,PING_PONG_MEMORIA, mem_swap_config->entradas_por_tabla, mem_swap_config->tam_pagina);
+    return true;
+    break;
   }
   case __ABORT__: {
       /* Solo para tests unitarios */
@@ -209,3 +235,4 @@ bool procesar_conexion(int cliente_socket) {
 void cerrar_server_memoria(){
   liberar_conexion(&socket_server_mem,"server.c@cerrar_server_memoria"); 
 }
+

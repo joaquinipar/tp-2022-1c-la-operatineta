@@ -15,7 +15,8 @@ int main(int argc, char* argv[]) {
       cerrar_cpu();
       return EXIT_FAILURE;
     }
-    send_prueba(socket_cliente_cpu); 
+    //send_prueba(socket_cliente_cpu); 
+    enviar_mensaje_inicial_configuracion(); 
     int *server_exit_code = NULL;
     pthread_t hilo_dispatch = iniciar_server_dispatch();
     pthread_t hilo_interrupt = iniciar_server_interrupt();

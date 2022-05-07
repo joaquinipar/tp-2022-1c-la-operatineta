@@ -7,11 +7,11 @@ pthread_t hilo_dispatch;
 
   debug_log("server_dispatch.c@iniciar_server_dispatch", "Inicializando el server Dispatch");
 
-  int socket_servidor = iniciar_servidor("server_dispatch.c@iniciar_server_dispatch", "", ip, puerto);
+  int socket_server_dispatch = iniciar_servidor("server_dispatch.c@iniciar_server_dispatch", "", ip, puerto);
 
   char *msg_log;
 
-  if (socket_servidor != -1) {
+  if (socket_server_dispatch != -1) {
     msg_log = string_from_format(
         "Servidor Dispatch escuchando conexiones con exito en ip: %s, puerto: %s", ip,
         puerto);
@@ -27,7 +27,7 @@ pthread_t hilo_dispatch;
   free(msg_log);
 
   pthread_create(&hilo_dispatch, NULL, (void *)escuchar_conexiones_nuevas_dispatch,
-                 (void *)socket_servidor);
+                 (void *)socket_server_dispatch);
 
   //debug_log("server_dispatch.c@iniciar_server_dispatch", "Server inicializado");
 
@@ -44,6 +44,7 @@ int escuchar_conexiones_nuevas_dispatch(int server_socket) {
   void sighandler(int signal) {
     info_log("server_dispatch.c@escuchar_conexiones_nuevas_dispatch","SIGINT recibida, ejecutando handler para apagar la conexion Dispatch");
     escuchar = false;
+    shutdown(server_socket, SHUT_RD);
     shutdown(server_socket, SHUT_RD);
     close(server_socket);
   }

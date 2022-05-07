@@ -10,9 +10,8 @@
 #include "configuracion_cpu.h"
 
 
-//int socket_server_dispatch;
-//int socket_server_interrupt;
-
+int socket_server_dispatch;
+int socket_server_interrupt;
 
 pthread_t iniciar_server_dispatch();
 int escuchar_conexiones_nuevas_dispatch(int server_socket); 
