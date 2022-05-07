@@ -23,11 +23,8 @@ bool ejecutar_proceso_nuevo(pcb_t *proceso) {
 
   agregar_proceso_a_lista_de_procesos(proceso);
 
-  if (encolar_proceso_en_nuevos(proceso)) {
-    return true;
-  }
+  return encolar_proceso_en_nuevos(proceso);
 
-  return true;
 }
 
 
