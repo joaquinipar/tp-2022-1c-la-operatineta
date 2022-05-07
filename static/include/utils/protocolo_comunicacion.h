@@ -29,8 +29,8 @@ typedef enum op_code_t {
   OPCODE_ACCESO_1ER_NIVEL, /*Mensaje de CPU a memoria pidiendo datos -> se trata de una tabla de primer nivel, el número de la tabla de segundo nivel. */
   OPCODE_ACCESO_2DO_NIVEL,  /*Mensaje de CPU a memoria pidiendo datos -> Si se trata de una tabla de segundo nivel, el número de marco correspondiente. */
 
-  OPCODE_EXIT
-
+  OPCODE_EXIT, 
+  __ABORT__ /*Para tests unitarios*/
 } op_code_t;
 
 bool send_ack(int socket, op_code_t resultado);
