@@ -1,12 +1,19 @@
 #include "../include/main.h"
 
+void inicializar_kernel(int argc, char* argv[]) {
+    iniciar_config(argc,argv);
+    inicializar_kernel_api();
+    iniciar_monitor_colas_procesos();
+    iniciar_planificador_largo_plazo();
+}
 
 int main(int argc, char* argv[]) {
+
     logger_set_module("KERNEL"); 
     logger_set_loglevel(LOG_LEVEL_DEBUG);
     info_log("main.c", "Bienvenido a KERNEL!!");
 
-    iniciar_config(argc,argv);
+    inicializar_kernel(argc, argv);
 
     int *server_exit_code = NULL;
 
@@ -16,10 +23,6 @@ int main(int argc, char* argv[]) {
     char *exit_msg = string_from_format("El servidor de Kernel finalizo con exit code: %p", server_exit_code);
     info_log("kernel/main.c@main", exit_msg);
     free(exit_msg);
-
-
-
-
 
     cerrar_kernel(); 
     return 0;

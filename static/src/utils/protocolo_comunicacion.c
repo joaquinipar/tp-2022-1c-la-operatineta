@@ -10,14 +10,14 @@ bool send_ack(int socket, op_code_t resultado) {
 bool recv_ack(int socket) {
   op_code_t resultado;
   if ((recv(socket, &resultado, sizeof(op_code_t), 0) == sizeof(op_code_t)) &&
-      (resultado == ACK_ERROR)) {
+      (resultado == OPCODE_ACK_ERROR)) {
     return false;
   }
   return true;
 }
 
 bool send_prueba(int socket) {
-  op_code_t cop = PRUEBA;
+  op_code_t cop = OPCODE_PRUEBA;
   if (send(socket, &cop, sizeof(op_code_t), 0) != sizeof(op_code_t)) {
     return false;
   }

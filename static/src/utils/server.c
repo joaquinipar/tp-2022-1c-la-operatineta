@@ -35,20 +35,14 @@ int iniciar_servidor(char *ubicacion, const char *nameCliente, char *ip,char *pu
 }
 
 int esperar_cliente(int socket_servidor, char *nameServer, char *ubicacion) {
- // debug_log("server.c@esperar_cliente", "Esperando cliente nuevo");
+  debug_log("static/server.c@esperar_cliente", "Esperando cliente nuevo");
   struct sockaddr_in dir_cliente;
   socklen_t tam_direccion = sizeof(struct sockaddr_in);
 
-  int socket_cliente =
-      accept(socket_servidor, (void *)&dir_cliente, &tam_direccion);
+  int socket_cliente = accept(socket_servidor, (void *)&dir_cliente, &tam_direccion);
 
-  /*char *mensaje =
-      string_from_format("Cliente conectado a Servidor %s\n", nameServer);
-  info_log(ubicacion, mensaje);
-  free(mensaje);*/
+  format_debug_log("static/server.c@esperar_cliente", "Cliente conectado a Servidor %s", nameServer);
 
-  
-  
   return socket_cliente;
 }
 

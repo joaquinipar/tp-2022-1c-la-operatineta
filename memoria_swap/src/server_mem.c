@@ -98,23 +98,23 @@ bool procesar_conexion(int cliente_socket) {
   }
 
   char *mensaje_recibido_log =
-      string_from_format("CodOp recibido: %d", codigo_operacion);
+      string_from_format("OPCODE recibido: %d", codigo_operacion);
   trace_log("server_swamp.c@procesar_conexion", mensaje_recibido_log);
   free(mensaje_recibido_log);
 
   switch (codigo_operacion) {
 
-  case PRUEBA: {
+  case OPCODE_PRUEBA: {
     char *mensaje_log =
         string_from_format("Recepcion Op Code Nro %d\n", codigo_operacion);
     info_log("server_swamp.c@procesar_conexion", mensaje_log);
     free(mensaje_log);
-    send_ack(cliente_socket, ACK_OK);
+    send_ack(cliente_socket, OPCODE_ACK_OK);
     return true;
     break;
   }
   /*Crea las estructuras adm en memoria y devuelve el nro de tabla del 1er nivel"*/
-  case VALUE_TAB_PAG:{
+  case OPCODE_VALUE_TAB_PAG:{
   // | codop | pid | tamanio
     uint32_t pid;
     recv(cliente_socket, &pid, sizeof(uint32_t), false);
@@ -122,11 +122,11 @@ bool procesar_conexion(int cliente_socket) {
     recv(cliente_socket, &tamanio, sizeof(uint32_t), false);
     uint32_t valor_tabla_1er_nivel = inicio_proceso(pid, tamanio);
     // Voy a enviar | CODOP | VALOR_TABLA_1ER_NIVEL |
-    send_codigo_op_con_numero(cliente_socket, VALUE_TAB_PAG, valor_tabla_1er_nivel);
+    send_codigo_op_con_numero(cliente_socket, OPCODE_VALUE_TAB_PAG, valor_tabla_1er_nivel);
     return true;
     break; 
   }
-  case ACCESO_1ER_NIVEL:{
+  case OPCODE_ACCESO_1ER_NIVEL:{
       /* Recibo | PID | Posicion de la tabla de 1er nivel |Entrada de 1er nivel | */
       uint32_t pid;
       recv(cliente_socket, &pid, sizeof(uint32_t), false);
@@ -139,7 +139,7 @@ bool procesar_conexion(int cliente_socket) {
 
       /* Envio | CODOP | PID | numero_tabla_2do_nivel */
 
-      int res = send_codigo_op_con_numeros(cliente_socket, ACCESO_1ER_NIVEL, pid, numero_tabla_2do_nivel);
+      int res = send_codigo_op_con_numeros(cliente_socket, OPCODE_ACCESO_1ER_NIVEL, pid, numero_tabla_2do_nivel);
 
       if(res != 1){
           error_log("server_mem.c@procesar_conexion", "Ocurrió un error al enviar la respuesta de ACCESO_1ER_NIVEL");
@@ -148,7 +148,7 @@ bool procesar_conexion(int cliente_socket) {
       return true;
       break;
   }
-  case ACCESO_2DO_NIVEL:{
+  case OPCODE_ACCESO_2DO_NIVEL:{
 
       uint32_t pid;
       recv(cliente_socket, &pid, sizeof(uint32_t), false);
@@ -159,7 +159,7 @@ bool procesar_conexion(int cliente_socket) {
 
       uint32_t marco = obtener_marco_de_tabla_2do_nivel(pid, nro_tabla_2do_nivel, nro_pagina);
 
-      int res = send_codigo_op_con_numeros(cliente_socket, ACCESO_2DO_NIVEL, pid, marco);
+      int res = send_codigo_op_con_numeros(cliente_socket, OPCODE_ACCESO_2DO_NIVEL, pid, marco);
       if(res != 1){
           error_log("server_mem.c@procesar_conexion", "Ocurrió un error al enviar la respuesta de ACCESO_2DO_NIVEL");
       }
@@ -167,7 +167,7 @@ bool procesar_conexion(int cliente_socket) {
       return true;
       break;
   }
-  case READ: {
+  case OPCODE_READ: {
       /* Recibo READ [ CODOP | PID | Dir_fisica ] */
       uint32_t pid;
       recv(cliente_socket, &pid, sizeof(uint32_t), false);
@@ -176,7 +176,7 @@ bool procesar_conexion(int cliente_socket) {
 
       void* lectura = leer(direccion_fisica);
 
-      int res = send_codigo_op_con_numero(READ, pid, (uint32_t)lectura);
+      int res = send_codigo_op_con_numero(OPCODE_READ, pid, (uint32_t)lectura);
 
       format_debug_log("server_mem.c@procesar_conexion", "Envie el contenido: %d", (uint32_t) lectura);
 
@@ -185,11 +185,10 @@ bool procesar_conexion(int cliente_socket) {
       }
 
       free(lectura);
-
       return true;
       break;
   }
-  case WRITE: {
+  case OPCODE_WRITE: {
       uint32_t pid;
       recv(cliente_socket, &pid, sizeof(uint32_t), false);
       uint32_t direccion_fisica;
@@ -199,15 +198,15 @@ bool procesar_conexion(int cliente_socket) {
 
       escribir(direccion_fisica, contenido);
 
-      send_ack(cliente_socket, ACK_OK);
+      send_ack(cliente_socket, OPCODE_ACK_OK);
 
       return true;
       break;
   }
-  case PING_PONG_MEMORIA: {
+  case OPCODE_PING_PONG_MEMORIA: {
     format_warning_log("main.c@main", "Entradas por tabla: %d - Tamaño de pagina: %d", mem_swap_config->entradas_por_tabla,mem_swap_config->tam_pagina); 
 
-    send_codigo_op_con_numeros(cliente_socket,PING_PONG_MEMORIA, mem_swap_config->entradas_por_tabla, mem_swap_config->tam_pagina);
+    send_codigo_op_con_numeros(cliente_socket,OPCODE_PING_PONG_MEMORIA, mem_swap_config->entradas_por_tabla, mem_swap_config->tam_pagina);
     return true;
     break;
   }
@@ -219,7 +218,7 @@ bool procesar_conexion(int cliente_socket) {
       raise(SIGINT);
   }
   // Errores con las conexiones
-  case CLIENTE_DESCONECTADO:
+  case OPCODE_CLIENTE_DESCONECTADO:
     error_log("server_swamp.c@procesar_conexion_swamp",
               "Cliente desconectado de Servidor Memoria");
     return false;

@@ -1,5 +1,3 @@
-
-
 #ifndef INCLUDE_SERIALIZACION_H_
 #define INCLUDE_SERIALIZACION_H_
 #include <stdlib.h>
@@ -8,16 +6,12 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <commons/collections/list.h>
-#include "../include/parser.h"
 #include <utils/protocolo_comunicacion.h>
+#include <utils/structs.h>
+#include <utils/logger.h>
 
-
-uint32_t serializar_lista_de_instrucciones(t_list*, uint32_t, void**);
-t_list* deserializar_lista_de_instrucciones (void*);
-void printear_instruccion(instruccion_t* una_instruccion);
+ssize_t serializar_lista_de_instrucciones(t_list* instrucciones, ssize_t desplazamiento, void* stream);
+t_list* recibir_lista_de_instrucciones (int socket);
 
 
 #endif /* INCLUDE_SERIALIZACION_H_ */
-
-
-
