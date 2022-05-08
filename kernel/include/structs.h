@@ -45,10 +45,11 @@ typedef struct {
       fin: se va a actualizar cuando el proceso sale del cpu para realizar el calculo correspondiente y luego poner ambos 0
   */
   rango_tiempo_t rafaga_actual;
+  struct timeval tiempo_de_ingreso;
 
 } pcb_t;
 
-typedef enum { SJF, HRRN } algoritmo_e;
+//typedef enum { SJF, FIFO } algoritmo_e;
 
 
 #endif /* KERNEL_INCLUDE_STRUCT_H_ */

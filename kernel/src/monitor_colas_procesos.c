@@ -48,6 +48,7 @@ void iniciar_monitor_colas_procesos() {
   sem_init(&sem_proceso_listo, 0, 0);
   sem_init(&sem_grado_multiprogramacion_completo, 0, 0);
   sem_init(&sem_proceso_suspendido, 0, 0);
+  sem_init(&sem_bin_procesar_listo, 0, 1);
 
   debug_log("monitor_colas_procesos.c@init",
             "Variables del monitor de colas de procesos inicializadas");
@@ -241,7 +242,7 @@ void ordenar_cola_listos() {
 
   list_sort(cola_listos, (void *)mayor_prioridad);
 
-  list_iterate(cola_listos, (void*) actualizar_estimacion_anterior);
+  //list_iterate(cola_listos, (void*) actualizar_estimacion_anterior);
 
   info_log("monitor_colas_procesos.c@ordenar_cola_listos", "Cola listos ordenada: ");
   list_iterate(cola_listos, (void*) iterator);
@@ -663,7 +664,6 @@ void mover_proceso_nuevo_a_suspendido_listo() {
 pcb_t *mover_proceso_listo_a_ejecucion() {
   pcb_t *proceso;
 
-  actualizar_espera_listos();
   ordenar_cola_listos();
   proceso = desencolar_proceso_listo();
   encolar_proceso_en_ejecucion(proceso);
@@ -852,7 +852,7 @@ bool mayor_prioridad(pcb_t *proceso1, pcb_t *proceso2) {
   bool resultado;
 
   switch (kernel_config->algoritmo_planificacion) {
-  case SJF:
+  case SRT:
 
     resultado =
         proxima_rafaga_estimada(proceso1) <= proxima_rafaga_estimada(proceso2);
@@ -862,10 +862,10 @@ bool mayor_prioridad(pcb_t *proceso1, pcb_t *proceso2) {
 
     break;
 
-  case HRRN:
+  case FIFO:
 
-    resultado = response_ratio(proceso1) >= response_ratio(proceso2);
-
+    resultado = timedifference_msec(proceso1->tiempo_de_ingreso, proceso2->tiempo_de_ingreso) > 0;
+    
     break;
   }
 
