@@ -44,7 +44,7 @@ typedef struct {
       inicio: momento en que se inicio la rafaga
       fin: se va a actualizar cuando el proceso sale del cpu para realizar el calculo correspondiente y luego poner ambos 0
   */
-  rango_tiempo_t rafaga_actual;
+  rango_tiempo_t *rafaga_actual; //se cambio el rafaga actual por *rafaga_actual
   struct timeval tiempo_de_ingreso;
 
 } pcb_t;

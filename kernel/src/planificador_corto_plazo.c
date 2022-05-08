@@ -28,6 +28,5 @@ void planificar_procesos() {
 void finalizar_planificador_corto_plazo() {
 
   pthread_cancel(hilo_procesador);
-  //free(hilo_procesador);
 
 }

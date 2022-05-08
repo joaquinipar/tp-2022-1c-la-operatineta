@@ -2,6 +2,7 @@
 #define PROCESOS_H
 
 #include "config_kernel.h"
+#include "monitor_colas_procesos.h"
 #include <utils/logger.h>
 #include "structs.h"
 #include <commons/collections/dictionary.h>

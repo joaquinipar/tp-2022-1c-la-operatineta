@@ -112,6 +112,8 @@ bool encolar_proceso_en_nuevos(pcb_t *proceso) {
   pthread_mutex_lock(&procesos_nuevos_mutex);
   list_add(cola_nuevos, proceso);
   proceso->estado = ESTADO_PROCESO_NEW;
+  proceso->duracion_ultima_rafaga = 0; // agregado
+  proceso->estimacion = kernel_config->estimacion_inicial; // agregado
   pthread_mutex_unlock(&procesos_nuevos_mutex);
 
   format_debug_log("monitor_cols_procesos@encolar_proceso_en_nuevos", "Proceso pid: %d encolado en nuevos", proceso->pid);
@@ -877,16 +879,7 @@ int proxima_rafaga_estimada(pcb_t *proceso) {
   // Fórmula SJF	pr = ur * alpha + (1 - alpha) * t estimado ur
 
   return proceso->duracion_ultima_rafaga * kernel_config->alfa +
-         (1 - kernel_config->alfa) * proceso->estimacion;
-}
-
-int response_ratio(pcb_t *proceso) {
-
-  return 0;
-
-  // TODO: implementar SJF
-  /* return (proxima_rafaga_estimada(proceso) + proceso->tiempo_espera) /
-         proxima_rafaga_estimada(proceso); */
+         ((1 - kernel_config->alfa) * proceso->estimacion);
 }
 
 // TODO: implementar

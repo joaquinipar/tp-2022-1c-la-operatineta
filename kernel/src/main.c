@@ -5,6 +5,7 @@ void inicializar_kernel(int argc, char* argv[]) {
     inicializar_kernel_api();
     iniciar_monitor_colas_procesos();
     iniciar_planificador_largo_plazo();
+    iniciar_planificador_corto_plazo();
 }
 
 int main(int argc, char* argv[]) {
