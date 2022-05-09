@@ -25,10 +25,11 @@ int iniciar_cliente_test(int argc, char* ruta){
 }
 
 void probar_VALUE_TAB_PAG() {
-
+    pthread_mutex_lock(&sum_mutex);
+    warning_log("botonera.c@probar_VALUE_TAB_PAG","------------------------------------------");
     // Iniciamos un hilo detached que corra el servidor de memoria
     pthread_t hilo =crear_server_botonera_memoria();
-
+    sleep(1);
     uint32_t pid = 12344;
     uint32_t tamanio = 1024;
     char* ruta_config = "./configs/memoria/memoria.config";
@@ -41,8 +42,9 @@ void probar_VALUE_TAB_PAG() {
 
     int sockett = iniciar_cliente_test(2, ruta_config);
 
+    sleep(1);
 
-    send_codigo_op_con_numeros(sockett, VALUE_TAB_PAG, pid, tamanio);
+    send_codigo_op_con_numeros(sockett, OPCODE_VALUE_TAB_PAG, pid, tamanio);
 
     uint32_t codop;
     recv(sockett, &codop, sizeof(uint32_t), false);
@@ -50,10 +52,11 @@ void probar_VALUE_TAB_PAG() {
     recv(sockett, &valor_tabla_1er_nivel, sizeof(uint32_t), false);
 
     format_info_log("botonera.c@probar_VALUE_TAB_PAG", "%s%d", "CODOP RECIBIDO: ", codop);
-    format_info_log("botonera.c@probar_VALUE_TAB_PAG", "%s%d", "CODOP esperado: ", VALUE_TAB_PAG);
+    format_info_log("botonera.c@probar_VALUE_TAB_PAG", "%s%d", "CODOP esperado: ", OPCODE_VALUE_TAB_PAG);
     format_info_log("botonera.c@probar_VALUE_TAB_PAG", "%s%d", "TABLA_1ER_NIVEL RECIBIDO: ", valor_tabla_1er_nivel);
     format_info_log("botonera.c@probar_VALUE_TAB_PAG", "%s%d", "TABLA_1ER_NIVEL Esperado: ", 0);
 
+    sleep(1);
 
     // Enviamos OPCODE __ABORT__ para que el servidor de memoria aborte
     cerrar_server_botonera_memoria(sockett);
@@ -63,16 +66,19 @@ void probar_VALUE_TAB_PAG() {
     pthread_cancel(hilo);
 
     // Finalmente hacemos los asserts
-
-    CU_ASSERT_EQUAL(codop, VALUE_TAB_PAG);
+    pthread_mutex_unlock(&sum_mutex);
+    CU_ASSERT_EQUAL(codop, OPCODE_VALUE_TAB_PAG);
     CU_ASSERT_EQUAL(valor_tabla_1er_nivel, 0);
+    warning_log("botonera.c@probar_VALUE_TAB_PAG","------------------------------------------");
 }
 
 
 void probar_VALUE_TAB_PAG_con_varios_procesos() {
-
+    pthread_mutex_lock(&sum_mutex);
+    warning_log("botonera.c@probar_VALUE_TAB_PAG_con_varios_procesos","------------------------------------------");
     // Iniciamos un hilo detached que corra el servidor de memoria
     pthread_t hilo = crear_server_botonera_memoria();
+    sleep(1);
 
     uint32_t pid1 = 123;
     uint32_t tamanio1 = 1024;
@@ -103,10 +109,12 @@ void probar_VALUE_TAB_PAG_con_varios_procesos() {
     int sockett = iniciar_cliente_test(2, ruta_config);
 
 
-    send_codigo_op_con_numeros(sockett, VALUE_TAB_PAG, pid1, tamanio1);
-    send_codigo_op_con_numeros(sockett, VALUE_TAB_PAG, pid2, tamanio2);
-    send_codigo_op_con_numeros(sockett, VALUE_TAB_PAG, pid3, tamanio3);
-    send_codigo_op_con_numeros(sockett, VALUE_TAB_PAG, pid4, tamanio4);
+    send_codigo_op_con_numeros(sockett, OPCODE_VALUE_TAB_PAG, pid1, tamanio1);
+    send_codigo_op_con_numeros(sockett, OPCODE_VALUE_TAB_PAG, pid2, tamanio2);
+    send_codigo_op_con_numeros(sockett, OPCODE_VALUE_TAB_PAG, pid3, tamanio3);
+    send_codigo_op_con_numeros(sockett, OPCODE_VALUE_TAB_PAG, pid4, tamanio4);
+
+    sleep(1);
 
     uint32_t codop;
     recv(sockett, &codop, sizeof(uint32_t), false);
@@ -131,22 +139,22 @@ void probar_VALUE_TAB_PAG_con_varios_procesos() {
 
 
     format_info_log("botonera.c@probar_VALUE_TAB_PAG", "%s%d", "CODOP RECIBIDO: ", codop);
-    format_info_log("botonera.c@probar_VALUE_TAB_PAG", "%s%d", "CODOP esperado: ", VALUE_TAB_PAG);
+    format_info_log("botonera.c@probar_VALUE_TAB_PAG", "%s%d", "CODOP esperado: ", OPCODE_VALUE_TAB_PAG);
     format_info_log("botonera.c@probar_VALUE_TAB_PAG", "%s%d", "TABLA_1ER_NIVEL RECIBIDO: ", valor_tabla_1er_nivel_pid1);
     format_info_log("botonera.c@probar_VALUE_TAB_PAG", "%s%d", "TABLA_1ER_NIVEL Esperado: ", 0);
 
     format_info_log("botonera.c@probar_VALUE_TAB_PAG", "%s%d", "CODOP RECIBIDO: ", codop2);
-    format_info_log("botonera.c@probar_VALUE_TAB_PAG", "%s%d", "CODOP esperado: ", VALUE_TAB_PAG);
+    format_info_log("botonera.c@probar_VALUE_TAB_PAG", "%s%d", "CODOP esperado: ", OPCODE_VALUE_TAB_PAG);
     format_info_log("botonera.c@probar_VALUE_TAB_PAG", "%s%d", "TABLA_1ER_NIVEL RECIBIDO: ", valor_tabla_1er_nivel_pid2);
     format_info_log("botonera.c@probar_VALUE_TAB_PAG", "%s%d", "TABLA_1ER_NIVEL Esperado: ", 1);
 
     format_info_log("botonera.c@probar_VALUE_TAB_PAG", "%s%d", "CODOP RECIBIDO: ", codop3);
-    format_info_log("botonera.c@probar_VALUE_TAB_PAG", "%s%d", "CODOP esperado: ", VALUE_TAB_PAG);
+    format_info_log("botonera.c@probar_VALUE_TAB_PAG", "%s%d", "CODOP esperado: ", OPCODE_VALUE_TAB_PAG);
     format_info_log("botonera.c@probar_VALUE_TAB_PAG", "%s%d", "TABLA_1ER_NIVEL RECIBIDO: ", valor_tabla_1er_nivel_pid3);
     format_info_log("botonera.c@probar_VALUE_TAB_PAG", "%s%d", "TABLA_1ER_NIVEL Esperado: ", 2);
 
     format_info_log("botonera.c@probar_VALUE_TAB_PAG", "%s%d", "CODOP RECIBIDO: ", codop4);
-    format_info_log("botonera.c@probar_VALUE_TAB_PAG", "%s%d", "CODOP esperado: ", VALUE_TAB_PAG);
+    format_info_log("botonera.c@probar_VALUE_TAB_PAG", "%s%d", "CODOP esperado: ", OPCODE_VALUE_TAB_PAG);
     format_info_log("botonera.c@probar_VALUE_TAB_PAG", "%s%d", "TABLA_1ER_NIVEL RECIBIDO: ", valor_tabla_1er_nivel_pid4);
     format_info_log("botonera.c@probar_VALUE_TAB_PAG", "%s%d", "TABLA_1ER_NIVEL Esperado: ", 3);
 
@@ -159,13 +167,17 @@ void probar_VALUE_TAB_PAG_con_varios_procesos() {
     desconectar_cliente(sockett);
     pthread_cancel(hilo);
     // Finalmente hacemos los asserts
+    pthread_mutex_unlock(&sum_mutex);
 
-    CU_ASSERT_EQUAL(codop, VALUE_TAB_PAG);
+
+    CU_ASSERT_EQUAL(codop, OPCODE_VALUE_TAB_PAG);
     CU_ASSERT_EQUAL(valor_tabla_1er_nivel_pid1, 0);
-    CU_ASSERT_EQUAL(codop2, VALUE_TAB_PAG);
+    CU_ASSERT_EQUAL(codop2, OPCODE_VALUE_TAB_PAG);
     CU_ASSERT_EQUAL(valor_tabla_1er_nivel_pid2, 1);
-    CU_ASSERT_EQUAL(codop3, VALUE_TAB_PAG);
+    CU_ASSERT_EQUAL(codop3, OPCODE_VALUE_TAB_PAG);
     CU_ASSERT_EQUAL(valor_tabla_1er_nivel_pid3, 2);
-    CU_ASSERT_EQUAL(codop4, VALUE_TAB_PAG);
+    CU_ASSERT_EQUAL(codop4, OPCODE_VALUE_TAB_PAG);
     CU_ASSERT_EQUAL(valor_tabla_1er_nivel_pid4, 3);
+
+    warning_log("botonera.c@probar_VALUE_TAB_PAG_con_varios_procesos","------------------------------------------");
 }

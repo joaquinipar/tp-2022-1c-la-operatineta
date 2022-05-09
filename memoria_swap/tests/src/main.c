@@ -4,6 +4,9 @@
 int main(void)
 {
     CU_initialize_registry();
+
+    pthread_mutex_init(&sum_mutex, NULL);
+
     CU_pSuite test_suite_config = CU_add_suite("Pruebas Config Memoria",NULL,NULL);
     CU_pSuite test_suite_mensajes = CU_add_suite("Pruebas Mensajes Memoria",NULL,NULL);
     CU_pSuite test_suite_algoritmos = CU_add_suite("Pruebas Algoritmos Memoria",NULL,NULL);

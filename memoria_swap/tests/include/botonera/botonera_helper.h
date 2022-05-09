@@ -5,6 +5,9 @@
 #include <utils/protocolo_comunicacion.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include <utils/logger.h>
+
+pthread_mutex_t sum_mutex;
 
 int desconectar_cliente(int sockett);
 pthread_t crear_server_botonera_memoria();
