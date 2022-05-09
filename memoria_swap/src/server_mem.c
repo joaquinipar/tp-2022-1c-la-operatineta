@@ -214,6 +214,7 @@ bool procesar_conexion(int cliente_socket) {
   case __ABORT__: {
       /* Solo para tests unitarios */
       //abort();
+      warning_log("server_mem.c@procesar_conexion", "LLEGO EL ABORT!!!");
       cerrar_mem_swap();
       shutdown(socket_server_mem, SHUT_RD);
       raise(SIGINT);
