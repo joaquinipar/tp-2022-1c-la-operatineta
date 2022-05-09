@@ -7,6 +7,7 @@
 
 #include "configuracion_mem_swap.tests.h"
 #include "botonera/botonera.h"
+#include "algoritmos_reemplazo/algoritmos_test.h"
 
 
 #endif

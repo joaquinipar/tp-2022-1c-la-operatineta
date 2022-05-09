@@ -24,14 +24,14 @@ int iniciar_cliente_test(int argc, char* ruta){
     return sockett; // shush!
 }
 
-void probar_VALUE_TAB_PAG(uint32_t pid, uint32_t tamanio, char* ruta_config) {
+void probar_VALUE_TAB_PAG() {
 
     // Iniciamos un hilo detached que corra el servidor de memoria
     pthread_t hilo =crear_server_botonera_memoria();
 
-    pid = 12344;
-    tamanio = 1024;
-    ruta_config = "./configs/memoria/memoria.config";
+    uint32_t pid = 12344;
+    uint32_t tamanio = 1024;
+    char* ruta_config = "./configs/memoria/memoria.config";
 
 
     format_info_log("botonera.c@probar_VALUE_TAB_PAG", "%s%d", "Pid pasado x parametro: ", pid);
