@@ -13,11 +13,17 @@ typedef enum op_code_t {
   OPCODE_ACK_OK,
   OPCODE_ACK_ERROR,
   OPCODE_PRUEBA,
+  OPCODE_PRUEBA_EJECUTAR, // dummy para probar kernel -> cpu -> kernel
 
   /*Consola a Kernel*/
-  OPCODE_NUEVO_PROCESO,  
+  OPCODE_NUEVO_PROCESO,
+
   /*Kernel a CPU*/
   OPCODE_EJECUTAR,/*Mensaje de Kernel a CPU */
+  OPCODE_DESALOJAR_PROCESO, // Enviado por interrupt para que cpu desaloje un proceso
+
+  /* CPU a Kernel*/
+  OPCODE_PROCESO_DESALOJADO, // Este codigo se manda por el dispatch a Kernel indicando que la CPU detuvo su ejecucion (el estado refleja a que cola debe ir: ready, bloqueado, exit)
 
   /*Kernel a Memoria*/
   OPCODE_READ,   /*Mensaje de CPU a memoria */ 

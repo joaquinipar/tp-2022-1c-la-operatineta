@@ -13,19 +13,6 @@ int iniciar_conexion_memoria()
     return 1;
 }
 
-int iniciar_conexion_cpu_dispatch()
-{
-    debug_log("conexion_client.c@iniciar_conexion_memoria", "Se inicia conexion con Memoria");
-
-    socket_cliente_cpu_dispatch = crear_conexion(kernel_config->ip_cpu, kernel_config->puerto_cpu_dispatch, "Memoria", "conexion_client.c@iniciar_conexion_memoria");
-
-    if (socket_cliente_cpu_dispatch == -1)
-    {
-        return 0;
-    }
-    return 1;
-}
-
 int iniciar_conexion_cpu_interrupt()
 {
     debug_log("conexion_client.c@iniciar_conexion_memoria", "Se inicia conexion con Memoria");

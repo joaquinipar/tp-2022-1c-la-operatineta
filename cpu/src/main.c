@@ -11,10 +11,10 @@ int main(int argc, char* argv[]) {
     info_log("main.c", "Bienvenido a CPU!!");
 
     iniciar_config(argc,argv);
-    if(!iniciar_conexion_memoria()){
+    /* if(!iniciar_conexion_memoria()){
       cerrar_cpu();
       return EXIT_FAILURE;
-    }
+    } */
     send_prueba(socket_cliente_cpu); 
     int *server_exit_code = NULL;
     pthread_t hilo_dispatch = iniciar_server_dispatch();

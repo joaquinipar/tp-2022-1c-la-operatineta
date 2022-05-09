@@ -13,6 +13,7 @@
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <unistd.h>
+#include "dispatcher.h"
 
 pcb_t *crear_proceso(int id, int socket, int socket_memoria);
 void proceso_destruir(pcb_t *);

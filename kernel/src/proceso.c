@@ -25,8 +25,19 @@ void proceso_ejecutar(pcb_t *proceso) {
   pthread_mutex_lock(&proceso_mutex);
   proceso->estado = ESTADO_PROCESO_EXEC;
   proceso_iniciar_rafaga(proceso);
-
   pthread_mutex_unlock(&proceso_mutex);
+  enviar_proceso_a_cpu(proceso);
+}
+
+// TODO: IMPLEMENTAR 
+void proceso_bloquear(pcb_t *proceso, int tiempo_bloqueado) {
+  // Si TIEMPO_MAXIMO_BLOQUEADO >= tiempo_bloqueado
+  //      usleep(tiempo_bloqueado)
+  //      mover a ready
+  // else
+  //    usleep(TIEMPO_MAXIMO_BLOQUEADO);
+  //    mover_a_suspendido_bloqueado(pcb_t *proceso)
+  //    usleep(tiempo_bloqueado - TIEMPO_MAXIMO_BLOQUEADO);
 }
 
 void proceso_finalizar_rafaga(pcb_t *proceso) {

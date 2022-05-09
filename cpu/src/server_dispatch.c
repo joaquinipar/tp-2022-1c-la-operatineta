@@ -99,6 +99,19 @@ bool procesar_conexion_dispatch(int cliente_socket) {
     break;
   }
 
+  case OPCODE_PRUEBA_EJECUTAR: {
+    char *mensaje_log =
+        string_from_format("Server Dispatch - Recepcion Op Code Nro %d\n", codigo_operacion);
+    info_log("server_dispatch.c@procesar_conexion_dispatch", mensaje_log);
+    free(mensaje_log);
+
+    sleep(5);
+
+    send_codigo_op(cliente_socket, OPCODE_PROCESO_DESALOJADO);
+    return true;
+    break;
+  }
+
   /*
   case EJECUTAR:{
      1-Aca se debe recibir el pcb que envia Kernel. 
