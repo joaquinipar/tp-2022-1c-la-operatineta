@@ -10,8 +10,8 @@
 #include <utils/structs.h>
 #include <utils/logger.h>
 
-ssize_t serializar_lista_de_instrucciones(t_list* instrucciones, ssize_t desplazamiento, void* stream);
+ssize_t serializar_lista_de_instrucciones (t_list* lista_de_instrucciones , ssize_t desplazamiento_inicial, void *stream,ssize_t tamanio_stream); 
 t_list* recibir_lista_de_instrucciones (int socket);
-
+ssize_t serializar_proceso(pcb_t* proceso, void** stream); 
 
 #endif /* INCLUDE_SERIALIZACION_H_ */

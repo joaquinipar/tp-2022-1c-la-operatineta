@@ -80,3 +80,31 @@ bool enviar_mensaje_valor_tabla_1er_nivel(uint32_t pid, uint32_t tamanio, uint32
 
 }
 
+bool enviar_mensaje_ejecutar(pcb_t* proceso){
+
+    debug_log("conexion_client.c@enviar_mensaje_ejecutar", "Comienza recepcion de mensaje - EJECUTAR");
+    void* stream; 
+    ssize_t tamanio_stream = serializar_proceso(proceso, &stream); 
+    
+    int send_result = send(socket_cliente_cpu_dispatch, stream, tamanio_stream, false);
+    free(stream); 
+
+    if (send_result != -1) {
+    bool response = recv_ack(socket_cliente_cpu_dispatch);
+
+    if (response) {
+      debug_log("conexion_client.c@enviar_mensaje_ejecutar", "Recepcion mensaje ACK OK - EJECUTAR");
+      debug_log("conexion_client.c@enviar_mensaje_ejecutar", "Termina mensaje EJECUTAR");
+      return response;
+    }
+    debug_log("conexion_client.c@enviar_mensaje_ejecutar", "Recepcion mensaje ACK ERROR -EJECUTAR");
+    debug_log("conexion_client.c@enviar_mensaje_ejecutar", "Termina mensaje EJECUTAR");
+    return response;
+  }
+
+  error_log("conexion_client.c@enviar_mensaje_ejecutar", "Error al enviar mensaje EJECUTAR");
+  debug_log("conexion_client.c@enviar_mensaje_ejecutar", "Termina mensaje EJECUTAR");
+  return false;
+
+}
+
