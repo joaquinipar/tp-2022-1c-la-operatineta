@@ -6,18 +6,20 @@
 #include <unistd.h>
 #include <utils/logger.h>
 #include "struct_cpu.h"
+#include <utils/protocolo_comunicacion.h>
 //#include <commons/collections/list.h>
 
 
 
 
-
-
 int is_copy_instruction(instruccion_t*);
+void inicializar_interruption_flag();
+int hay_interrupcion();
 void fetch_instruction(pcb_t*);
 void fetch_operand(instruccion_t*);
 uint32_t execute_instruction(instruccion_t*);
 instruccion_t* decode(pcb_t*);
+
 
 
 

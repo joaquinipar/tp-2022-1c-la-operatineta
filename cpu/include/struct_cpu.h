@@ -28,4 +28,6 @@ typedef struct {
 
 }instruccion_t;
 
+
+
 #endif /* CPU_INCLUDE_STRUCT_CPU_H_ */

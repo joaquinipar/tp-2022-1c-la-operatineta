@@ -107,37 +107,42 @@ int is_copy_instruction(instruccion_t* instruccion_a_analizar){
 }
 
 
+
+
+
+
+
 uint32_t execute_instruction(instruccion_t* instruccion_a_ejecutar){
-	uint32_t CODOP;
+	op_code_t  CODOP;
 	switch(instruccion_a_ejecutar->instruccion){
 			case 0: //INSTRUCCION NO_OP
 				format_info_log("ciclo_decode_fetch.c@execute_instruction",  "Se realizará un sleep de: %d",cpu_config->retardo_noop);
 
 				usleep(cpu_config->retardo_noop);
-				CODOP = 1000;
+				CODOP = 1000; //OPCODE_
 				return CODOP;
 				break;
 
 
 
 			case 1: //INSTRUCCION I/O
-				CODOP = 1020;
+				CODOP = 1020; //OPCODE_CPU_A_KERNEL_IO
 				return CODOP;
 				break;
 			case 2: //INSTRUCCION READ
-				CODOP = 1030;
+				CODOP = 0;
 				return CODOP;
 				break;
 			case 3://INSTRUCCION WRITE
-				CODOP = 1030;
+				CODOP = 0;
 				return CODOP;
 				break;
 			case 4://INSTRUCCION COPY
-				CODOP = 1040;
+				CODOP = 0;
 				return CODOP;
 				break;
 			case 5://INSTRUCCION EXIT
-				CODOP = 1050;
+				CODOP = 1050;//OPCODE_CPU_A_KERNEL_EXT
 				return CODOP;
 				break;
 		}
