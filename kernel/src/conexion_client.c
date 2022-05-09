@@ -20,7 +20,7 @@ bool enviar_mensaje_valor_tabla_1er_nivel(uint32_t pid, uint32_t tamanio, uint32
     //CODOP + PID + TAMANIO
     int stream_size = sizeof(op_code_t) + sizeof(uint32_t) + sizeof(uint32_t);
     void *stream = malloc(stream_size);
-    op_code_t op_code = VALUE_TAB_PAG;
+    op_code_t op_code = OPCODE_VALUE_TAB_PAG;
 
     memcpy(stream, &op_code, sizeof(op_code_t));
     memcpy(stream + sizeof(op_code_t), &pid, sizeof(uint32_t));

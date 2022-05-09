@@ -1,20 +1,30 @@
 #include "../include/kernel_api.h"
 
-bool admitir_proceso_nuevo(uint32_t pid, int socket) {
+pid_t pid_count = 0;
+pthread_mutex_t pid_mutex;
+//TODO : creo que esto no es thread safe, no sé si es necesario que lo sea
+//pthread_mutex_t mutex_pid;
 
-  char *mensaje = string_from_format("Admitiendo proceso nuevo con id: %d al sistema", pid);
-  debug_log("kernel/kernel_api@admitir_proceso_nuevo", mensaje);
-  free(mensaje);
+void inicializar_kernel_api () {
+  pthread_mutex_init(&pid_mutex, NULL);
+}
 
-  //pcb_t* proceso = crear_proceso(pid, socket, socket_memoria);
+pid_t obtener_siguiente_pid () {
+  pthread_mutex_lock(&pid_mutex);
+  pid_count++;
+  pthread_mutex_unlock(&pid_mutex);
 
-  /*agregar_proceso_a_lista_de_procesos(proceso);
+  return pid_count;
+}
 
-  if (encolar_proceso_en_nuevos(proceso)) {
-    return true;
-  }
-*/
-  return false;
+bool ejecutar_proceso_nuevo(pcb_t *proceso) {
+
+  format_info_log("kernel/kernel_api@admitir_proceso_nuevo", "Admitiendo proceso nuevo con id: %d al sistema", proceso->pid);
+
+  agregar_proceso_a_lista_de_procesos(proceso);
+
+  return encolar_proceso_en_nuevos(proceso);
+
 }
 
 
