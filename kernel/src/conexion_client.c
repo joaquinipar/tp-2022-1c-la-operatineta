@@ -13,6 +13,33 @@ int iniciar_conexion_memoria()
     return 1;
 }
 
+int iniciar_conexion_cpu_dispatch()
+{
+    debug_log("conexion_client.c@iniciar_conexion_memoria", "Se inicia conexion con Memoria");
+
+    socket_cliente_cpu_dispatch = crear_conexion(kernel_config->ip_cpu, kernel_config->puerto_cpu_dispatch, "Memoria", "conexion_client.c@iniciar_conexion_memoria");
+
+    if (socket_cliente_cpu_dispatch == -1)
+    {
+        return 0;
+    }
+    return 1;
+}
+
+int iniciar_conexion_cpu_interrupt()
+{
+    debug_log("conexion_client.c@iniciar_conexion_memoria", "Se inicia conexion con Memoria");
+
+    socket_cliente_cpu_interrupt = crear_conexion(kernel_config->ip_cpu, kernel_config->puerto_cpu_interrupt, "Memoria", "conexion_client.c@iniciar_conexion_memoria");
+
+    if (socket_cliente_cpu_interrupt == -1)
+    {
+        return 0;
+    }
+    return 1;
+}
+
+
 
 bool enviar_mensaje_valor_tabla_1er_nivel(uint32_t pid, uint32_t tamanio, uint32_t** valor_tabla_1er_nivel){
     
@@ -31,6 +58,7 @@ bool enviar_mensaje_valor_tabla_1er_nivel(uint32_t pid, uint32_t tamanio, uint32
     free(stream); 
 
     if (send_result != -1) {
+
       debug_log("conexion_client.c@enviar_mensaje_valor_tabla_1er_nivel", "Comienza recepcion de mensaje - VALUE_TAB_PAG");
       uint32_t codigo_operacion;
       *valor_tabla_1er_nivel = malloc(sizeof(uint32_t));
