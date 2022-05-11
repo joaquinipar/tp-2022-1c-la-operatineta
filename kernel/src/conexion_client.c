@@ -15,22 +15,22 @@ int iniciar_conexion_memoria()
 
 int iniciar_conexion_cpu_dispatch()
 {
-    debug_log("conexion_client.c@iniciar_conexion_memoria", "Se inicia conexion con Memoria");
+    debug_log("conexion_client.c@iniciar_conexion_cpu_dispatch", "Se inicia conexion con CPU - Dispatch");
 
-    socket_cliente_cpu_dispatch = crear_conexion(kernel_config->ip_cpu, kernel_config->puerto_cpu_dispatch, "Memoria", "conexion_client.c@iniciar_conexion_memoria");
+    socket_cliente_cpu_dispatch = crear_conexion(kernel_config->ip_cpu, kernel_config->puerto_cpu_dispatch, "Dispatch", "conexion_client.c@iniciar_conexion_cpu_dispatch");
 
     if (socket_cliente_cpu_dispatch == -1)
     {
         return 0;
     }
-    return 1;
+    return socket_cliente_cpu_dispatch;
 }
 
 int iniciar_conexion_cpu_interrupt()
 {
-    debug_log("conexion_client.c@iniciar_conexion_memoria", "Se inicia conexion con Memoria");
+    debug_log("conexion_client.c@iniciar_conexion_cpu_interrupt", "Se inicia conexion con CPU - Interrupt");
 
-    socket_cliente_cpu_interrupt = crear_conexion(kernel_config->ip_cpu, kernel_config->puerto_cpu_interrupt, "Memoria", "conexion_client.c@iniciar_conexion_memoria");
+    socket_cliente_cpu_interrupt = crear_conexion(kernel_config->ip_cpu, kernel_config->puerto_cpu_interrupt, "Interrupt ", "conexion_client.c@iniciar_conexion_cpu_interrupt");
 
     if (socket_cliente_cpu_interrupt == -1)
     {
@@ -82,13 +82,13 @@ bool enviar_mensaje_valor_tabla_1er_nivel(uint32_t pid, uint32_t tamanio, uint32
 
 bool enviar_mensaje_ejecutar(pcb_t* proceso){
 
-    debug_log("conexion_client.c@enviar_mensaje_ejecutar", "Comienza recepcion de mensaje - EJECUTAR");
-    void* stream; 
-    ssize_t tamanio_stream = serializar_proceso(proceso, &stream); 
-    
-    int send_result = send(socket_cliente_cpu_dispatch, stream, tamanio_stream, false);
-    free(stream); 
+    debug_log("conexion_client.c@enviar_mensaje_ejecutar", "Comienza envio de mensaje - EJECUTAR");
+    void *stream;
+    uint32_t stream_size = serializar_proceso(proceso, OPCODE_EJECUTAR, &stream);
 
+    int send_result = send(socket_cliente_cpu_dispatch, stream, stream_size , false);
+    
+    format_debug_log("conexion_clien.c@enviar_mensaje_ejecutar", "Send Result %d", send_result); 
     if (send_result != -1) {
     bool response = recv_ack(socket_cliente_cpu_dispatch);
 
@@ -107,4 +107,3 @@ bool enviar_mensaje_ejecutar(pcb_t* proceso){
   return false;
 
 }
-
