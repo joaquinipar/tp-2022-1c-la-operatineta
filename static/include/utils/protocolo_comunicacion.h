@@ -23,7 +23,9 @@ typedef enum op_code_t {
   OPCODE_DESALOJAR_PROCESO, // Enviado por interrupt para que cpu desaloje un proceso
 
   /* CPU a Kernel*/
-  OPCODE_PROCESO_DESALOJADO, // Este codigo se manda por el dispatch a Kernel indicando que la CPU detuvo su ejecucion (el estado refleja a que cola debe ir: ready, bloqueado, exit)
+  OPCODE_PROCESO_DESALOJADO_IO, // Desalojo de proceso por IO, se envia pcb_t actualizado y duracion de IO en milisegundos (sacado del archivo de config)
+  OPCODE_PROCESO_DESALOJADO_INTERRUPT, // Desalojo de proceso por replanificacion, se envia pcb_t actualizado
+  OPCODE_PROCESO_DESALOJADO_EXIT, // Desalojo de proceso por fin de ejecucion, se envia pcb_t actualizado 
 
   /*Kernel a Memoria*/
   OPCODE_READ,   /*Mensaje de CPU a memoria */ 
