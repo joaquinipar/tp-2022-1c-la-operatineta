@@ -31,7 +31,7 @@ typedef enum op_code_t {
   OPCODE_READ,   /*Mensaje de CPU a memoria */ 
   OPCODE_WRITE, /**Mensaje de CPU a memoria */
   OPCODE_VALUE_TAB_PAG, /*Mensaje de valor de la tabla a Kernel*/  
-  OPCODE_CERRAR_PROCESO, //TODO CONSULTAR QUIEN LO ENVIA
+  OPCODE_CERRAR_PROCESO, /*Mensaje para cerrar proceso enviado por Kernel a Memoria*/
   OPCODE_SUSPENDER_PROCESO, /*Mensaje de suspension de proceso enviado por Kernel a Memoria*/
   OPCODE_PING_PONG_MEMORIA,   /*Mensaje de CPU a memoria pidiendo datos -> cant de entradas + tam de pagina */
   OPCODE_ACCESO_1ER_NIVEL, /*Mensaje de CPU a memoria pidiendo datos -> se trata de una tabla de primer nivel, el número de la tabla de segundo nivel. */
