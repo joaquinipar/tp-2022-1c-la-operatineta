@@ -2,6 +2,7 @@
 #define MEMORIA_SWAP_ALGORITMOS_TEST_H
 
 #include <CUnit/CUnit.h>
+#include <utils/logger.h>
 #include "../../../include/algoritmos_reemplazo/algoritmos_reemplazo.h"
 #include "../../../include/memoria_principal.h"
 

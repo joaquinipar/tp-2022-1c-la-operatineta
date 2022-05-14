@@ -93,6 +93,9 @@ void test_mover_puntero(){
      */
     uint32_t victim = correr_algoritmo_reemplazo(103);
 
+    format_warning_log("algoritmos_test.c@test_mover_puntero", "victima: %i", victim);
+
+    CU_ASSERT_EQUAL(10015, victim);
 }
 
 
