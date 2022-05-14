@@ -25,26 +25,26 @@ uint32_t manejar_clock(uint32_t pid) {
 }
 
 uint32_t manejar_clock_modificado(uint32_t pid) {
-
+    // Es la posición del puntero del proceso pid
     int puntero_clk_mod = obtener_puntero_clock_modificado(pid);
 
-    int i_marco;
-
+    // Representa al modo, (0,0) | (0,1).
     int i_clock = 0;
 
-    int match = 0;
-
+    // El i representa la cantidad de marcos que voy recorriendo, no la posición que debo acceder.
     int i = 0;
 
-    while (!match) { // es alto while true encubierto, lo admito.
+    // El i_marco representa el marco a acceder. El modulo sirve para que cuando (imaginate que tengo 64 paginas),
+    // llegue a la pagina 63, vaya a la 0, y siga recorriendo desde ahí.
+    int i_marco;
+
+    while (1) {
 
         puts("itero match\n");
 
-        for (i = 0; i < mem_swap_config->marcos_por_proceso; i++) {
+        for (i = 0; i < mem_ppal->cant_marcos; i++) {
 
-            ////
-
-            i_marco = (i + puntero_clk_mod) % mem_swap_config->marcos_por_proceso;
+            i_marco = (i + puntero_clk_mod) % mem_ppal->cant_marcos;
 
             puts("itero punt i_marco\n");
 
@@ -53,17 +53,12 @@ uint32_t manejar_clock_modificado(uint32_t pid) {
                 if (i_clock == 0) {
                     // caso inicial, busco (0,0) y no seteo bits de uso
 
-                    if (
-                            array_marcos[i_marco].pagina->bit_uso  == 0 &&
-                            array_marcos[i_marco].pagina->bit_modificado == 0) {
-                        // you're really lucky
+                    if (array_marcos[i_marco].pagina->bit_uso  == 0 &&
+                        array_marcos[i_marco].pagina->bit_modificado == 0) {
 
+                        // Muevo puntero al proximo marco del proceso
                         mover_puntero_fija(i_marco, pid);
-
-                        match = 1; // al dope
-
-                        ////
-
+                        // Retorno victima
                         return array_marcos[i_marco].pagina->nro_pagina;
                     }
                 }
@@ -73,34 +68,21 @@ uint32_t manejar_clock_modificado(uint32_t pid) {
                     if (
                             array_marcos[i_marco].pagina->bit_uso == 0 &&
                             array_marcos[i_marco].pagina->bit_modificado == 1) {
-                        // are you?
 
+                        // Muevo puntero al proximo marco del proceso
                         mover_puntero_fija(i_marco, pid);
-
-                        match = 1; // al dope
-
-                        ////
-
+                        // Retorno victima
                         return array_marcos[i_marco].pagina->nro_pagina;
                     }
-                    //
+
+                    // Seteo bit de uso en cero.
                     array_marcos[i_marco].pagina->bit_uso = 0;
-                    ////
                 }
-
-
             } // end != 1
-
-            ////
-
         } // end for
 
         i_clock = !i_clock; // Esto va a ser que cambie de modo (0,0) a (0,1).
-    }
-
-    //return NULL;
-
-    return 1;
+    } // end while
 }
 
 // BUROCRACIA DE LA LISTA DE PUNTEROS DE CLOCK MODIFICADA - FIJA
@@ -133,7 +115,7 @@ int agregar_puntero_nuevo_clock(uint32_t pid){
             puntero_clock_modificado* puntero_struct = malloc(sizeof(puntero_clock_modificado));
 
             puntero_struct->pid = pid;
-            puntero_struct->marco_apuntado = get_marco_reservado_por_carpincho(pid); // Asigna el primer marco reservado del proceso. ;)
+            puntero_struct->marco_apuntado = get_marco_reservado_por_proceso(pid); // Asigna el primer marco reservado del proceso. ;)
 
             list_add(punteros_procesos,(void*) puntero_struct );
 
@@ -249,24 +231,17 @@ uint32_t get_proximo_marco_del_proceso(uint32_t pid, uint32_t marco_actual){
 
     puts("itero match\n");
 
-    for (int i = 0; i < mem_swap_config->marcos_por_proceso; i++) {
 
-        i_marco = (i + puntero->marco_apuntado) % mem_swap_config->marcos_por_proceso;
+    for (int i = 0; i < mem_ppal->cant_marcos; i++) {
+
+        i_marco = (i + puntero->marco_apuntado) % mem_ppal->cant_marcos;
 
         puts("itero punt i_marco\n");
-        /* para debuggear y meter breakpoints en lugares criticos de prueba
-        if (i_marco == 0) {
-          puts("0");
-        } // DEBUG, BORRAR
-        if (i_marco == 63) {
-          puts("63");
-        } // DEBUG, BORRAR
-        if (i_marco == 5) {
-          puts("5");
-        }
-        */
+
         if (array_marcos[i_marco].pagina->nro_pagina != -1 && array_marcos[i_marco].estado == 1 &&
-            array_marcos[i_marco].pid == pid && array_marcos[i_marco].pagina->bit_presencia == 1) {
+            array_marcos[i_marco].pid == pid && array_marcos[i_marco].pagina->bit_presencia == 1 &&
+            i_marco != marco_actual
+            ) {
 
             return i_marco;
         }
@@ -281,7 +256,7 @@ uint32_t get_primer_marco_allocado(uint32_t pid) {
     //
     int marco;
     int marco_asignado = -1;
-    for (marco = 0; marco < mem_swap_config->marcos_por_proceso; marco++) {
+    for (marco = 0; marco < mem_ppal->memoria_principal; marco++) {
         if ((array_marcos[marco].estado == 1) &&
             (array_marcos[marco].pid == pid)) {
             marco_asignado = marco;
@@ -289,14 +264,14 @@ uint32_t get_primer_marco_allocado(uint32_t pid) {
         }
     }
     char *msg = string_from_format("El primer marco reservado sin pagina asignada libre del array de marcos es: %d", marco_asignado);
-    trace_log("memoria_principal.c@get_marco_reservado_por_carpincho", msg);
+    trace_log("algoritmos_reemplazo.c@get_primer_marco_allocado", msg);
     free(msg);
     ////
     return marco_asignado;
 }
 
 
-uint32_t get_marco_reservado_por_carpincho(uint32_t pid) {
+uint32_t get_marco_reservado_por_proceso(uint32_t pid) {
 
     int marco;
     int marco_asignado = -1;
@@ -308,7 +283,7 @@ uint32_t get_marco_reservado_por_carpincho(uint32_t pid) {
         }
     }
     char *msg = string_from_format("[1ER MARCO RESERVADO SIN PAGINA ASIGNADA]: %d", marco_asignado);
-    debug_log("memoria_principal.c@get_marco_reservado_por_carpincho", msg);
+    debug_log("algoritmos_reemplazo.c@get_marco_reservado_por_proceso", msg);
     free(msg);
 
     return marco_asignado;

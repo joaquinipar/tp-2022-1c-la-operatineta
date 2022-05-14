@@ -3,7 +3,7 @@
 int main(int argc, char* argv[]) {
     logger_set_module("MEMORIA - SWAP"); 
     logger_set_loglevel(LOG_LEVEL_DEBUG);
-    info_log("main.c", "Bienvenido a Memoria - Swamp!!");
+    info_log("main.c", "Bienvenido a Memoria - Swap!!");
 
     iniciar_config(argc,argv);
 

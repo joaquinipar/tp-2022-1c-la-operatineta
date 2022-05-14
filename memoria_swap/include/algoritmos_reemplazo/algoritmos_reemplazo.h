@@ -28,6 +28,6 @@ int setear_marco_a_puntero_clock(uint32_t pid, uint32_t marco_a_setear);
 void mover_puntero_fija(int marco, uint32_t pid);
 uint32_t get_proximo_marco_del_proceso(uint32_t pid, uint32_t marco_actual);
 uint32_t get_primer_marco_allocado(uint32_t pid);
-uint32_t get_marco_reservado_por_carpincho(uint32_t pid);
+uint32_t get_marco_reservado_por_proceso(uint32_t pid);
 
 #endif //MEMORIA_SWAP_ALGORITMOS_REEMPLAZO_H

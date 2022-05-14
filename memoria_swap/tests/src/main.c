@@ -23,6 +23,7 @@ int main(void)
 
     // Test algoritmos reemplazo
     CU_add_test(test_suite_algoritmos, "Test Agregar proceso a lista de punteros clock", test_agregar_puntero_nuevo_clock);
+    CU_add_test(test_suite_algoritmos, "Test Algoritmo de reemplazo", test_mover_puntero);
 
     CU_basic_run_tests();
     CU_cleanup_registry();
