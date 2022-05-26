@@ -38,7 +38,7 @@ void printear_instruccion(instruccion_t* una_instruccion){
 
 
 // Funcion que avanza el program counter
-void fetch_instruction(pcb_t* pcb){
+void aumentar_program_counter(pcb_t* pcb){
 
 	format_info_log("ciclo_decode_fetch.c@fetch_instruction",  "El Program Counter previo al fetch instruction está en: %d", pcb->program_counter);
 
@@ -53,7 +53,7 @@ void fetch_instruction(pcb_t* pcb){
 
 
 //decode retorna la instruccion del pbc que se debe ejecutar
-instruccion_t* decode(pcb_t* pcb){
+instruccion_t* fetch_instruction(pcb_t* pcb){
 
 	instruccion_t* instruccion_a_analizar = malloc(sizeof(instruccion_t));
 

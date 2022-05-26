@@ -10,7 +10,7 @@
 #include "ciclo_decode_fetch.h"
 
 op_code_t ciclo_de_instruccion(pcb_t*);
-void procesar_solicitud_de_kernel(pcb_t*);
+op_code_t procesar_solicitud_de_kernel(pcb_t*);
 void setear_variable_de_interrupciones(int);
 int hay_interrupcion();
 

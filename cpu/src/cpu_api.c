@@ -3,18 +3,23 @@
 
 
 
-void procesar_solicitud_de_kernel(pcb_t* unPcbAReemplazar){
+op_code_t procesar_solicitud_de_kernel(pcb_t* unPcbAReemplazar){
 
     op_code_t CODOP = 0;
 
-    while( (!hay_interrupcion() ) || (CODOP == 0 )){
+    while( (!hay_interrupcion() ) || (CODOP == 0 )){ //TODO CODOP DE EJECUCION DE PROCESOS
         CODOP = ciclo_de_instruccion(unPcbAReemplazar);
-    }
+
 
     if (hay_interrupcion() == 1){
     	CODOP = 10000; //OPCODE_CPU_A_KERNEL_INTERRUPCION
+    	//Si hay una interrupción, cargamos el código correspondiente para devolver el PCB a Kernel.
+    	//Se setea en 0 la interrupción y se marca como "atendida"
+    	setear_variable_de_interrupciones(0);
+    	return CODOP; // CODOP DE RESPUESTA DE INTERRUPCION A KERNEL
     }
-
+    }
+    return CODOP;
 
 }
 
@@ -41,21 +46,17 @@ op_code_t ciclo_de_instruccion(pcb_t* unPcbAReemplazar){
 	pcb_cpu_harcodeado->tamanio = 1500;
 	pcb_cpu_harcodeado->program_counter = 0;
 
-	//fetch
-	fetch_instruction(pcb_cpu_harcodeado);
 
-	//decode
-	instruccion_t *instruccion_a_ejecutar;	instruccion_a_ejecutar = decode(pcb_cpu_harcodeado);
-
-	//fetch operand
+	//Fetch
+	instruccion_t *instruccion_a_ejecutar;	instruccion_a_ejecutar = fetch_instruction(pcb_cpu_harcodeado);
+	//Decode & fetch operand
 	if(is_copy_instruction(instruccion_a_ejecutar)){
 		fetch_operand(instruccion_a_ejecutar);
 	}
-
 	//execute
 	CODOP = execute_instruction(instruccion_a_ejecutar);
-
-
+	//aumentar Program Counter
+	aumentar_program_counter(pcb_cpu_harcodeado);
 
 
 
