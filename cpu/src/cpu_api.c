@@ -7,12 +7,13 @@ op_code_t procesar_solicitud_de_kernel(pcb_t* unPcbAReemplazar){
 
     op_code_t CODOP = 0;
 
-    while( (!hay_interrupcion() ) || (CODOP == 0 )){ //TODO CODOP DE EJECUCION DE PROCESOS
+    while( (!hay_interrupcion() ) || (!requiere_desalojo(CODOP) )){ //TODO CODOP DE EJECUCION DE PROCESOS
+    	info_log("cpu_api.c@procesar_solicitud_de_kernel",  "SE REALIZA UN CICLO DE INSTRUCCION \n");
         CODOP = ciclo_de_instruccion(unPcbAReemplazar);
 
 
     if (hay_interrupcion() == 1){
-    	CODOP = 10000; //OPCODE_CPU_A_KERNEL_INTERRUPCION
+    	CODOP = OPCODE_PROCESO_DESALOJADO_INTERRUPT; //OPCODE_CPU_A_KERNEL_INTERRUPCION
     	//Si hay una interrupción, cargamos el código correspondiente para devolver el PCB a Kernel.
     	//Se setea en 0 la interrupción y se marca como "atendida"
     	setear_variable_de_interrupciones(0);
@@ -44,7 +45,7 @@ op_code_t ciclo_de_instruccion(pcb_t* unPcbAReemplazar){
 	pcb_cpu_harcodeado->pid = 100;
 	pcb_cpu_harcodeado->lista_instrucciones = lista_de_instrucciones;
 	pcb_cpu_harcodeado->tamanio = 1500;
-	pcb_cpu_harcodeado->program_counter = 0;
+	pcb_cpu_harcodeado->program_counter = 1;
 
 
 	//Fetch
@@ -82,13 +83,32 @@ int hay_interrupcion(){
 
 }
 
+int requiere_desalojo(op_code_t CODOP){
 
-void setear_variable_de_interrupciones (int valor){
+	switch(CODOP){
+	case OPCODE_PROCESO_DESALOJADO_IO:
+		return 1;
+		break;
+	case OPCODE_PROCESO_DESALOJADO_EXIT:
+		return 1;
+		break;
+
+	}
+	return 0 ;
+}
+
+void setear_variable_de_interrupciones (uint32_t valor){
 	INTERRUPTION_FLAG = valor;
 }
 
-
-void inicializar_interruption_flag(){
-	INTERRUPTION_FLAG = 0;
+void setear_variable_de_IO (uint32_t valor){
+	I_O_FLAG = valor;
 }
+
+void inicializar_variables_globales(){
+	INTERRUPTION_FLAG = 0;
+	I_O_FLAG = 0;
+}
+
+
 

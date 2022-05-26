@@ -60,7 +60,7 @@ instruccion_t* fetch_instruction(pcb_t* pcb){
 	info_log("ciclo_decode_fetch.c@decode",  "Se realiza el decode sobre la lista de instrucciones con el Program Counter");
 
 	//Se resta en uno el contador porque se sumó en uno en la etapa de fetch
-	instruccion_a_analizar = list_get(pcb->lista_instrucciones,pcb->program_counter - 1);
+	instruccion_a_analizar = list_get(pcb->lista_instrucciones,pcb->program_counter);
 
 	printear_instruccion(instruccion_a_analizar);
 
@@ -126,7 +126,8 @@ uint32_t execute_instruction(instruccion_t* instruccion_a_ejecutar){
 
 
 			case 1: //INSTRUCCION I/O
-				CODOP = 1020; //OPCODE_CPU_A_KERNEL_IO
+				CODOP = OPCODE_PROCESO_DESALOJADO_IO; //OPCODE_CPU_A_KERNEL_IO
+				setear_variable_de_IO(instruccion_a_ejecutar->argumentos[0]);
 				return CODOP;
 				break;
 			case 2: //INSTRUCCION READ
@@ -142,7 +143,7 @@ uint32_t execute_instruction(instruccion_t* instruccion_a_ejecutar){
 				return CODOP;
 				break;
 			case 5://INSTRUCCION EXIT
-				CODOP = 1050;//OPCODE_CPU_A_KERNEL_EXT
+				CODOP = OPCODE_PROCESO_DESALOJADO_EXIT;
 				return CODOP;
 				break;
 		}

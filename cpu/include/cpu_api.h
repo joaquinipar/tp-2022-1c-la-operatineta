@@ -11,10 +11,14 @@
 
 op_code_t ciclo_de_instruccion(pcb_t*);
 op_code_t procesar_solicitud_de_kernel(pcb_t*);
-void setear_variable_de_interrupciones(int);
+void setear_variable_de_interrupciones(uint32_t);
+void setear_variable_de_IO(uint32_t);
+void inicializar_variables_globales();
+int requiere_desalojo(op_code_t CODOP);
 int hay_interrupcion();
 
 uint32_t INTERRUPTION_FLAG;
+uint32_t I_O_FLAG;
 
 
 
