@@ -50,6 +50,10 @@ uint32_t manejar_clock_modificado(uint32_t pid) {
 
             if (array_marcos[i_marco].pagina->nro_pagina != -1 && array_marcos[i_marco].pid == pid) {
 
+                // debug
+                _struct_esta_corrupto(array_marcos[i_marco].pagina->bit_uso, array_marcos[i_marco].pagina->bit_modificado);
+                // debug end TODO manejar caso bits con valores incorrectos. que hago en ese caso?
+
                 if (i_clock == 0) {
                     // caso inicial, busco (0,0) y no seteo bits de uso
 
@@ -288,3 +292,17 @@ uint32_t get_marco_reservado_por_proceso(uint32_t pid) {
 
     return marco_asignado;
 }
+
+int _struct_esta_corrupto(uint32_t bit_uso, uint32_t bit_modificado){
+
+    if (bit_uso  != 0 && bit_uso  != 1 ||
+        bit_modificado != 0 && bit_modificado != 1) {
+
+        error_log("algoritmos_reemplazo.c@_struct_esta_corrupto","ERROR!! Bit de uso o Bit de modificado con valor inválido");
+        format_error_log("algoritmos_reemplazo.c@_struct_esta_corrupto","Esperaba valores (0 | 1) y obtuve: BIT USO:%i BIT MODIFICADO:%i",bit_uso, bit_modificado);
+
+        return 1;
+    }
+    return 0;
+}
+

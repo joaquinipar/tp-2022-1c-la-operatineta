@@ -29,5 +29,6 @@ void mover_puntero_fija(int marco, uint32_t pid);
 uint32_t get_proximo_marco_del_proceso(uint32_t pid, uint32_t marco_actual);
 uint32_t get_primer_marco_allocado(uint32_t pid);
 uint32_t get_marco_reservado_por_proceso(uint32_t pid);
+int _struct_esta_corrupto(uint32_t bit_uso, uint32_t bit_modificado);
 
 #endif //MEMORIA_SWAP_ALGORITMOS_REEMPLAZO_H
