@@ -21,6 +21,55 @@ uint32_t correr_algoritmo_reemplazo(uint32_t pid) {
 
 uint32_t manejar_clock(uint32_t pid) {
 
+    // Es la posición del puntero del proceso pid
+    int puntero_clk = obtener_puntero_clock_modificado(pid);
+
+    // El i representa la cantidad de marcos que voy recorriendo, no la posición que debo acceder.
+    int i = 0;
+
+    // El i_marco representa el marco a acceder. El modulo sirve para que cuando (imaginate que tengo 64 paginas),
+    // llegue a la pagina 63, vaya a la 0, y siga recorriendo desde ahí.
+    int i_marco;
+
+    while (1) {
+
+        puts("itero match clk\n");
+
+        for (i = 0; i < mem_ppal->cant_marcos; i++) {
+
+            i_marco = (i + puntero_clk) % mem_ppal->cant_marcos;
+
+            puts("itero punt i_marco\n");
+
+            if (array_marcos[i_marco].pagina->nro_pagina != -1 && array_marcos[i_marco].pid == pid) {
+
+                /*
+                // debug
+                _struct_esta_corrupto(array_marcos[i_marco].pagina->bit_uso, array_marcos[i_marco].pagina->bit_modificado);
+                // debug end TODO manejar caso bits con valores incorrectos. que hago en ese caso?
+                */
+
+
+                // caso exito => bit uso = 0
+
+                if (array_marcos[i_marco].pagina->bit_uso == 0) {
+
+                    // Muevo puntero al proximo marco del proceso
+                    mover_puntero_fija(i_marco, pid);
+                    // Retorno victima
+                    return array_marcos[i_marco].pagina->nro_pagina;
+                }
+                // caso perdonador => bit de uso = 1. Le pongo el bit de uso en 0
+                else {
+                    array_marcos[i_marco].pagina->bit_uso = 0;
+
+                }
+            }
+
+            }
+
+    } // end while
+
     return 1;
 }
 
@@ -138,23 +187,18 @@ int agregar_puntero_nuevo_clock(uint32_t pid){
 
 int obtener_puntero_clock_modificado(uint32_t pid){
 
-    if( mem_swap_config->algoritmo_reeemplazo == CLOCKMOD) {
 
-        bool pid_iguales(puntero_clock_modificado* puntero_struct) { return puntero_struct->pid == pid; }
+    bool pid_iguales(puntero_clock_modificado* puntero_struct) { return puntero_struct->pid == pid; }
 
-        puntero_clock_modificado* puntero_struct = (puntero_clock_modificado*) list_find(punteros_procesos, (void*) pid_iguales);
+    puntero_clock_modificado* puntero_struct = (puntero_clock_modificado*) list_find(punteros_procesos, (void*) pid_iguales);
 
-        if(puntero_struct != NULL){
-            return puntero_struct->marco_apuntado;
-        }
-
-        error_log("algoritmos_reemplazo.c@obtener_puntero_clock_modificado", "ERROR - No está inicializada la lista de punteros de clock modificado");
-        return -1;
+    if(puntero_struct != NULL){
+        return puntero_struct->marco_apuntado;
     }
 
-    error_log("algoritmos_reemplazo.c@obtener_puntero_clock_modificado", "ERROR - Esta funcion es de uso exclusivo para CLOCK MODIFICADO con asignación FIJA.");
-
+    error_log("algoritmos_reemplazo.c@obtener_puntero_clock_modificado", "ERROR - No está inicializada la lista de punteros de clock modificado");
     return -1;
+
 }
 
 
@@ -260,7 +304,7 @@ uint32_t get_primer_marco_allocado(uint32_t pid) {
     //
     int marco;
     int marco_asignado = -1;
-    for (marco = 0; marco < mem_ppal->memoria_principal; marco++) {
+    for (marco = 0; marco < mem_ppal->cant_marcos; marco++) {
         if ((array_marcos[marco].estado == 1) &&
             (array_marcos[marco].pid == pid)) {
             marco_asignado = marco;
@@ -295,8 +339,8 @@ uint32_t get_marco_reservado_por_proceso(uint32_t pid) {
 
 int _struct_esta_corrupto(uint32_t bit_uso, uint32_t bit_modificado){
 
-    if (bit_uso  != 0 && bit_uso  != 1 ||
-        bit_modificado != 0 && bit_modificado != 1) {
+    if ((bit_uso  != 0 && bit_uso) != 1 ||
+        (bit_modificado != 0 && bit_modificado != 1)) {
 
         error_log("algoritmos_reemplazo.c@_struct_esta_corrupto","ERROR!! Bit de uso o Bit de modificado con valor inválido");
         format_error_log("algoritmos_reemplazo.c@_struct_esta_corrupto","Esperaba valores (0 | 1) y obtuve: BIT USO:%i BIT MODIFICADO:%i",bit_uso, bit_modificado);

@@ -12,5 +12,6 @@
 void test_agregar_puntero_nuevo_clock();
 
 void test_mover_puntero();
+void test_clock();
 
 #endif //MEMORIA_SWAP_ALGORITMOS_TEST_H
