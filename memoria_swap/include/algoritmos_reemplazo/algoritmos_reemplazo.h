@@ -20,7 +20,7 @@ uint32_t correr_algoritmo_reemplazo(uint32_t pid);
 uint32_t manejar_clock(uint32_t pid);
 uint32_t manejar_clock_modificado(uint32_t pid);
 
-void iniciar_lista_punteros_clock_modificado_fija();
+void iniciar_lista_punteros_clock();
 int agregar_puntero_nuevo_clock(uint32_t pid);
 int obtener_puntero_clock(uint32_t pid);
 void destruir_lista_de_punteros_clock();

@@ -5,7 +5,7 @@ void test_agregar_puntero_nuevo_clock(){
     char* test_argv[2] = {"sssss", "../arch_config/memoria.config"};
     iniciar_config(2, test_argv);
     iniciar_memoria_principal();
-    iniciar_lista_punteros_clock_modificado_fija();
+    iniciar_lista_punteros_clock();
 
 
     int pid = 6655;
@@ -40,7 +40,7 @@ void test_mover_puntero(){
     mem_ppal->cant_marcos = 64;
     mem_swap_config->marcos_por_proceso = 4;
 
-    iniciar_lista_punteros_clock_modificado_fija();
+    iniciar_lista_punteros_clock();
 
 
     printf("cant marcos %i cant marcos x proceso %i",mem_ppal->cant_marcos, mem_swap_config->marcos_por_proceso);
@@ -129,7 +129,7 @@ void test_clock(){
     mem_ppal->cant_marcos = 64;
     mem_swap_config->marcos_por_proceso = 4;
 
-    iniciar_lista_punteros_clock_modificado_fija();
+    iniciar_lista_punteros_clock();
 
 
     printf("cant marcos %i cant marcos x proceso %i",mem_ppal->cant_marcos, mem_swap_config->marcos_por_proceso);

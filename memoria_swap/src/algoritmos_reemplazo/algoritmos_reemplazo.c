@@ -4,10 +4,12 @@ uint32_t correr_algoritmo_reemplazo(uint32_t pid) {
 
     switch(mem_swap_config->algoritmo_reeemplazo){
         case(CLOCK): {
+            format_debug_log("algoritmos_reemplazo.c@correr_algoritmo_reemplazo","Corriendo algoritmo CLOCK para el proceso PID: %i", pid);
             return manejar_clock(pid);
             break;
         }
         case(CLOCKMOD):{
+            format_debug_log("algoritmos_reemplazo.c@correr_algoritmo_reemplazo","Corriendo algoritmo CLOCK-M para el proceso PID: %i", pid);
             return manejar_clock_modificado(pid);
             break;
         }
@@ -56,6 +58,9 @@ uint32_t manejar_clock(uint32_t pid) {
 
                     // Muevo puntero al proximo marco del proceso
                     mover_puntero_fija(i_marco, pid);
+
+                    format_debug_log("algoritmos_reemplazo.c@manejar_clock", "PID %i Numero de pagina elegida: %i", pid, array_marcos[i_marco].pagina->nro_pagina);
+
                     // Retorno victima
                     return array_marcos[i_marco].pagina->nro_pagina;
                 }
@@ -142,7 +147,7 @@ uint32_t manejar_clock_modificado(uint32_t pid) {
 
 // Inicialización
 
-void iniciar_lista_punteros_clock_modificado_fija(){
+void iniciar_lista_punteros_clock(){
 
         punteros_procesos = list_create();
 }
@@ -239,11 +244,6 @@ void mover_puntero_fija(int marco, uint32_t pid){
     uint32_t marco_inicial = get_primer_marco_allocado(pid);
 
     if(marco_inicial != -1 && puntero_struct != NULL){
-
-        /*
-       FALTA CHECKEAR SI NO ESTÁ ALLOCADO, PORQUE SI NO LO ESTÁ, VOY A ESTAR PONIENDO COMO VICTIMA A ALGO QUE NO CORRESPONDE
-       LA VICTIMA TIENE QUE SER UN MARCO ALLOCADO!!
-       */
 
         uint32_t marco_siguiente = get_proximo_marco_del_proceso( pid,marco);
 
