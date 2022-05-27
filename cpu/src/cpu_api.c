@@ -11,7 +11,7 @@ op_code_t procesar_solicitud_de_kernel(pcb_t* unPcbAReemplazar){
     list_add(lista_de_instrucciones, &instruccion1);
     instruccion_t instruccion2;instruccion2.instruccion = 0;instruccion2.argumentos[0] = -1;instruccion2.argumentos[1] = -1;
     list_add(lista_de_instrucciones, &instruccion2);
-    instruccion_t instruccion3;instruccion3.instruccion = 0;instruccion3.argumentos[0] = -1;instruccion3.argumentos[1] = -1;
+    instruccion_t instruccion3;instruccion3.instruccion = 4;instruccion3.argumentos[0] = -1;instruccion3.argumentos[1] = -1;
     list_add(lista_de_instrucciones, &instruccion3);
     instruccion_t instruccion4;instruccion4.instruccion = 0;instruccion4.argumentos[0] = -1;instruccion4.argumentos[1] = -1;
     list_add(lista_de_instrucciones, &instruccion4);
