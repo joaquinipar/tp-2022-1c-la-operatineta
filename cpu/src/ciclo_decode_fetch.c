@@ -59,7 +59,6 @@ instruccion_t* fetch_instruction(pcb_t* pcb){
 
 	info_log("ciclo_decode_fetch.c@decode",  "Se realiza el decode sobre la lista de instrucciones con el Program Counter");
 
-	//Se resta en uno el contador porque se sumó en uno en la etapa de fetch
 	instruccion_a_analizar = list_get(pcb->lista_instrucciones,pcb->program_counter);
 
 	printear_instruccion(instruccion_a_analizar);
@@ -127,6 +126,8 @@ uint32_t execute_instruction(instruccion_t* instruccion_a_ejecutar){
 
 			case 1: //INSTRUCCION I/O
 				CODOP = OPCODE_PROCESO_DESALOJADO_IO; //OPCODE_CPU_A_KERNEL_IO
+				format_info_log("ciclo_decode_fetch.c@execute_instruction",  "Se realizará un I/O. Tiempo de  %d. Requiere desalojo",instruccion_a_ejecutar->argumentos[0]);
+
 				setear_variable_de_IO(instruccion_a_ejecutar->argumentos[0]);
 				return CODOP;
 				break;
@@ -144,6 +145,7 @@ uint32_t execute_instruction(instruccion_t* instruccion_a_ejecutar){
 				break;
 			case 5://INSTRUCCION EXIT
 				CODOP = OPCODE_PROCESO_DESALOJADO_EXIT;
+				info_log("ciclo_decode_fetch.c@execute_instruction",  "Se realizará un EXIT. Requiere desalojo");
 				return CODOP;
 				break;
 		}
@@ -153,25 +155,3 @@ uint32_t execute_instruction(instruccion_t* instruccion_a_ejecutar){
 
 
 
-
-/*
-case EJECUTAR:{
-   1-Aca se debe recibir el pcb que envia Kernel.
-   recv(cliente_socket, &pid, sizeof(uint32_t), false) (Asi por cada dato que se envia);
-
-    typedef struct {
-uint32_t pid;
-t_list*  lista_instrucciones;
-uint32_t tamanio;
-uint32_t program_counter;
- }pcb_t;
-   2- pcb_t* un_pcb_actualizado = iniciar_ciclo_instruction(enviar por parametro todos los datos recibidos);
-
-   3- enviar el pcb actualizado
-
-
-
-  return true;
-  break;
-}
-*/
