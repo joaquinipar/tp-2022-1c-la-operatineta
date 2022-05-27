@@ -23,7 +23,7 @@ typedef enum op_code_t {
   OPCODE_DESALOJAR_PROCESO, // Enviado por interrupt para que cpu desaloje un proceso
 
   /* CPU a Kernel*/
-  OPCODE_PROCESO_DESALOJADO_IO, // Desalojo de proceso por IO, se envia pcb_t actualizado y duracion de IO en milisegundos (sacado del archivo de config)
+  OPCODE_PROCESO_DESALOJADO_IO, // Desalojo de proceso por IO, se envia pcb_t actualizado y duracion de IO en milisegundos. Esta en el parametro de la instruccion IO. 
   OPCODE_PROCESO_DESALOJADO_INTERRUPT, // Desalojo de proceso por replanificacion, se envia pcb_t actualizado
   OPCODE_PROCESO_DESALOJADO_EXIT, // Desalojo de proceso por fin de ejecucion, se envia pcb_t actualizado 
 

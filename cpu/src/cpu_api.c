@@ -12,4 +12,7 @@
  3- check interrupt 
  4- resultado 
 
-}*/
+}
+
+
+/pcb_t* iniciar_modulo(pcb_t * proceso_recibido)*/

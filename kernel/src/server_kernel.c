@@ -140,6 +140,53 @@ bool procesar_conexion(int cliente_socket) {
     return true;
     break;
   }
+  case OPCODE_PROCESO_DESALOJADO_IO:{
+    format_debug_log("server_dispatch.c@procesar_conexion", "CodOP recibido %d", codigo_operacion);
+    pcb_t* proceso_actualizado = deserializar_proceso(cliente_socket); 
+    uint32_t tiempo_bloqueo;
+    int bytes_recibidos = recv(cliente_socket, &tiempo_bloqueo, sizeof(uint32_t), 0); 
+    format_debug_log("server_dispatch.c@procesar_conexion", "Tiempo bloqueado %d", tiempo_bloqueo); 
+        if (bytes_recibidos !=-1) {
+    send_ack(cliente_socket, OPCODE_ACK_OK); 
+    debug_log("conexion_client.c@procesar_conexion", "Envio mensaje ACK OK - OPCODE_PROCESO_DESALOJADO_IO");
+    debug_log("conexion_client.c@procesar_conexion", "Termina mensaje OPCODE_PROCESO_DESALOJADO_IO");
+     }
+    send_ack(cliente_socket, OPCODE_ACK_ERROR); 
+    debug_log("conexion_client.c@procesar_conexion", "Envio mensaje ACK ERROR -OPCODE_PROCESO_DESALOJADO_IO");
+    debug_log("conexion_client.c@procesar_conexion", "Termina mensaje OPCODE_PROCESO_DESALOJADO_IO");
+  
+    
+  }
+
+  case OPCODE_PROCESO_DESALOJADO_INTERRUPT:{
+
+    format_debug_log("server_dispatch.c@procesar_conexion", "CodOP recibido %d", codigo_operacion);
+    pcb_t* proceso_actualizado = deserializar_proceso(cliente_socket); 
+    if(proceso_actualizado != NULL){
+      send_ack(cliente_socket, OPCODE_ACK_OK); 
+    debug_log("conexion_client.c@procesar_conexion", "Envio mensaje ACK OK - OPCODE_PROCESO_DESALOJADO_INTERRUPT");
+    debug_log("conexion_client.c@procesar_conexion", "Termina mensaje OPCODE_PROCESO_DESALOJADO_INTERRUPT");
+     }
+    send_ack(cliente_socket, OPCODE_ACK_ERROR); 
+    debug_log("conexion_client.c@procesar_conexion", "Envio mensaje ACK ERROR -OPCODE_PROCESO_DESALOJADO_EXIT");
+    debug_log("conexion_client.c@procesar_conexion", "Termina mensaje OPCODE_PROCESO_DESALOJADO_EXIT");
+    
+  }
+
+  case OPCODE_PROCESO_DESALOJADO_EXIT:{
+
+    format_debug_log("server_dispatch.c@procesar_conexion", "CodOP recibido %d", codigo_operacion);
+    pcb_t* proceso_actualizado = deserializar_proceso(cliente_socket); 
+    if(proceso_actualizado != NULL){
+      send_ack(cliente_socket, OPCODE_ACK_OK); 
+    debug_log("conexion_client.c@procesar_conexion", "Envio mensaje ACK OK - OPCODE_PROCESO_DESALOJADO_EXIT");
+    debug_log("conexion_client.c@procesar_conexion", "Termina mensaje OPCODE_PROCESO_DESALOJADO_EXIT");
+     }
+    send_ack(cliente_socket, OPCODE_ACK_ERROR); 
+    debug_log("conexion_client.c@procesar_conexion", "Envio mensaje ACK ERROR -OPCODE_PROCESO_DESALOJADO_INTERRUPT");
+    debug_log("conexion_client.c@procesar_conexion", "Termina mensaje OPCODE_PROCESO_DESALOJADO_INTERRUPT");
+    
+  }  
 
   // Errores con las conexiones
   case OPCODE_CLIENTE_DESCONECTADO:

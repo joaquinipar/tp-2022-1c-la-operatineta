@@ -107,3 +107,37 @@ bool enviar_mensaje_ejecutar(pcb_t* proceso){
   return false;
 
 }
+
+
+/*Mensaje de desalojo de un proceso por la conexion interrupt - Se envia el pid solo para corroborar que sea el pid que esta en cpu */
+bool enviar_mensaje_desalojar_proceso(pcb_t* proceso){
+
+    debug_log("conexion_client.c@enviar_mensaje_desalojar_proceso", "Comienza envio de mensaje - OPCODE_DESALOJAR_PROCESO");
+    int stream_size = sizeof(op_code_t) + sizeof(uint32_t);
+    void *stream = malloc(stream_size);
+    op_code_t op_code = OPCODE_DESALOJAR_PROCESO;
+
+    memcpy(stream, &op_code, sizeof(op_code_t));
+    memcpy(stream + sizeof(op_code_t), &(proceso->pid), sizeof(uint32_t));
+    
+    int send_result = send(socket_cliente_cpu_interrupt, stream, stream_size , false);
+    
+    format_debug_log("conexion_clien.c@enviar_mensaje_desalojar_proceso", "Send Result %d", send_result); 
+    if (send_result != -1) {
+    bool response = recv_ack(socket_cliente_cpu_interrupt);
+
+    if (response) {
+      debug_log("conexion_client.c@enviar_mensaje_desalojar_proceso", "Recepcion mensaje ACK OK - OPCODE_DESALOJAR_PROCESO");
+      debug_log("conexion_client.c@enviar_mensaje_desalojar_proceso", "Termina mensaje OPCODE_DESALOJAR_PROCESO");
+      return response;
+    }
+    debug_log("conexion_client.c@enviar_mensaje_desalojar_proceso", "Recepcion mensaje ACK ERROR -OPCODE_DESALOJAR_PROCESO");
+    debug_log("conexion_client.c@enviar_mensaje_desalojar_proceso", "Termina mensaje OPCODE_DESALOJAR_PROCESO");
+    return response;
+  }
+
+  error_log("conexion_client.c@enviar_mensaje_desalojar_proceso", "Error al enviar mensaje EJECUTAR");
+  debug_log("conexion_client.c@enviar_mensaje_desalojar_proceso", "Termina mensaje EJECUTAR");
+  return false;
+
+}
