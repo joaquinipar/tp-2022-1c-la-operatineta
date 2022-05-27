@@ -22,7 +22,7 @@ uint32_t correr_algoritmo_reemplazo(uint32_t pid) {
 uint32_t manejar_clock(uint32_t pid) {
 
     // Es la posición del puntero del proceso pid
-    int puntero_clk = obtener_puntero_clock_modificado(pid);
+    int puntero_clk = obtener_puntero_clock(pid);
 
     // El i representa la cantidad de marcos que voy recorriendo, no la posición que debo acceder.
     int i = 0;
@@ -75,7 +75,7 @@ uint32_t manejar_clock(uint32_t pid) {
 
 uint32_t manejar_clock_modificado(uint32_t pid) {
     // Es la posición del puntero del proceso pid
-    int puntero_clk_mod = obtener_puntero_clock_modificado(pid);
+    int puntero_clk_mod = obtener_puntero_clock(pid);
 
     // Representa al modo, (0,0) | (0,1).
     int i_clock = 0;
@@ -185,7 +185,7 @@ int agregar_puntero_nuevo_clock(uint32_t pid){
 
 // Obtener puntero de clock
 
-int obtener_puntero_clock_modificado(uint32_t pid){
+int obtener_puntero_clock(uint32_t pid){
 
 
     bool pid_iguales(puntero_clock_modificado* puntero_struct) { return puntero_struct->pid == pid; }
@@ -196,7 +196,7 @@ int obtener_puntero_clock_modificado(uint32_t pid){
         return puntero_struct->marco_apuntado;
     }
 
-    error_log("algoritmos_reemplazo.c@obtener_puntero_clock_modificado", "ERROR - No está inicializada la lista de punteros de clock modificado");
+    error_log("algoritmos_reemplazo.c@obtener_puntero_clock", "ERROR - No está inicializada la lista de punteros de clock/modificado");
     return -1;
 
 }
