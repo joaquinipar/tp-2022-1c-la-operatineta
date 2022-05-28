@@ -67,6 +67,7 @@ void probar_VALUE_TAB_PAG() {
 
     // Finalmente hacemos los asserts
     pthread_mutex_unlock(&sum_mutex);
+    sleep(1);
     CU_ASSERT_EQUAL(codop, OPCODE_VALUE_TAB_PAG);
     CU_ASSERT_EQUAL(valor_tabla_1er_nivel, 0);
     warning_log("botonera.c@probar_VALUE_TAB_PAG","------------------------------------------");
@@ -181,3 +182,4 @@ void probar_VALUE_TAB_PAG_con_varios_procesos() {
 
     warning_log("botonera.c@probar_VALUE_TAB_PAG_con_varios_procesos","------------------------------------------");
 }
+

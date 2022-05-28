@@ -212,13 +212,15 @@ bool procesar_conexion(int cliente_socket) {
       //abort();
       warning_log("server_mem.c@procesar_conexion", "LLEGO EL ABORT!!!");
       cerrar_mem_swap();
-      shutdown(socket_server_mem, SHUT_RD);
+      //shutdown(socket_server_mem, SHUT_RD);
       raise(SIGINT);
+      return false ;
+      break;
   }
   case OPCODE_SUSPENDER_PROCESO: {
     uint32_t pid;
     recv(cliente_socket, &pid, sizeof(uint32_t), false);
-
+    error_log("asd", "entro en el suspernder proceso!!!!!!!!");
     bool response = suspender_proceso(pid);
    
     if (response) {
