@@ -866,7 +866,7 @@ bool mayor_prioridad(pcb_t *proceso1, pcb_t *proceso2) {
 
   case FIFO:
 
-    resultado = timedifference_msec(proceso1->tiempo_de_ingreso, proceso2->tiempo_de_ingreso) > 0;
+    resultado = (proceso1->estimacion - proceso2->estimacion) > 0;
     
     break;
   }

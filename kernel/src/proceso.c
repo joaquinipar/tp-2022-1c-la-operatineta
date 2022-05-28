@@ -17,7 +17,7 @@ void proceso_destruir(pcb_t *proceso) {
 }
 
 void proceso_iniciar_rafaga(pcb_t *proceso) {
-  gettimeofday(&proceso->rafaga_actual->inicio, NULL);
+  gettimeofday(&(proceso->rafaga_actual).inicio, NULL);
 }
 
 void proceso_ejecutar(pcb_t *proceso) {
@@ -42,8 +42,8 @@ void proceso_bloquear(pcb_t *proceso, int tiempo_bloqueado) {
 
 void proceso_finalizar_rafaga(pcb_t *proceso) {
   //TODO: implementar
-  gettimeofday(&proceso->rafaga_actual->fin, NULL);
-  proceso->duracion_ultima_rafaga = timedifference_msec(proceso->rafaga_actual->inicio, proceso->rafaga_actual->fin);
+  gettimeofday(&(proceso->rafaga_actual).fin, NULL);
+  proceso->duracion_ultima_rafaga = timedifference_msec((proceso->rafaga_actual).inicio, (proceso->rafaga_actual).fin);
   format_debug_log("proceso.c@proceso_finalizar_rafaga", "Proceso: %d tiempo total ultima rafaga", proceso->duracion_ultima_rafaga);
   proceso->estimacion = proxima_rafaga_estimada(proceso);
   format_debug_log("proceso.c@proceso_finalizar_rafaga", "Proceso: %d proxima rafaga estimada", proceso->estimacion);
