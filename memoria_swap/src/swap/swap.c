@@ -1,5 +1,16 @@
 #include "../../include/swap/swap.h"
 
+void iniciar_swap() {
+    debug_log("swap.c@iniciar_swap", "Comienza el inicio de la lista global de archivos de swap por proceso"); 
+    list_archivos_swap = list_create();
+    //debug_log("swap.c@iniciar_swap", "Finaliza el inicio de la lista global de archivos de swap por proceso"); 
+}
+
+void destruir_list_swap(){
+    list_destroy_and_destroy_elements(list_archivos_swap, (void*)free); 
+    debug_log("swap.c@iniciar_swap", "Se destruye la lista global de archivos de swap por proceso"); 
+}
+
 archivo_pid_t* crear_archivo_pid(int pid, uint32_t tam_proceso){
     archivo_pid_t* archivo = malloc(sizeof(archivo_pid_t));
     archivo->pid = pid;
@@ -8,15 +19,53 @@ archivo_pid_t* crear_archivo_pid(int pid, uint32_t tam_proceso){
     crear_archivo_swap(archivo);
     int cantidad_marcos = mem_swap_config->tam_memoria / mem_swap_config->tam_pagina;
     archivo->array_marcos_virtual_del_proceso = malloc(cantidad_marcos * sizeof(marco_virtual_t));
-
     return archivo;
 }
 
-void iniciar_swap() {
-    list_archivos_swap = list_create();
+void admitir_proceso_en_swap(uint32_t pid, uint32_t tamanio){
+    format_info_log("swap.c@admitir_proceso_en_swap", "Admision en Swap - Proceso: %d  -- Tamaño %d", pid, tamanio); 
+    archivo_pid_t* un_arch_swap = crear_archivo_pid(pid, tamanio);
+    list_add(list_archivos_swap, un_arch_swap); 
 }
 
-void destruir_list_swap(){
-    list_destroy_and_destroy_elements(list_archivos_swap, (void*)free); 
+
+int buscar_proceso_swap(uint32_t pid){
+
+    bool _encontrar_proceso_en_lista_global_swap(archivo_pid_t* proceso_swap){
+        return pid == proceso_swap->pid;
+    }
+
+    archivo_pid_t* proceso_swap = list_find(list_archivos_swap, (void*)&_encontrar_proceso_en_lista_global_swap);
+    if(proceso_swap != NULL){
+        return 1; 
+    }
+    return 0; 
 }
 
+archivo_pid_t* get_proceso_swap(uint32_t pid){
+  if(buscar_proceso_swap(pid)==1){
+  archivo_pid_t *proceso_buscado = NULL;
+  bool pid_iguales(archivo_pid_t * proceso) { return proceso->pid == pid; }
+  proceso_buscado = list_find(list_archivos_swap, (void *)pid_iguales);
+  return proceso_buscado; 
+  }
+  return NULL;
+}
+
+
+int eliminar_proceso_en_lista_global_swap(uint32_t pid) {
+
+  bool is_pid(archivo_pid_t * proceso_aux) { 
+    return proceso_aux->pid == pid; 
+    }
+  archivo_pid_t *proceso_a_eliminar =list_remove_by_condition(list_archivos_swap, (void *)is_pid);
+
+
+  if (proceso_a_eliminar == NULL) {
+      error_log("swap.c@eliminar_proceso_en_lista_global_swap", "[ERROR] - No se pudo eliminar proceso de la lista global de swap"); 
+    return 0;
+  } 
+
+    format_debug_log("swap.c@eliminar_proceso_en_lista_global_swap", "Se elimino el proceso %d de la lista global de swap", pid);
+    return 1;
+}

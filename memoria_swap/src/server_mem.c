@@ -63,13 +63,11 @@ int escuchar_conexiones_nuevas(int server_socket) {
   }
 
   signal(SIGINT, sighandler);
-
-
+  
   while (escuchar == true) {
     info_log("server_mem_swap.c@escuchar_conexiones_nuevas","Escuchando conexiones nuevas en el Servidor de Memoria");    
 
     int cliente_socket = esperar_cliente(server_socket, "Memoria", "server.c@escuchar_cliente");
-    
 
     if (cliente_socket != -1) {
       info_log("server_mem_swap.c@escuchar_conexiones_nuevas","Cliente nuevo conectado");
@@ -77,9 +75,7 @@ int escuchar_conexiones_nuevas(int server_socket) {
         ;
       continue;
     }
-
     error_log("server_mem_swap.c@escuchar_conexiones_nuevas", "Error en nueva conexion o socket servidor cerrado");
-
     return -1;
   }
 
@@ -120,8 +116,9 @@ bool procesar_conexion(int cliente_socket) {
     recv(cliente_socket, &pid, sizeof(uint32_t), false);
     uint32_t tamanio;
     recv(cliente_socket, &tamanio, sizeof(uint32_t), false);
-    uint32_t valor_tabla_1er_nivel = inicio_proceso(pid, tamanio);
+    uint32_t valor_tabla_1er_nivel = admitir_proceso(pid, tamanio);
     // Voy a enviar | CODOP | VALOR_TABLA_1ER_NIVEL |
+    
     send_codigo_op_con_numero(cliente_socket, OPCODE_VALUE_TAB_PAG, valor_tabla_1er_nivel);
     return true;
     break; 
@@ -217,6 +214,28 @@ bool procesar_conexion(int cliente_socket) {
       cerrar_mem_swap();
       shutdown(socket_server_mem, SHUT_RD);
       raise(SIGINT);
+  }
+  case OPCODE_SUSPENDER_PROCESO: {
+    uint32_t pid;
+    recv(cliente_socket, &pid, sizeof(uint32_t), false);
+
+    bool response = suspender_proceso(pid);
+   
+    if (response) {
+      send_ack(cliente_socket, OPCODE_ACK_OK);
+      return true;
+     // break; 
+    }
+
+    send_ack(cliente_socket, OPCODE_ACK_ERROR);
+    return false;
+    break; 
+  }
+
+  case OPCODE_EXIT:{
+    
+    return true;
+    break; 
   }
   // Errores con las conexiones
   case OPCODE_CLIENTE_DESCONECTADO:

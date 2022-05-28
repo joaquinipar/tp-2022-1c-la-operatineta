@@ -8,11 +8,7 @@ int main(int argc, char* argv[]) {
     iniciar_config(argc,argv);
 
     info_log("main.c","Se inicializa estructuras de Memoria"); 
-    iniciar_memoria_principal();
-    iniciar_listas_globales_de_tablas();
-    iniciar_swap();
-
-
+    iniciar_memoria(); 
 
 
 
