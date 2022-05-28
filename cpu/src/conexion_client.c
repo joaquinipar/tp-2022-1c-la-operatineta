@@ -197,8 +197,8 @@ bool enviar_mensaje_inicial_configuracion(){
     error_log("conexion_client.c@enviar_mensaje_read", "[ERROR] Envio mensaje OPCODE_PING_PONG_MEMORIA");
     debug_log("conexion_client.c@enviar_mensaje_read", "Termina mensaje OPCODE_PING_PONG_MEMORIA");
   return false;
-
 }
+
 
 //OPCODE_PROCESO_DESALOJADO_IO
 bool enviar_mensaje_proceso_desalojado_io(pcb_t* proceso_actualizado, int socket, uint32_t tiempo_bloqueo){

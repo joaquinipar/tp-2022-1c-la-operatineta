@@ -137,7 +137,7 @@ bool procesar_conexion_dispatch(int cliente_socket)
 
     pcb_t *proceso_recibido = deserializar_proceso(cliente_socket);
 
-    //pcb_t* proceso_actualizado = iniciar_modulo(proceso_recibido);
+    pcb_t* proceso_actualizado = iniciar_modulo(proceso_recibido);
 
     send_ack(cliente_socket, OPCODE_ACK_OK);
 
