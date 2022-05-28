@@ -8,6 +8,7 @@
 #include "config_kernel.h"
 #include "cerrar_kernel.h"
 #include "server_kernel.h"
+#include "conexion_client.h"
 #include "kernel_api.h"
 #include "monitor_colas_procesos.h"
 #include "planificador_largo_plazo.h"
