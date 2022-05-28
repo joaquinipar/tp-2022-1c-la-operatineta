@@ -48,9 +48,6 @@ int main(int argc, char* argv[]) {
    
     enviar_mensaje_ejecutar(un_proceso); 
  
-
-    
-
     char *exit_msg = string_from_format("El servidor de Kernel finalizo con exit code: %p", server_exit_code);
     info_log("kernel/main.c@main", exit_msg);
     free(exit_msg);
