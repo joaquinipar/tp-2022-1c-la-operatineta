@@ -26,7 +26,7 @@ typedef struct config_kernel_t {
     double alfa;
     int grado_multiprogramacion;
     int tiempo_maximo_bloqueado;
-    bool is_test;
+    int is_test;
 
 } config_kernel_t;
 

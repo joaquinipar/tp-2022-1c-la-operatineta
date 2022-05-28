@@ -1,14 +1,5 @@
 #include "../include/main.h"
 
-void inicializar_kernel(int argc, char* argv[]) {
-    iniciar_config(argc,argv);
-    inicializar_kernel_api();
-    iniciar_monitor_colas_procesos();
-    iniciar_planificador_largo_plazo();
-    iniciar_planificador_corto_plazo();
-    iniciar_conexion_cpu_dispatch();
-}
-
 int main(int argc, char* argv[]) {
 
     logger_set_module("KERNEL"); 

@@ -8,7 +8,12 @@ void lanzar_thread_escucha_proceso_desalojado();
 
 int iniciar_conexion_cpu_dispatch()
 {
-    debug_log("dispatcher.c.c@iniciar_conexion_cpu_dispatch", "Se inicia conexion dispatcher con CPU");
+    debug_log("dispatcher.c@iniciar_conexion_cpu_dispatch", "Se inicia conexion dispatcher con CPU");
+
+    if (kernel_config->is_test == 1) {
+        debug_log("dispatcher.c@iniciar_conexion_cpu_dispatch", "IS_TEST = 1, simulando");
+        return 1;
+    }
 
     socket_cliente_cpu_dispatch = crear_conexion(kernel_config->ip_cpu, kernel_config->puerto_cpu_dispatch, "Kernel", "dispatcher.c@iniciar_conexion_cpu_dispatch");
 
@@ -22,6 +27,12 @@ int iniciar_conexion_cpu_dispatch()
 
 void enviar_proceso_a_cpu(pcb_t *proceso) {
     format_info_log("dispatcher.c@enviar_proceso_a_cpu", "Enviando proceso: %d a CPU", proceso->pid);
+
+    if (kernel_config->is_test) {
+        format_debug_log("dispatcher.c@enviar_proceso_a_cpu", "se esta testeando, no se envia nada");
+        return;
+    }
+
     send_codigo_op(socket_cliente_cpu_dispatch, OPCODE_PRUEBA_EJECUTAR);
     lanzar_thread_escucha_proceso_desalojado();
 }
@@ -33,6 +44,8 @@ void lanzar_thread_escucha_proceso_desalojado()
     pthread_detach(thread_escucha);
 }
 
+
+// TODO: traer los mensajes de server_kernel.c de lo que hizo Bel
 void escucha_proceso_desalojado()
 {
     debug_log("dispatcher.c@lanzar_thread_escucha_proceso_desalojado", "Escuchando desalojo de CPU en dispatch");
@@ -48,4 +61,6 @@ void escucha_proceso_desalojado()
 
     // TODO: informar qué proceso volvió de la CPU
     info_log("dispatcher.c@escucha_proceso_desalojado", "CPU nos mando un proceso de regreso");
+
+    
 }
