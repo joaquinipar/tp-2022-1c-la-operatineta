@@ -199,16 +199,6 @@ bool enviar_mensaje_inicial_configuracion(){
   return false;
 }
 
-bool enviar_mensaje_inicial_configuracion()
-{
-  info_log("conexion_client.c@enviar_mensaje_inicial_configuracion", "Solicitud de configuracion relevante para MMU - Mensaje PING_PONG_MEMORIA");
-
-  int stream_size = sizeof(op_code_t);
-  void *stream = malloc(stream_size);
-  op_code_t op_code = OPCODE_PING_PONG_MEMORIA;
-  memcpy(stream, &op_code, sizeof(op_code_t));
-
-}
 
 //OPCODE_PROCESO_DESALOJADO_IO
 bool enviar_mensaje_proceso_desalojado_io(pcb_t* proceso_actualizado, int socket, uint32_t tiempo_bloqueo){
