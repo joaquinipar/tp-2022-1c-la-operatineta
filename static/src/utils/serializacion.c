@@ -19,7 +19,6 @@ ssize_t tamanio_stream_lista_instrucciones(t_list *lista_de_instrucciones)
  */
 ssize_t serializar_lista_de_instrucciones(t_list *lista_de_instrucciones, ssize_t desplazamiento_inicial, void *stream)
 {
-
 	//CODOP + LIST_SIZE + (UINT32 + INT32 + INT32)*
 	ssize_t tamanio_stream = tamanio_stream_lista_instrucciones(lista_de_instrucciones);
 	int desplazamiento = desplazamiento_inicial;

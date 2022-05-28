@@ -4,5 +4,4 @@
 #include "configuracion_cpu.h"
 #include <utils/logger.h>
 
-
 #endif /* CPU_INCLUDE_CICLO_EXECUTE_H_ */
