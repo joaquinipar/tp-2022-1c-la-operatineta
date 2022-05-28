@@ -7,6 +7,7 @@
 #include <utils/server.h>
 #include <pthread.h>
 #include <utils/protocolo_comunicacion.h>
+#include <utils/structs.h>
 #include "configuracion_cpu.h"
 
 pthread_t iniciar_server_interrupt();

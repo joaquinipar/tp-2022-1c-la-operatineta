@@ -208,30 +208,92 @@ bool enviar_mensaje_inicial_configuracion()
   op_code_t op_code = OPCODE_PING_PONG_MEMORIA;
   memcpy(stream, &op_code, sizeof(op_code_t));
 
-  int send_result = send(socket_cliente_cpu, stream, stream_size, false);
-  free(stream);
+}
 
-  if (send_result != -1)
-  {
-    debug_log("conexion_client.c@enviar_mensaje_inicial_configuracion", "Comienza recepcion de mensaje - OPCODE_PING_PONG_MEMORIA");
-    uint32_t codigo_operacion;
-    mensaje_configuracion_t *datos_traduccion = malloc(sizeof(mensaje_configuracion_t));
+//OPCODE_PROCESO_DESALOJADO_IO
+bool enviar_mensaje_proceso_desalojado_io(pcb_t* proceso_actualizado, int socket, uint32_t tiempo_bloqueo){
+  debug_log("conexion_client.c@enviar_mensaje_proceso_desalojado_io", "Comienza envio de mensaje - OPCODE_PROCESO_DESALOJADO_IO");
+    void *stream;
+    uint32_t stream_size_parcial = serializar_proceso(proceso_actualizado, OPCODE_PROCESO_DESALOJADO_IO, &stream);
+    uint32_t stream_size = stream_size_parcial + sizeof(uint32_t); 
+    memcpy(stream, &tiempo_bloqueo, sizeof(uint32_t));
+    int send_result = send(socket, stream, stream_size , false);
+    
+    format_debug_log("conexion_clien.c@enviar_mensaje_proceso_desalojado_io", "Send Result %d", send_result); 
+    if (send_result != -1) {
+    bool response = recv_ack(socket);
 
-    if (recv(socket_cliente_cpu, &codigo_operacion, sizeof(op_code_t), 0) != sizeof(op_code_t))
-    {
-      
-      error_log("conexion_client.c@enviar_mensaje_inicial_configuracion", "El codOp no corresponde al protocolo de Comunicacion!");
-      return false;
+    if (response) {
+      debug_log("conexion_client.c@enviar_mensaje_proceso_desalojado_io", "Recepcion mensaje ACK OK - OPCODE_PROCESO_DESALOJADO_IO");
+      debug_log("conexion_client.c@enviar_mensaje_proceso_desalojado_io", "Termina mensaje OPCODE_PROCESO_DESALOJADO_IO");
+      return response;
     }
-    format_debug_log("conexion_client.c@enviar_mensaje_inicial_configuracion", "Codigo de operacion: %d", codigo_operacion);
-    recv(socket_cliente_cpu, &datos_traduccion->cantidad_entradas_tabla, sizeof(uint32_t), false);
-    format_info_log("conexion_client.c@enviar_mensaje_inicial_configuracion", "Cantidad de entradas de tabla:%d", datos_traduccion->cantidad_entradas_tabla);
-    recv(socket_cliente_cpu, &datos_traduccion->tamanio_pagina, sizeof(uint32_t), false);
-    format_info_log("conexion_client.c@enviar_mensaje_inicial_configuracion", "Tamaño de pagina:%d", datos_traduccion->tamanio_pagina);
-    debug_log("conexion_client.c@enviar_mensaje_inicial_configuracion", "Termina mensaje ok - OPCODE_PING_PONG_MEMORIA");
-    return true;
+    debug_log("conexion_client.c@enviar_mensaje_proceso_desalojado_io", "Recepcion mensaje ACK ERROR -OPCODE_PROCESO_DESALOJADO_IO");
+    debug_log("conexion_client.c@enviar_mensaje_proceso_desalojado_io", "Termina mensaje OPCODE_PROCESO_DESALOJADO_IO");
+    return response;
   }
-  error_log("conexion_client.c@enviar_mensaje_read", "[ERROR] Envio mensaje OPCODE_PING_PONG_MEMORIA");
-  debug_log("conexion_client.c@enviar_mensaje_read", "Termina mensaje OPCODE_PING_PONG_MEMORIA");
+
+  error_log("conexion_client.c@enviar_mensaje_proceso_desalojado_io", "Error al enviar mensaje OPCODE_PROCESO_DESALOJADO_IO");
+  debug_log("conexion_client.c@enviar_mensaje_proceso_desalojado_io", "Termina mensaje OPCODE_PROCESO_DESALOJADO_IO");
   return false;
+
+
+}
+
+//OPCODE_PROCESO_DESALOJADO_INTERRUPT
+
+bool enviar_mensaje_proceso_desalojado_interrupt(pcb_t* proceso_actualizado, int socket){
+  debug_log("conexion_client.c@enviar_mensaje_proceso_desalojado_interrupt", "Comienza envio de mensaje - OPCODE_PROCESO_DESALOJADO_INTERRUPT");
+    void *stream;
+    uint32_t stream_size = serializar_proceso(proceso_actualizado,OPCODE_PROCESO_DESALOJADO_INTERRUPT, &stream);
+    int send_result = send(socket, stream, stream_size , false);
+    
+    format_debug_log("conexion_clien.c@enviar_mensaje_proceso_desalojado_interrupt", "Send Result %d", send_result); 
+    if (send_result != -1) {
+    bool response = recv_ack(socket);
+
+    if (response) {
+      debug_log("conexion_client.c@enviar_mensaje_proceso_desalojado_interrupt", "Recepcion mensaje ACK OK - OPCODE_PROCESO_DESALOJADO_INTERRUPT");
+      debug_log("conexion_client.c@enviar_mensaje_proceso_desalojado_interrupt", "Termina mensaje OPCODE_PROCESO_DESALOJADO_INTERRUPT");
+      return response;
+    }
+    debug_log("conexion_client.c@enviar_mensaje_proceso_desalojado_interrupt", "Recepcion mensaje ACK ERROR -OPCODE_PROCESO_DESALOJADO_INTERRUPT");
+    debug_log("conexion_client.c@enviar_mensaje_proceso_desalojado_interrupt", "Termina mensaje OPCODE_PROCESO_DESALOJADO_INTERRUPT");
+    return response;
+  }
+
+  error_log("conexion_client.c@enviar_mensaje_proceso_desalojado_interrupt", "Error al enviar mensaje OPCODE_PROCESO_DESALOJADO_INTERRUPT");
+  debug_log("conexion_client.c@enviar_mensaje_proceso_desalojado_interrupt", "Termina mensaje OPCODE_PROCESO_DESALOJADO_INTERRUPT");
+  return false;
+
+
+}
+
+//OPCODE_PROCESO_DESALOJADO_EXIT
+
+bool enviar_mensaje_proceso_desalojado_exit(pcb_t* proceso_actualizado, int socket){
+  debug_log("conexion_client.c@enviar_mensaje_proceso_desalojado_exit", "Comienza envio de mensaje - OPCODE_PROCESO_DESALOJADO_EXIT");
+    void *stream;
+    uint32_t stream_size = serializar_proceso(proceso_actualizado,OPCODE_PROCESO_DESALOJADO_EXIT, &stream);
+    int send_result = send(socket, stream, stream_size , false);
+    
+    format_debug_log("conexion_clien.c@enviar_mensaje_proceso_desalojado_exit", "Send Result %d", send_result); 
+    if (send_result != -1) {
+    bool response = recv_ack(socket);
+
+    if (response) {
+      debug_log("conexion_client.c@enviar_mensaje_proceso_desalojado_exit", "Recepcion mensaje ACK OK - OPCODE_PROCESO_DESALOJADO_EXIT");
+      debug_log("conexion_client.c@enviar_mensaje_proceso_desalojado_exit", "Termina mensaje OPCODE_PROCESO_DESALOJADO_EXIT");
+      return response;
+    }
+    debug_log("conexion_client.c@enviar_mensaje_proceso_desalojado_exit", "Recepcion mensaje ACK ERROR -OPCODE_PROCESO_DESALOJADO_EXIT");
+    debug_log("conexion_client.c@enviar_mensaje_proceso_desalojado_exit", "Termina mensaje OPCODE_PROCESO_DESALOJADO_EXIT");
+    return response;
+  }
+
+  error_log("conexion_client.c@enviar_mensaje_proceso_desalojado_exit", "Error al enviar mensaje OPCODE_PROCESO_DESALOJADO_EXIT");
+  debug_log("conexion_client.c@enviar_mensaje_proceso_desalojado_exit", "Termina mensaje OPCODE_PROCESO_DESALOJADO_EXIT");
+  return false;
+
+
 }

@@ -4,6 +4,8 @@
 #include <utils/logger.h>
 #include <utils/server.h>
 #include <utils/protocolo_comunicacion.h>
+#include <utils/serializacion.h>
+#include <utils/structs.h>
 #include "configuracion_cpu.h"
 
 int socket_cliente_cpu;
