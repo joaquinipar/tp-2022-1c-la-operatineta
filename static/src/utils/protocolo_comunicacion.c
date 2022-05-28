@@ -56,7 +56,7 @@ bool send_codigo_op_con_contenido(int socket, op_code_t cop, void* contenido) {
     void* serializacion = malloc(size);
     uint32_t codop_uint = (uint32_t) cop; // para no enviar tipos dependientes del sistema (o sea int)
     memcpy(serializacion, &codop_uint, sizeof (uint32_t));
-    memcpy(serializacion + sizeof (uint32_t), contenido , sizeof (contenido));
+    memcpy(serializacion + sizeof (uint32_t), contenido , sizeof (uint32_t));
 
     return send(socket, serializacion, size, 0) != -1;
 }
