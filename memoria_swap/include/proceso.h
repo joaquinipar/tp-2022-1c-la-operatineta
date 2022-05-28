@@ -15,6 +15,9 @@ uint32_t inicio_proceso(uint32_t pid, uint32_t tamanio);
 * @NAME: inicializar_tabla_1er_nivel
 * @DESC: Inicializa las entradas de una tabla de primer nivel. Le asigna el pid y pone las tablas de 2do nivel en -1
 */
+
+uint32_t get_cantidad_tablas(uint32_t cant_paginas);
+
 entrada_1er_nivel_t*  iniciar_tabla_1er_nivel(uint32_t pid);
 
 /**

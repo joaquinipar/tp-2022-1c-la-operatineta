@@ -70,11 +70,14 @@ int agregar_entrada_tabla_1er_nivel(entrada_1er_nivel_t* tabla_1er_nivel, uint32
 
 void gestionar_tabla_2do_nivel(uint32_t cant_tablas_2do_nivel, entrada_1er_nivel_t* tabla_1er_nivel, uint32_t pid){
 
+
     for(int i=0;i<cant_tablas_2do_nivel;i++){
 
         tabla_2do_nivel_t* nuevo_tabla_2do_nivel = crear_entradas_tabla_2do_nivel(pid);
 
         int posicion_lista_tablas_2do_nivel = list_add(lista_tablas_2do_nivel, nuevo_tabla_2do_nivel);
+
+        format_debug_log("proceso.c@gestionar_tabla_2do_nivel","PID: %i Posicion tabla  2do nivel: %i", pid, posicion_lista_tablas_2do_nivel);
 
         // Busco en que posición de la lista global de tablas de 2do nivel se guardo, y guardo la posición en la tabla
         // de primer nivel.
@@ -100,20 +103,44 @@ uint32_t inicio_proceso(uint32_t pid, uint32_t tamanio){
         admitir_proceso_en_swap(pid, tamanio); 
 
         uint32_t cant_paginas_a_utilizar = obtener_cant_paginas_a_utilizar(tamanio);
+        int cant_max = mem_swap_config->entradas_por_tabla * mem_swap_config->entradas_por_tabla;
+        if(cant_paginas_a_utilizar > cant_max ){
+            // caso rechazo
+            format_error_log("inicio_proceso@proceso.c","PID:%i Cantidad de paginas (%i) excede la capacidad de direccionamiento (%i)", pid, cant_paginas_a_utilizar, cant_max);
+            return -1;
+        }
+
         //uint32_t cant_entradas_a_usar_1er_nivel = cant_tablas_2do_nivel;
-        uint32_t cant_tablas_2do_nivel = cant_paginas_a_utilizar % mem_swap_config->entradas_por_tabla;
+        uint32_t cant_tablas_2do_nivel = get_cantidad_tablas(cant_paginas_a_utilizar);
+
         format_debug_log("proceso.c@admitir_proceso", "Proceso: %d  -- Cantidad de tablas de 2do niveles necesarias: %d", pid, cant_tablas_2do_nivel); 
         
         entrada_1er_nivel_t* tabla_1er_nivel = iniciar_tabla_1er_nivel(pid); 
         gestionar_tabla_2do_nivel(cant_tablas_2do_nivel,tabla_1er_nivel, pid); 
         int posicion_tabla_1er_nivel_en_lista_global = list_add(lista_tablas_1er_nivel,tabla_1er_nivel);
-        format_info_log("proceso.c@admitir_proceso", "Proceso: %d  admitido en Memoria- Nro de tabla 1er nivel asignada: %d", pid, posicion_tabla_1er_nivel_en_lista_global); 
-        return posicion_tabla_1er_nivel_en_lista_global; 
+        format_info_log("proceso.c@admitir_proceso", "Proceso: %d  admitido en Memoria- Nro de tabla 1er nivel asignada: %d", pid, posicion_tabla_1er_nivel_en_lista_global);
+        return posicion_tabla_1er_nivel_en_lista_global;
 
     }
     return -1; 
 }
 
+uint32_t get_cantidad_tablas(uint32_t cant_paginas) {
+
+    double resultado;
+
+    resultado = cant_paginas / mem_swap_config->entradas_por_tabla;
+
+    if (resultado <= 1) {
+        /* Caso: El tamaño es menor de una pagina, o es una pagina justa */
+        return 1;
+    } else if (cant_paginas % mem_swap_config->entradas_por_tabla == 0) {
+        return resultado;
+    } else {
+        /* Caso: El tamaño es mayor a una pagina y hay resto */
+        return (uint32_t)resultado + 1;
+    }
+}
 
 uint32_t obtener_marco_de_tabla_2do_nivel(uint32_t pid, uint32_t nro_tabla_2do_nivel, uint32_t nro_pagina) {
 
