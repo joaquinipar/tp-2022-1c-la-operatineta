@@ -140,6 +140,7 @@ pcb_t *deserializar_proceso(int cliente_socket){
 	debug_log("serializacion.c@deserializar_proceso", "Deserializando un proceso");
 
 	pcb_t *proceso_recibido = malloc(sizeof(pcb_t));
+	debug_log("serializacion@deserializar_proceso", "Recibiendo los datos del proceso");
 	int bytes_recibidos = recv(cliente_socket, &(proceso_recibido->pid), sizeof(uint32_t), 0);
 	format_debug_log("serializacion@deserializar_proceso", "Proceso: %d", proceso_recibido->pid);
 	format_debug_log("serializacion@deserializar_proceso", "Bytes: %d", bytes_recibidos);
