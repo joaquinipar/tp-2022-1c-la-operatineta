@@ -151,10 +151,10 @@ bool procesar_conexion(int cliente_socket) {
       recv(cliente_socket, &pid, sizeof(uint32_t), false);
       uint32_t nro_tabla_2do_nivel;
       recv(cliente_socket, &nro_tabla_2do_nivel, sizeof(uint32_t), false);
-      uint32_t nro_pagina;
-      recv(cliente_socket, &nro_pagina, sizeof(uint32_t), false);
+      uint32_t nro_entrada_2do_nivel;
+      recv(cliente_socket, &nro_entrada_2do_nivel, sizeof(uint32_t), false);
 
-      uint32_t marco = obtener_marco_de_tabla_2do_nivel(pid, nro_tabla_2do_nivel, nro_pagina);
+      uint32_t marco = obtener_marco_de_tabla_2do_nivel(pid, nro_tabla_2do_nivel, nro_entrada_2do_nivel);
 
       int res = send_codigo_op_con_numeros(cliente_socket, OPCODE_ACCESO_2DO_NIVEL, pid, marco);
       if(res != 1){

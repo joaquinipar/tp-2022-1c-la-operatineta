@@ -48,7 +48,6 @@ tabla_2do_nivel_t* crear_entradas_tabla_2do_nivel(uint32_t pid) {
         (una_tabla_2do_nivel->contenido_tabla_2do_nivel)[i].bit_presencia = -1;
         (una_tabla_2do_nivel->contenido_tabla_2do_nivel)[i].bit_modificado = -1;
         (una_tabla_2do_nivel->contenido_tabla_2do_nivel)[i].bit_uso = -1;
-        (una_tabla_2do_nivel->contenido_tabla_2do_nivel)[i].time_ref = -1;
     }
     return una_tabla_2do_nivel;
 }
@@ -142,7 +141,7 @@ uint32_t get_cantidad_tablas(uint32_t cant_paginas) {
     }
 }
 
-uint32_t obtener_marco_de_tabla_2do_nivel(uint32_t pid, uint32_t nro_tabla_2do_nivel, uint32_t nro_pagina) {
+uint32_t obtener_marco_de_tabla_2do_nivel(uint32_t pid, uint32_t nro_tabla_2do_nivel, uint32_t nro_entrada_2do_nivel) {
 
     tabla_2do_nivel_t* tabla_2do_nivel = list_get(lista_tablas_2do_nivel, nro_tabla_2do_nivel);
 
@@ -150,15 +149,90 @@ uint32_t obtener_marco_de_tabla_2do_nivel(uint32_t pid, uint32_t nro_tabla_2do_n
         format_error_log("memoria_api.c@obtener_marco_de_tabla_2do_nivel","%s%d", "No se encontro el numero de tabla: ", nro_tabla_2do_nivel);
         return -1;
     }
-    else if (tabla_2do_nivel[nro_pagina].pid != pid) {
+    else if (tabla_2do_nivel->pid != pid) {
         format_error_log("memoria_api.c@obtener_marco_de_tabla_2do_nivel", "%s%d%s%d",
                          "Accediste a la tabla de segundo nivel del proceso: ",
-                         tabla_2do_nivel[nro_pagina].pid,
+                         tabla_2do_nivel[nro_entrada_2do_nivel].pid,
                          " pero esperaba el proceso: ",
                          pid);
     }
 
-    return tabla_2do_nivel[nro_pagina].contenido_tabla_2do_nivel->marco;
+    if( tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].bit_presencia == 1 ){
+
+        // La pagina se encuentra cargado en memoria
+        return tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].marco;
+
+    }
+    else {
+        // La pagina no se encuentra cargada en memoria. Debemos buscarla en SWAP y cargarla en memoria
+
+        // Verifico que tengo un marco libre para cargar.
+
+        if(calcular_marcos_ocupados_por_proceso(pid) == mem_swap_config->marcos_por_proceso){
+            // todo testear calcular_marcos_ocupados_por_proceso
+            // No tengo marcos libres, toca reemplazar.
+
+            uint32_t marco_libre = buscar_y_reemplazar(pid); // marco listo para ser reemplazado!
+
+            void* contenido = leer_pagina_swap(pid, tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].marco);
+
+            // Cargo contenido en memoria principal
+            memcpy(mem_ppal->memoria_principal + marco_libre * mem_swap_config->tam_pagina, contenido, mem_swap_config->tam_pagina);
+
+            // Modifico tabla de paginas
+
+            tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].marco = marco_libre;
+            tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].bit_presencia = 1;
+            tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].bit_modificado = 0;
+            tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].bit_uso = 1;
+            tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].nro_pagina = nro_entrada_2do_nivel;
+
+
+            array_marcos[marco_libre].estado=1;
+            array_marcos[marco_libre].pid=pid;
+            array_marcos[marco_libre].pagina->marco = marco_libre;
+            array_marcos[marco_libre].pagina->bit_presencia = 1;
+            array_marcos[marco_libre].pagina->bit_modificado = 0;
+            array_marcos[marco_libre].pagina->nro_pagina = nro_entrada_2do_nivel;
+            array_marcos[marco_libre].pagina->bit_uso = 1;
+
+            return marco_libre;
+
+        }
+        else {
+            // Tengo marco libre y puedo cargarlo ahi.
+            uint32_t marco_libre = encontrar_marco_libre(pid);
+
+            void* contenido = leer_pagina_swap(pid, tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].marco);
+
+            // Cargo contenido en memoria principal
+            memcpy(mem_ppal->memoria_principal + marco_libre * mem_swap_config->tam_pagina, contenido, mem_swap_config->tam_pagina);
+
+            // Modifico tabla de paginas
+
+            tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].marco = marco_libre;
+            tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].bit_presencia = 1;
+            tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].bit_modificado = 0;
+            tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].bit_uso = 1;
+            tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].nro_pagina = nro_entrada_2do_nivel;
+
+            array_marcos[marco_libre].estado=1;
+            array_marcos[marco_libre].pid=pid;
+            array_marcos[marco_libre].pagina->marco = marco_libre;
+            array_marcos[marco_libre].pagina->bit_presencia = 1;
+            array_marcos[marco_libre].pagina->bit_modificado = 0;
+            array_marcos[marco_libre].pagina->nro_pagina = nro_entrada_2do_nivel;
+            array_marcos[marco_libre].pagina->bit_uso = 1;
+
+            return marco_libre;
+
+        }
+
+
+    }
+
+
+
 }
 
 uint32_t buscar_nro_tabla_2do_nivel (uint32_t pid, uint32_t nro_tabla_1er_nivel, uint32_t nro_entrada_1er_nivel) {

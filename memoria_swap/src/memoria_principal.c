@@ -49,7 +49,6 @@ void crear_array_mem() {
     array_marcos[i].pagina->bit_presencia = -1;
     array_marcos[i].pagina->bit_modificado = -1;
     array_marcos[i].pagina->bit_uso = -1;
-    array_marcos[i].pagina->time_ref = -1;
   }
   debug_log("memoria_principal.c@crear_array_mem", "Finaliza la inicializacion de la estructura adm Array de Marcos");
 }
@@ -136,6 +135,19 @@ bool tiene_marcos_reservados_libres(uint32_t pid) {
   return false;
 }
 
+uint32_t encontrar_marco_libre(uint32_t pid){
+
+    for(int i=0; i < mem_ppal->cant_marcos; i++){
+
+        if(array_marcos[i].estado == 0){
+
+            return i;
+        }
+    }
+    log_error("memoria_principal.c@encontrar_marco_libre","No se encontro marco libre. No se debería haber ejecutado esta función sin un checkeo previo....");
+    return -1;
+}
+
 
 void iniciar_listas_globales_de_tablas() {
     debug_log("memoria_principal.c@iniciar_listas_globales_de_tablas", "Comienza el inicio la lista global de tablas de 1er nivel y la lista global de tablas de 2do nivel");
@@ -207,7 +219,6 @@ void bajar_paginas_swamp_clockmod(uint32_t pid) {
       pagina_swampeada->bit_presencia = 0;
       pagina_swampeada->bit_uso = 0;
       pagina_swampeada->marco = -1;
-      pagina_swampeada->time_ref = -1;
       free(contenido_marco);
       format_debug_log("memoria_suspender_proceso.c@bajar_paginas_swamp_clockmod", "Pagina: %d - Viajo a Swamp", array_marcos[marco].pagina->nro_pagina);
       }

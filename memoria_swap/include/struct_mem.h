@@ -11,8 +11,7 @@ typedef struct {
     uint32_t marco; 
     uint32_t bit_presencia; 
     uint32_t bit_modificado;
-    uint32_t bit_uso;  
-    long long time_ref;  
+    uint32_t bit_uso;
 } pagina_2do_nivel_t; 
 
 typedef struct {

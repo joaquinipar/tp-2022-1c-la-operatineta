@@ -69,3 +69,43 @@ int eliminar_proceso_en_lista_global_swap(uint32_t pid) {
     format_debug_log("swap.c@eliminar_proceso_en_lista_global_swap", "Se elimino el proceso %d de la lista global de swap", pid);
     return 1;
 }
+
+int escribir_pagina_swap(uint32_t pid, uint32_t marco){
+
+    archivo_pid_t* archivo = get_proceso_swap(pid);
+
+    if(archivo == NULL){
+        format_error_log("swap.c@escribir_pagina_swap", "El proceso %i no tiene archivo swap creado.", pid);
+        return -1;
+    }
+
+    memcpy(archivo->area_archivo_swap + marco * mem_swap_config->tam_pagina,
+           mem_ppal->memoria_principal + marco * mem_swap_config->tam_pagina,
+           mem_swap_config->tam_pagina);
+
+    format_info_log("swap.c@escribir_pagina_swap", "PID: %i Marco: %i escrito en SWAP correctamente! DIR: %i",pid,marco, marco * mem_swap_config->tam_pagina);
+
+
+    if( msync( archivo->area_archivo_swap, archivo->tam_proceso , MS_SYNC) < 0){ // ¿Está bien ese tamaño no?
+        format_error_log("swap.c@escribir_pagina_swap","(VICTIMA)(msync) PID:%i Error al volcar los cambios a SWAP",(int)archivo->pid);
+    }
+
+
+    return 1;
+}
+
+void* leer_pagina_swap(uint32_t pid, uint32_t marco){
+
+    archivo_pid_t* archivo = get_proceso_swap(pid);
+
+    if(archivo == NULL){
+        format_error_log("swap.c@escribir_pagina_swap", "El proceso %i no tiene archivo swap creado.", pid);
+        return -1;
+    }
+
+    void* contenido = malloc(mem_swap_config->tam_pagina);
+
+    memcpy(contenido, archivo->area_archivo_swap + marco * mem_swap_config->tam_pagina, mem_swap_config->tam_pagina);
+
+    return contenido;
+}

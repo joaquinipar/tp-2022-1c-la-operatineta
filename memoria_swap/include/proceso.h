@@ -7,6 +7,8 @@
 #include "struct_mem.h"
 #include "swap/swap.h"
 #include "memoria_principal.h"
+#include "swap/swap.h"
+#include "algoritmos_reemplazo/algoritmos_reemplazo.h"
 
 
 
@@ -46,6 +48,6 @@ void gestionar_tabla_2do_nivel(uint32_t cant_tablas_2do_nivel, entrada_1er_nivel
  * @param nro_pagina
  * @return uint32_t
  */
-uint32_t obtener_marco_de_tabla_2do_nivel(uint32_t pid, uint32_t nro_tabla_2do_nivel, uint32_t nro_pagina); 
+uint32_t obtener_marco_de_tabla_2do_nivel(uint32_t pid, uint32_t nro_tabla_2do_nivel, uint32_t nro_entrada_2do_nivel);
 
 #endif /* MEMORIA_SWAP_INCLUDE_PROCESO_H_ */
