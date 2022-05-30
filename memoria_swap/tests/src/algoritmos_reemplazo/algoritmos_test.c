@@ -100,15 +100,15 @@ void test_mover_puntero(){
     format_warning_log("algoritmos_test.c@test_mover_puntero", "nuevo puntero 100: %i", obtener_puntero_clock(100));
 
     //////// Proceso 103
-    // La pagina del marco victima del proceso 103 debería ser 10015
-    CU_ASSERT_EQUAL(10015, victim103);
+    // marco victima del proceso 103 debería ser 10015
+    CU_ASSERT_EQUAL(15, victim103);
     // El nuevo puntero al marco del proceso 103 debería ser 10012
     CU_ASSERT_EQUAL(12,  obtener_puntero_clock(103));
     ////////
 
     //////// Proceso 100
     // El marco victima del proceso 100 debería ser 3
-    CU_ASSERT_EQUAL(10003, victim100);
+    CU_ASSERT_EQUAL(3, victim100);
     // El nuevo puntero al marco del proceso 100 debería ser 10012
     CU_ASSERT_EQUAL(0, obtener_puntero_clock(100));
     ////////
@@ -190,14 +190,14 @@ void test_clock(){
 
     //////// Proceso 103
     // La pagina del marco victima del proceso 103 debería ser 10015
-    CU_ASSERT_EQUAL(10015, victim103);
+    CU_ASSERT_EQUAL(15, victim103);
     // El nuevo puntero al marco del proceso 103 debería ser 10012
     CU_ASSERT_EQUAL(12,  obtener_puntero_clock(103));
     ////////
 
     //////// Proceso 100
     // El marco victima del proceso 100 debería ser 3
-    CU_ASSERT_EQUAL(10003, victim100);
+    CU_ASSERT_EQUAL(3, victim100);
     // El nuevo puntero al marco del proceso 100 debería ser 10012
     CU_ASSERT_EQUAL(0, obtener_puntero_clock(100));
     ////////
