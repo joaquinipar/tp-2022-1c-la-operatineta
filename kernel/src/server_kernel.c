@@ -76,6 +76,8 @@ pcb_t *deserealizar_nuevo_proceso(int socket) {
   pcb->estado = ESTADO_PROCESO_NEW;
   pcb->tabla_paginas = 0; // TODO: validar que esto no sea una tabla valida, quiza un -1? aunque es un uint32_t
   pcb->estimacion_rafaga = kernel_config->estimacion_inicial;
+  // TODO: recibir el tamanio por el socket y deserealizarlo
+  pcb->tamanio = 512;
   
   return pcb;
 }

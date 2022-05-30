@@ -67,7 +67,7 @@ bool enviar_mensaje_valor_tabla_1er_nivel(uint32_t pid, uint32_t tamanio, uint32
 
 }
 
-bool enviar_mensaje_ejecutar(pcb_t* proceso){
+bool enviar_mensaje_ejecutar(pcb_t* proceso) {
 
     debug_log("conexion_client.c@enviar_mensaje_ejecutar", "Comienza envio de mensaje - EJECUTAR");
     void *stream;
