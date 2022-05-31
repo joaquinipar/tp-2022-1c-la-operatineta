@@ -19,7 +19,6 @@ ssize_t tamanio_stream_lista_instrucciones(t_list *lista_de_instrucciones)
  */
 ssize_t serializar_lista_de_instrucciones(t_list *lista_de_instrucciones, ssize_t desplazamiento_inicial, void *stream)
 {
-
 	//CODOP + LIST_SIZE + (UINT32 + INT32 + INT32)*
 	ssize_t tamanio_stream = tamanio_stream_lista_instrucciones(lista_de_instrucciones);
 	int desplazamiento = desplazamiento_inicial;
@@ -44,6 +43,12 @@ ssize_t serializar_lista_de_instrucciones(t_list *lista_de_instrucciones, ssize_
 	list_iterate(lista_de_instrucciones, (void *)cargar_instruccion_a_stream);
 
 	return tamanio_stream;
+}
+
+uint32_t recibir_tamanio_proceso (socket) {
+	uint32_t tamanio;
+	recv(socket, &tamanio, sizeof(uint32_t), 0);
+	return tamanio;
 }
 
 /**
@@ -141,6 +146,7 @@ pcb_t *deserializar_proceso(int cliente_socket){
 	debug_log("serializacion.c@deserializar_proceso", "Deserializando un proceso");
 
 	pcb_t *proceso_recibido = malloc(sizeof(pcb_t));
+	debug_log("serializacion@deserializar_proceso", "Recibiendo los datos del proceso");
 	int bytes_recibidos = recv(cliente_socket, &(proceso_recibido->pid), sizeof(uint32_t), 0);
 	format_debug_log("serializacion@deserializar_proceso", "Proceso: %d", proceso_recibido->pid);
 	format_debug_log("serializacion@deserializar_proceso", "Bytes: %d", bytes_recibidos);

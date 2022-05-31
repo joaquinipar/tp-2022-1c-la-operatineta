@@ -8,7 +8,7 @@
 #include <utils/logger.h>
 #include <utils/structs.h>
 
-typedef enum { SJF, HRRN } algoritmo_e;
+//typedef enum { SJF, FIFO } algoritmo_e;
 
 
 #endif /* KERNEL_INCLUDE_STRUCT_H_ */

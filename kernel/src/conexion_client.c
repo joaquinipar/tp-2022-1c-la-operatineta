@@ -13,19 +13,6 @@ int iniciar_conexion_memoria()
     return 1;
 }
 
-int iniciar_conexion_cpu_dispatch()
-{
-    debug_log("conexion_client.c@iniciar_conexion_cpu_dispatch", "Se inicia conexion con CPU - Dispatch");
-
-    socket_cliente_cpu_dispatch = crear_conexion(kernel_config->ip_cpu, kernel_config->puerto_cpu_dispatch, "Dispatch", "conexion_client.c@iniciar_conexion_cpu_dispatch");
-
-    if (socket_cliente_cpu_dispatch == -1)
-    {
-        return 0;
-    }
-    return socket_cliente_cpu_dispatch;
-}
-
 int iniciar_conexion_cpu_interrupt()
 {
     debug_log("conexion_client.c@iniciar_conexion_cpu_interrupt", "Se inicia conexion con CPU - Interrupt");
@@ -80,7 +67,7 @@ bool enviar_mensaje_valor_tabla_1er_nivel(uint32_t pid, uint32_t tamanio, uint32
 
 }
 
-bool enviar_mensaje_ejecutar(pcb_t* proceso){
+bool enviar_mensaje_ejecutar(pcb_t* proceso) {
 
     debug_log("conexion_client.c@enviar_mensaje_ejecutar", "Comienza envio de mensaje - EJECUTAR");
     void *stream;

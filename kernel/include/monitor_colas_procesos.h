@@ -86,6 +86,7 @@ sem_t sem_proceso_nuevo;
 sem_t sem_proceso_listo;
 sem_t sem_grado_multiprogramacion_completo;
 sem_t sem_proceso_suspendido;
+sem_t sem_bin_procesar_listo;
 
 // Evalua si hay posibilidad de interbloqueo
 bool esta_en_estado_seguro();

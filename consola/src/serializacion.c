@@ -1,7 +1,5 @@
 #include "../include/serializacion.h"
 
-
-
 uint32_t serializar_lista_de_instrucciones (t_list* lista_de_instrucciones , uint32_t codop, void **stream) {
 
 	//CODOP + LIST_SIZE + (UINT32 + INT32 + INT32)*

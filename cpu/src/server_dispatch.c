@@ -82,20 +82,15 @@ bool procesar_conexion_dispatch(int cliente_socket)
   debug_log("server_dispatch.c@procesar_conexion_dispatch", "Procesando nuevo mensaje");
   op_code_t codigo_operacion;
 
-  if (recv(cliente_socket, &codigo_operacion, sizeof(op_code_t), 0) !=
-      sizeof(op_code_t))
+  if (recv(cliente_socket, &codigo_operacion, sizeof(op_code_t), 0) != sizeof(op_code_t))
   {
     info_log("server_dispatch.c@procesar_conexion_dispatch", "Server Dispatch - Se recibio un codigo_operacion invalido!");
     return false;
   }
 
-  char *mensaje_recibido_log =
-      string_from_format("Server Dispatch - CodOp recibido: %d", codigo_operacion);
-  trace_log("server_dispatch.c@procesar_conexion_dispatch", mensaje_recibido_log);
-  free(mensaje_recibido_log);
+  format_debug_log("server_dispatch.c@procesar_conexion_dispatch", "Server Dispatch - CodOp recibido: %d", codigo_operacion);
 
-  switch (codigo_operacion)
-  {
+  switch (codigo_operacion) {
 
   case OPCODE_PRUEBA:
   {
@@ -112,34 +107,15 @@ bool procesar_conexion_dispatch(int cliente_socket)
   {
     format_debug_log("server_dispatch.c@procesar_conexion", "CodOP recibido %d", codigo_operacion);
 
-    //  pcb_t* proceso_recibido = malloc(sizeof(pcb_t));
-    //  int bytes_recibidos = recv(cliente_socket, &(proceso_recibido->pid), sizeof(uint32_t), 0);
-    //  format_debug_log("serializacion@deserializar_proceso", "Proceso: %d", proceso_recibido->pid);
-    //  format_debug_log("serializacion@deserializar_proceso", "Bytes: %d", bytes_recibidos);
-    //  int bytes_recibidos1 = recv(cliente_socket, &(proceso_recibido->tamanio), sizeof(uint32_t), 0);
-    //  format_debug_log("serializacion@deserializar_proceso", "Tamanio: %d", proceso_recibido->tamanio);
-    //  format_debug_log("serializacion@deserializar_proceso", "Bytes: %d", bytes_recibidos1);
-    //  recv(cliente_socket, &(proceso_recibido->program_counter), sizeof(uint32_t), 0);
-    //  format_debug_log("serializacion@deserializar_proceso", "Program_Counter: %d", proceso_recibido->program_counter);
-    //  recv(cliente_socket, &(proceso_recibido->tabla_paginas), sizeof(uint32_t), 0);
-    //  format_debug_log("serializacion@deserializar_proceso", "Nro Tabla de paginas: %d", proceso_recibido->tabla_paginas);
-    //  recv(cliente_socket, &(proceso_recibido->estado), sizeof(uint32_t), 0);
-    //  format_debug_log("serializacion@deserializar_proceso", "Estado: %d", proceso_recibido->estado);
-    //  recv(cliente_socket, &(proceso_recibido->estimacion_rafaga), sizeof(uint32_t), 0);
-    //  format_debug_log("serializacion@deserializar_proceso", "Estimacion Rafaga: %d", proceso_recibido->estimacion_rafaga);
-    //  recv(cliente_socket, &(proceso_recibido->estimacion), sizeof(uint32_t), 0);
-    //  format_debug_log("serializacion@deserializar_proceso", "Estimacion: %d", proceso_recibido->estimacion);
-    //  recv(cliente_socket, &(proceso_recibido->duracion_ultima_rafaga), sizeof(uint32_t), 0);
-    //  format_debug_log("serializacion@deserializar_proceso", "Duracion Ultima Rafaga: %d", proceso_recibido->duracion_ultima_rafaga);
-    //  recv(cliente_socket, &(proceso_recibido->rafaga_actual), sizeof(uint32_t), 0);
-    //  format_debug_log("serializacion@deserializar_proceso", "Rafaga Actual: %d", proceso_recibido->rafaga_actual);
-    //  proceso_recibido->lista_instrucciones= recibir_lista_de_instrucciones(cliente_socket);
-
     pcb_t *proceso_recibido = deserializar_proceso(cliente_socket);
 
-    pcb_t* proceso_actualizado = iniciar_modulo(proceso_recibido);
-
     send_ack(cliente_socket, OPCODE_ACK_OK);
+
+    //pcb_t* proceso_actualizado = iniciar_modulo(proceso_recibido); no esta definido
+    sleep(3);
+
+    // TODO: mover a ciclo de instruccion, esto es solo para probar
+    enviar_mensaje_proceso_desalojado_exit(proceso_recibido, cliente_socket);
 
     return true;
     break;
@@ -149,8 +125,9 @@ bool procesar_conexion_dispatch(int cliente_socket)
   case OPCODE_CLIENTE_DESCONECTADO:
     error_log("server_dispatch.c@procesar_conexion_dispatch", "Cliente desconectado de Server Dispatch - CPU");
     return false;
+
   default:
-    error_log("server_dispatch.c@procesar_conexion_dispatch", "Algo anduvo mal en el Server Dispatch de CPU");
+    error_log("server_dispatch.c@procesar_conexion_dispatch", "El codop no coincide con ninguno de los que este server escucha. Algo anduvo mal en el Server Dispatch de CPU");
     return false;
     break;
   }

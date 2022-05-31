@@ -1,12 +1,5 @@
 #include "../include/main.h"
 
-void inicializar_kernel(int argc, char* argv[]) {
-    iniciar_config(argc,argv);
-    inicializar_kernel_api();
-    iniciar_monitor_colas_procesos();
-    iniciar_planificador_largo_plazo();
-}
-
 int main(int argc, char* argv[]) {
 
     logger_set_module("KERNEL"); 
@@ -16,7 +9,12 @@ int main(int argc, char* argv[]) {
     inicializar_kernel(argc, argv);
     /*&& !iniciar_conexion_cpu_interrupt() )faltaria sumar la conexion de memoria */
 
-   if(!iniciar_conexion_cpu_dispatch()) {
+    int *server_exit_code = NULL;
+
+    pthread_t hilo_servidor = iniciar_server_kernel();
+    pthread_join(hilo_servidor, (void *)server_exit_code);
+
+    if(!iniciar_conexion_cpu_dispatch()) {
       cerrar_kernel();
       return EXIT_FAILURE;
     }
@@ -32,7 +30,7 @@ int main(int argc, char* argv[]) {
     un_proceso->estimacion= 74;
     un_proceso->duracion_ultima_rafaga= 32;
     //(un_proceso->rafaga_actual).inicio = 1.71;
-   // (un_proceso->rafaga_actual).fin = 3.63; 
+    // (un_proceso->rafaga_actual).fin = 3.63; 
     t_list* instrucciones = list_create(); 
     instruccion_t* una = malloc(sizeof(instruccion_t)); 
     una->instruccion = 0; 
@@ -46,16 +44,10 @@ int main(int argc, char* argv[]) {
     list_add(instrucciones, dos); 
     un_proceso->lista_instrucciones = instrucciones;
 
-   // send_prueba(socket_cliente_cpu_dispatch);
+    // send_prueba(socket_cliente_cpu_dispatch);
    
     enviar_mensaje_ejecutar(un_proceso); 
  
-
-    int *server_exit_code = NULL;
-
-    pthread_t hilo_servidor = iniciar_server_kernel();
-    pthread_join(hilo_servidor, (void *)server_exit_code);
-
     char *exit_msg = string_from_format("El servidor de Kernel finalizo con exit code: %p", server_exit_code);
     info_log("kernel/main.c@main", exit_msg);
     free(exit_msg);

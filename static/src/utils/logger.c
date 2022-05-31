@@ -3,7 +3,7 @@
 
 char *modulo = "DEFAULT_MODULE(cambiar con logger_set_module())";
 char *logs_path = "./logs.log";
-t_log_level loglevel = LOG_LEVEL_INFO;
+t_log_level loglevel = LOG_LEVEL_DEBUG;
 
 void logger_set_module(char *nombre_modulo) {
     modulo = nombre_modulo;
