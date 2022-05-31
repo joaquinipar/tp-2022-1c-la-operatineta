@@ -15,6 +15,7 @@
 
 void iniciar_planificador_corto_plazo();
 void planificar_procesos();
+void replanificar_procesos();
 void finalizar_planificador_corto_plazo();
 
 #endif /* INCLUDE_PLANIFICADOR_CORTO_PLAZO_H_ */

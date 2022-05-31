@@ -329,6 +329,8 @@ pcb_t *desencolar_proceso_en_ejecucion() {
   debug_log("monitor_colas_procesos.c@desencolar_proceso_en_ejecucion", mensaje);
   free(mensaje);
 
+  replanificar_procesos();
+
   return proceso_en_ejecucion;
 }
 
@@ -865,6 +867,8 @@ bool mayor_prioridad(pcb_t *proceso1, pcb_t *proceso2) {
     break;
 
   case FIFO:
+
+    //(Sebas)esto no deberia hacer nada
 
     resultado = (proceso1->estimacion - proceso2->estimacion) > 0;
     

@@ -10,6 +10,7 @@
 #include <stdint.h>
 #include "structs.h"
 #include "proceso.h"
+#include "planificador_corto_plazo.h"
 
 void agregar_proceso_a_lista_de_procesos(pcb_t *proceso);
 pcb_t *buscar_proceso(uint32_t pid);

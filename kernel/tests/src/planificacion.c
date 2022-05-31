@@ -39,11 +39,18 @@ void test_planificacion_inicial() {
     // le damos tiempo al plani de correr
     sleep(5); 
 
+    pcb_t *proceso_desalojado = desencolar_proceso_en_ejecucion();
+    
+
+    sleep(5); 
+
     // A esta altura el primer proceso ya deberia estar ejecutando
     // otros 2 procesos en listos
     // nos fijamos que esten en la cola correcta
     CU_ASSERT_EQUAL(cantidad_procesos_listos(), 2);
-    CU_ASSERT_EQUAL(cantidad_procesos_ejecutando(), 1);
+    CU_ASSERT_EQUAL(cantidad_procesos_ejecutando(), 0);
 
     //CU_ASSERT_EQUAL(suma(0,2), 2);
+
+
 }
