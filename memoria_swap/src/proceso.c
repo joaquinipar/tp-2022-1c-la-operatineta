@@ -190,11 +190,7 @@ uint32_t obtener_marco_de_tabla_2do_nivel(uint32_t pid, uint32_t nro_tabla_2do_n
 
             array_marcos[marco_libre].estado=1;
             array_marcos[marco_libre].pid=pid;
-            array_marcos[marco_libre].pagina->marco = marco_libre;
-            array_marcos[marco_libre].pagina->bit_presencia = 1;
-            array_marcos[marco_libre].pagina->bit_modificado = 0;
-            array_marcos[marco_libre].pagina->nro_pagina = nro_entrada_2do_nivel;
-            array_marcos[marco_libre].pagina->bit_uso = 1;
+            array_marcos[marco_libre].pagina = tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel];
 
             return marco_libre;
 
@@ -218,11 +214,7 @@ uint32_t obtener_marco_de_tabla_2do_nivel(uint32_t pid, uint32_t nro_tabla_2do_n
 
             array_marcos[marco_libre].estado=1;
             array_marcos[marco_libre].pid=pid;
-            array_marcos[marco_libre].pagina->marco = marco_libre;
-            array_marcos[marco_libre].pagina->bit_presencia = 1;
-            array_marcos[marco_libre].pagina->bit_modificado = 0;
-            array_marcos[marco_libre].pagina->nro_pagina = nro_entrada_2do_nivel;
-            array_marcos[marco_libre].pagina->bit_uso = 1;
+            array_marcos[marco_libre].pagina = tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel];
 
             return marco_libre;
 
