@@ -317,21 +317,11 @@ void encolar_proceso_en_ejecucion(pcb_t *proceso) {
 
 pcb_t *desencolar_proceso_en_ejecucion() {
 
-  //
-
   pthread_mutex_lock(&procesos_ejecutando_mutex);
-
   pcb_t *proceso_en_ejecucion = list_remove(cola_ejecucion, 0);
-  proceso_finalizar_rafaga(proceso_en_ejecucion);
-
   pthread_mutex_unlock(&procesos_ejecutando_mutex);
 
-  char *mensaje = string_from_format(
-      "Proceso pid: %d desencolado de ejecucion", proceso_en_ejecucion->pid);
-  debug_log("monitor_colas_procesos.c@desencolar_proceso_en_ejecucion", mensaje);
-  free(mensaje);
-
-  replanificar_procesos();
+  format_debug_log("monitor_colas_procesos.c@desencolar_proceso_en_ejecucion", "Proceso pid: %d desencolado de ejecucion", proceso_en_ejecucion->pid);
 
   return proceso_en_ejecucion;
 }

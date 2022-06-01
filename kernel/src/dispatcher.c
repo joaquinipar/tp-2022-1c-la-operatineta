@@ -115,6 +115,8 @@ void escucha_proceso_desalojado()
                 debug_log("conexion_client.c@procesar_conexion", "Termina mensaje OPCODE_PROCESO_DESALOJADO_EXIT");
             }
 
+            finalizar_proceso(proceso_actualizado);
+
             // TODO: logica de proceso desalojado por exit
         }
         

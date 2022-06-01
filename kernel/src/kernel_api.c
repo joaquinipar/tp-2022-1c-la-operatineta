@@ -26,3 +26,43 @@ bool ejecutar_proceso_nuevo(pcb_t *proceso) {
   return encolar_proceso_en_nuevos(proceso);
 
 }
+
+bool finalizar_proceso(pcb_t *proceso_actualizado) {
+
+  pcb_t *proceso = buscar_proceso(proceso_actualizado->pid);
+  proceso_finalizar_rafaga(proceso);
+  proceso->estado = EXIT;
+
+  pcb_t *proceso_desencolado = desencolar_proceso_en_ejecucion();
+
+  if (proceso_desencolado->pid != proceso->pid) {
+    warning_log("kernel_api.c@finalizar_proceso", "CUIDADO, MANQUEADA EN PROCESO TERMINADO (el id del proceso en ejecucion no coincide con el proceso que llego por dispatch)");
+  }
+
+  encolar_proceso_en_terminados(proceso);
+
+  // TODO: enviar mensaje a memoria para eliminar proceso de memoria
+
+  // TODO: revisar posible condicion de carrera, si no se ejecuta el plani de largo plazo a tiempo (y hay suspended-ready), puede agarrar uno de menor prioridad de ready (porque no llego a ready un suspended-ready a tiempo)
+  sem_post(&sem_proceso_listo); //libero un grado de multiprogramacion, hay que mover alguno a ready
+  sem_post(&sem_bin_procesar_listo);
+
+}
+
+// TODO: implementar
+bool bloquear_proceso(pcb_t *proceso_actualizado, int tiempo_bloqueo) {
+  // buscar proceso => actualizar pcb
+  // sacar proceso de lista de ejecucion
+  // actualizar estimacion
+  // mover proceso a lista de bloqueados => tener en cuenta https://github.com/sisoputnfrba/foro/issues/2559
+  // llamar a planificar
+}
+
+// TODO: implementar
+bool desalojar_proceso_interrupt(pcb_t *proceso_actualizado) {
+  // buscar proceso => actualizar pcb
+  // sacar proceso de lista de ejecucion
+  // actualizar estimacion
+  // mover a ready
+  // llamara a planificar
+}

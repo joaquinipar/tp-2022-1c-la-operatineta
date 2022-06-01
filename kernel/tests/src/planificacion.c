@@ -1,11 +1,5 @@
 #include "../include/planificacion.h"
 
-/* int suma(int a, int b);
-
-int suma (int a, int b ) {
-    return (a + b);
-} */
-
 pcb_t *crear_proceso_prueba() {
     pcb_t *nuevo_proceso = malloc(sizeof(pcb_t));
     nuevo_proceso->pid = obtener_siguiente_pid();
@@ -27,20 +21,19 @@ void test_planificacion_inicial() {
     inicializar_kernel(2, argumentos);
 
     // PONER UN PROCESO EN COLA DE LISTOS
-    pcb_t *nuevo_proceso = crear_proceso_prueba();
-    ejecutar_proceso_nuevo(nuevo_proceso);
+    pcb_t *nuevo_proceso1 = crear_proceso_prueba();
+    ejecutar_proceso_nuevo(nuevo_proceso1);
 
-    nuevo_proceso = crear_proceso_prueba();
-    ejecutar_proceso_nuevo(nuevo_proceso);
+    pcb_t *nuevo_proceso2 = crear_proceso_prueba();
+    ejecutar_proceso_nuevo(nuevo_proceso2);
 
-    nuevo_proceso = crear_proceso_prueba();
-    ejecutar_proceso_nuevo(nuevo_proceso);
+    pcb_t *nuevo_proceso3 = crear_proceso_prueba();
+    ejecutar_proceso_nuevo(nuevo_proceso3);
 
     // le damos tiempo al plani de correr
     sleep(5); 
 
-    pcb_t *proceso_desalojado = desencolar_proceso_en_ejecucion();
-    encolar_proceso_en_listos(proceso_desalojado);
+    finalizar_proceso(nuevo_proceso1);
 
     sleep(5); 
 

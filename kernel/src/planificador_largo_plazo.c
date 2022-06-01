@@ -16,6 +16,7 @@ void controlar_grado_de_multiprogramacion() {
 
   while (1) {
 
+    // Este semaforo se llama cuando viene un proceso nuevo
     sem_wait(&sem_proceso_nuevo);
 
     if (!grado_multiprogramacion_completo()) {
