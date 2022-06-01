@@ -66,5 +66,6 @@ bool send_codigo_op_con_numero(int socket, op_code_t cop, uint32_t numero);
  * @return bool
  */
 bool send_codigo_op_con_numeros(int socket, op_code_t cop, uint32_t numero1, uint32_t numero2);
+bool send_codigo_op_con_3_numeros(int socket, op_code_t cop, uint32_t numero1, uint32_t numero2, uint32_t numero3);
 
 #endif /* STATIC_INCLUDE_UTILS_PROTOCOLO_COMUNICACION_H_ */

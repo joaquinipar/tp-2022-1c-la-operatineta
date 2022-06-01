@@ -65,6 +65,7 @@ int marco_presente_MP(uint32_t pagina_buscada, uint32_t pid);
 int buscar_marco_en_MP(uint32_t pagina_buscada, uint32_t pid); 
 uint32_t get_marco_MP(uint32_t pagina_buscada, uint32_t pid_buscado); 
 int calcular_marcos_ocupados_por_proceso(uint32_t pid); 
-bool tiene_marcos_reservados_libres(uint32_t pid); 
+bool tiene_marcos_reservados_libres(uint32_t pid);
+uint32_t encontrar_marco_libre(uint32_t pid);
 
 #endif /* MEMORIA_SWAP_INCLUDE_MEMORIA_PRINCIPAL_H_ */

@@ -62,7 +62,7 @@ uint32_t manejar_clock(uint32_t pid) {
                     format_debug_log("algoritmos_reemplazo.c@manejar_clock", "PID %i Numero de pagina elegida: %i", pid, array_marcos[i_marco].pagina->nro_pagina);
 
                     // Retorno victima
-                    return array_marcos[i_marco].pagina->nro_pagina;
+                    return i_marco;
                 }
                 // caso perdonador => bit de uso = 1. Le pongo el bit de uso en 0
                 else {
@@ -117,7 +117,7 @@ uint32_t manejar_clock_modificado(uint32_t pid) {
                         // Muevo puntero al proximo marco del proceso
                         mover_puntero_fija(i_marco, pid);
                         // Retorno victima
-                        return array_marcos[i_marco].pagina->nro_pagina;
+                        return i_marco;
                     }
                 }
                 else {
@@ -130,7 +130,7 @@ uint32_t manejar_clock_modificado(uint32_t pid) {
                         // Muevo puntero al proximo marco del proceso
                         mover_puntero_fija(i_marco, pid);
                         // Retorno victima
-                        return array_marcos[i_marco].pagina->nro_pagina;
+                        return i_marco;
                     }
 
                     // Seteo bit de uso en cero.
@@ -339,8 +339,8 @@ uint32_t get_marco_reservado_por_proceso(uint32_t pid) {
 
 int _struct_esta_corrupto(uint32_t bit_uso, uint32_t bit_modificado){
 
-    if ((bit_uso  != 0 && bit_uso) != 1 ||
-        (bit_modificado != 0 && bit_modificado != 1)) {
+    if ( !(bit_uso == 0 || bit_uso == 1)  ||
+         !(bit_modificado == 0 || bit_modificado == 1) ) {
 
         error_log("algoritmos_reemplazo.c@_struct_esta_corrupto","ERROR!! Bit de uso o Bit de modificado con valor inválido");
         format_error_log("algoritmos_reemplazo.c@_struct_esta_corrupto","Esperaba valores (0 | 1) y obtuve: BIT USO:%i BIT MODIFICADO:%i",bit_uso, bit_modificado);
@@ -350,3 +350,19 @@ int _struct_esta_corrupto(uint32_t bit_uso, uint32_t bit_modificado){
     return 0;
 }
 
+int buscar_y_reemplazar(uint32_t pid){
+
+    uint32_t marco_victima = correr_algoritmo_reemplazo(pid);
+
+    if (array_marcos[marco_victima].pagina->bit_modificado == 1){
+        // Si tiene el bit de modificado en 1 y nuestra intención es liberar el marco victima, debemos bajarlo a swap
+        // para no perderlo permanentemente.
+        int estado = escribir_pagina_swap(pid, marco_victima);
+
+        if(estado == -1){
+            return -1;
+        }
+    }
+
+    return marco_victima;
+}

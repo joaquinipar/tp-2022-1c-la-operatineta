@@ -151,10 +151,13 @@ bool procesar_conexion(int cliente_socket) {
       recv(cliente_socket, &pid, sizeof(uint32_t), false);
       uint32_t nro_tabla_2do_nivel;
       recv(cliente_socket, &nro_tabla_2do_nivel, sizeof(uint32_t), false);
-      uint32_t nro_pagina;
-      recv(cliente_socket, &nro_pagina, sizeof(uint32_t), false);
+      uint32_t nro_entrada_2do_nivel;
+      recv(cliente_socket, &nro_entrada_2do_nivel, sizeof(uint32_t), false);
 
-      uint32_t marco = obtener_marco_de_tabla_2do_nivel(pid, nro_tabla_2do_nivel, nro_pagina);
+      format_warning_log("server_mem.c@procesar_conexion", "(OPCODE_ACCESO_2DO_NIVEL) Recibi PID: %i nro_tabla_2do_nivel: %i nro_entrada_2do_nivel: %i", pid, nro_tabla_2do_nivel, nro_entrada_2do_nivel);
+
+      uint32_t marco = obtener_marco_de_tabla_2do_nivel(pid, nro_tabla_2do_nivel, nro_entrada_2do_nivel);
+      format_warning_log("server_mem.c@procesar_conexion", "(OPCODE_ACCESO_2DO_NIVEL) PID: %i Envio respuesta MARCO: ", pid, marco);
 
       int res = send_codigo_op_con_numeros(cliente_socket, OPCODE_ACCESO_2DO_NIVEL, pid, marco);
       if(res != 1){
@@ -173,9 +176,10 @@ bool procesar_conexion(int cliente_socket) {
 
       void* lectura = leer(direccion_fisica);
 
-      int res = send_codigo_op_con_numero(OPCODE_READ, pid, (uint32_t)lectura);
 
-      format_debug_log("server_mem.c@procesar_conexion", "Envie el contenido: %d", (uint32_t) lectura);
+      int res = send_codigo_op_con_numero(OPCODE_READ, pid, lectura);
+
+      debug_log("server_mem.c@procesar_conexion", "Envie el contenido");
 
       if(res != 1){
           error_log("server_mem.c", "Ocurrió un error al enviar la respuesta de READ");
@@ -195,6 +199,8 @@ bool procesar_conexion(int cliente_socket) {
 
       escribir(direccion_fisica, contenido);
 
+      // todo Actualizar bit de modificado. calcular marco con DF. Direccion fisica / tamaño de pagina
+
       send_ack(cliente_socket, OPCODE_ACK_OK);
 
       return true;
@@ -212,13 +218,15 @@ bool procesar_conexion(int cliente_socket) {
       //abort();
       warning_log("server_mem.c@procesar_conexion", "LLEGO EL ABORT!!!");
       cerrar_mem_swap();
-      shutdown(socket_server_mem, SHUT_RD);
+      //shutdown(socket_server_mem, SHUT_RD);
       raise(SIGINT);
+      return false ;
+      break;
   }
   case OPCODE_SUSPENDER_PROCESO: {
     uint32_t pid;
     recv(cliente_socket, &pid, sizeof(uint32_t), false);
-
+    error_log("asd", "entro en el suspernder proceso!!!!!!!!");
     bool response = suspender_proceso(pid);
    
     if (response) {

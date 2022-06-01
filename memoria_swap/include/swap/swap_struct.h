@@ -7,7 +7,6 @@
 
 typedef struct{
     // El indice del array representa el numero de marco
-    int estado;
     int pagina;
 }marco_virtual_t;
 

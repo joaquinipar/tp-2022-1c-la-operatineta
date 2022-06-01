@@ -7,6 +7,8 @@
 #include "struct_mem.h"
 #include "swap/swap.h"
 #include "memoria_principal.h"
+#include "swap/swap.h"
+#include "algoritmos_reemplazo/algoritmos_reemplazo.h"
 
 
 
@@ -15,6 +17,9 @@ uint32_t inicio_proceso(uint32_t pid, uint32_t tamanio);
 * @NAME: inicializar_tabla_1er_nivel
 * @DESC: Inicializa las entradas de una tabla de primer nivel. Le asigna el pid y pone las tablas de 2do nivel en -1
 */
+
+uint32_t get_cantidad_tablas(uint32_t cant_paginas);
+
 entrada_1er_nivel_t*  iniciar_tabla_1er_nivel(uint32_t pid);
 
 /**
@@ -43,6 +48,6 @@ void gestionar_tabla_2do_nivel(uint32_t cant_tablas_2do_nivel, entrada_1er_nivel
  * @param nro_pagina
  * @return uint32_t
  */
-uint32_t obtener_marco_de_tabla_2do_nivel(uint32_t pid, uint32_t nro_tabla_2do_nivel, uint32_t nro_pagina); 
+uint32_t obtener_marco_de_tabla_2do_nivel(uint32_t pid, uint32_t nro_tabla_2do_nivel, uint32_t nro_entrada_2do_nivel);
 
 #endif /* MEMORIA_SWAP_INCLUDE_PROCESO_H_ */
