@@ -40,7 +40,7 @@ void test_planificacion_inicial() {
     sleep(5); 
 
     pcb_t *proceso_desalojado = desencolar_proceso_en_ejecucion();
-    
+    encolar_proceso_en_listos(proceso_desalojado);
 
     sleep(5); 
 

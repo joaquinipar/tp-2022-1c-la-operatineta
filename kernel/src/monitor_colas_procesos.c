@@ -317,6 +317,8 @@ void encolar_proceso_en_ejecucion(pcb_t *proceso) {
 
 pcb_t *desencolar_proceso_en_ejecucion() {
 
+  //
+
   pthread_mutex_lock(&procesos_ejecutando_mutex);
 
   pcb_t *proceso_en_ejecucion = list_remove(cola_ejecucion, 0);
@@ -668,7 +670,9 @@ void mover_proceso_nuevo_a_suspendido_listo() {
 pcb_t *mover_proceso_listo_a_ejecucion() {
   pcb_t *proceso;
 
-  ordenar_cola_listos();
+  if(kernel_config -> algoritmo_planificacion == SRT){
+    ordenar_cola_listos();
+  }
   proceso = desencolar_proceso_listo();
   encolar_proceso_en_ejecucion(proceso);
   proceso_ejecutar(proceso);
@@ -870,7 +874,7 @@ bool mayor_prioridad(pcb_t *proceso1, pcb_t *proceso2) {
 
     //(Sebas)esto no deberia hacer nada
 
-    resultado = (proceso1->estimacion - proceso2->estimacion) > 0;
+    //resultado = (proceso1->estimacion - proceso2->estimacion) > 0;
     
     break;
   }
