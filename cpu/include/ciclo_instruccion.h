@@ -11,8 +11,6 @@
 #include "mmu.h"
 #include "tlb.h"
 
-
-
 void  iniciar_ciclo_instruccion(pcb_t* proceso); 
 instruccion_t* fetch_instruction(pcb_t* proceso); 
 int32_t gestionar_instruccion_read(pcb_t* proceso, int32_t direccion_logica); 

@@ -42,7 +42,7 @@ void crear_array_mem() {
 
   for (int i = 0; i < mem_ppal->cant_marcos; ++i) {
 // Seteo todo el array en libre. 0-> libre y demas en -1
-    array_marcos[i].estado = 0;   /* Estado -> LIBRE - Estado 1 -> Ocupado */
+    array_marcos[i].estado = 0;   /* Estado 0-> LIBRE - Estado 1 -> Ocupado */
     array_marcos[i].pid = -1;
     (array_marcos[i].pagina) = (pagina_2do_nivel_t *)malloc(sizeof(pagina_2do_nivel_t));
     (array_marcos[i].pagina)->nro_pagina = -1;
@@ -52,8 +52,6 @@ void crear_array_mem() {
   }
   debug_log("memoria_principal.c@crear_array_mem", "Finaliza la inicializacion de la estructura adm Array de Marcos");
 }
-
-
 
 void destruir_array_mem() {
   for (int i = 0; i < mem_ppal->cant_marcos; i++) {
@@ -144,7 +142,7 @@ uint32_t encontrar_marco_libre(uint32_t pid){
             return i;
         }
     }
-    log_error("memoria_principal.c@encontrar_marco_libre","No se encontro marco libre. No se debería haber ejecutado esta función sin un checkeo previo....");
+    error_log("memoria_principal.c@encontrar_marco_libre","No se encontro marco libre. No se debería haber ejecutado esta función sin un checkeo previo....");
     return -1;
 }
 
@@ -206,46 +204,31 @@ int escribir_contenido_swap(void* contenido_marco, uint32_t pid, uint32_t marco)
   format_info_log("memoria_principal.c@escribir_contenido_swap", "EXITO al escribir cambios en SWAP - Proceso: %d", pid);
   return 1; 
 }
-void bajar_paginas_swamp_clockmod(uint32_t pid) {
+void bajar_paginas_swamp(uint32_t pid) {
 
   for (int marco = 0; marco < mem_ppal->cant_marcos; marco++) {
 
     if (array_marcos[marco].pid == pid && array_marcos[marco].pagina->bit_modificado == 1 && array_marcos[marco].estado == 1 && array_marcos[marco].pagina->bit_presencia == 1) {     
       void *contenido_marco = leer_pagina_memoria(marco);
-      escribir_contenido_swap(contenido_marco, pid, marco); 
+      int resultado = escribir_contenido_swap(contenido_marco, pid, marco); 
 
-      pagina_2do_nivel_t *pagina_swampeada = array_marcos[marco].pagina;
-      pagina_swampeada->bit_modificado = 0;
-      pagina_swampeada->bit_presencia = 0;
-      pagina_swampeada->bit_uso = 0;
-      pagina_swampeada->marco = -1;
-      free(contenido_marco);
-      format_debug_log("memoria_suspender_proceso.c@bajar_paginas_swamp_clockmod", "Pagina: %d - Viajo a Swamp", array_marcos[marco].pagina->nro_pagina);
-      }
-      
+      if(resultado){
 
-
-  }
-}
-
-/*
-void eliminar_reserva_marcos_proceso_MP(uint32_t pid) {
-
-  ////
-  for (int marco = 0; marco < mem->cant_marcos; marco++) {
-    if (array_memoria_ppal[marco].id_proceso == pid && array_memoria_ppal[marco].estado ==1) { //Agrego la condicion estado 1 ???
-      array_memoria_ppal[marco].estado = 0;
-      array_memoria_ppal[marco].id_proceso = -1;
-
-      char *msg = string_from_format("Eliminacion Reserva Marco: %d Proceso %d", marco, array_memoria_ppal[marco].id_proceso);
-      debug_log("memoria_suspender_proceso.c@eliminar_reserva_marcos_proceso_MP", msg);
-      free(msg);
+        pagina_2do_nivel_t *pagina_swampeada = array_marcos[marco].pagina;
+        pagina_swampeada->bit_modificado = 0;
+        pagina_swampeada->bit_presencia = 0;
+        pagina_swampeada->bit_uso = 0;
+        pagina_swampeada->marco = -1;
+        array_marcos[marco].estado = 0; 
+        array_marcos[marco].pid = -1; 
+        free(contenido_marco);
+        format_debug_log("memoria_suspender_proceso.c@bajar_paginas_swamp", "Pagina: %d - Viajo a Swamp", array_marcos[marco].pagina->nro_pagina);
+      } 
+      format_debug_log("memoria_suspender_proceso.c@bajar_paginas_swamp", "ERROR - No se puede bajar pagina a Swap", array_marcos[marco].pagina->nro_pagina);
     }
-  }
-  ////
-}
-*/
 
+  }
+}
 
 
 

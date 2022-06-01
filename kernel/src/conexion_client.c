@@ -80,6 +80,40 @@ bool enviar_mensaje_valor_tabla_1er_nivel(uint32_t pid, uint32_t tamanio, uint32
 
 }
 
+
+bool enviar_mensaje_exit(pcb_t* proceso){
+    debug_log("conexion_client.c@enviar_mensaje_exit", "Comienza envio de mensaje - OPCODE_EXIT");
+    //CODOP + PID
+    int stream_size = sizeof(op_code_t) + sizeof(uint32_t);
+    void *stream = malloc(stream_size);
+    op_code_t op_code = OPCODE_EXIT;
+
+    memcpy(stream, &op_code, sizeof(op_code_t));
+    memcpy(stream + sizeof(op_code_t), &(proceso->pid), sizeof(uint32_t));
+
+    int send_result = send(socket_cliente_kernel, stream, stream_size , false);
+    
+    format_debug_log("conexion_clien.c@enviar_mensaje_exit", "Send Result %d", send_result); 
+
+    if (send_result != -1) {
+    bool response = recv_ack(socket_cliente_kernel);
+
+    if (response) {
+      debug_log("conexion_client.c@enviar_mensaje_exit", "Recepcion mensaje ACK OK - OPCODE_EXIT");
+      debug_log("conexion_client.c@enviar_mensaje_exit", "Termina mensaje OPCODE_EXIT");
+      return response;
+    }
+    debug_log("conexion_client.c@enviar_mensaje_exit", "Recepcion mensaje ACK ERROR -OPCODE_EXIT");
+    debug_log("conexion_client.c@enviar_mensaje_exit", "Termina mensaje OPCODE_EXIT");
+    return response;
+  }
+
+  error_log("conexion_client.c@enviar_mensaje_exit", "Error al enviar mensaje OPCODE_EXIT");
+  debug_log("conexion_client.c@enviar_mensaje_exit", "Termina mensaje OPCODE_EXIT");
+  return false;
+
+}
+
 bool enviar_mensaje_ejecutar(pcb_t* proceso){
 
     debug_log("conexion_client.c@enviar_mensaje_ejecutar", "Comienza envio de mensaje - EJECUTAR");

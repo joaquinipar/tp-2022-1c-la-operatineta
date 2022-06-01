@@ -167,21 +167,6 @@ int escribir_entrada_en_tlb(uint32_t pagina_a_escribir, uint32_t marco_a_escribi
   return 0;
 }
 
-int borrar_pagina_TLB(uint32_t pagina_buscada) {
-
-  int entrada_buscada = buscar_pagina_en_TLB(pagina_buscada);
-  if (entrada_buscada != -1) {
-    array_tlb[entrada_buscada].nro_pagina = -1;
-    array_tlb[entrada_buscada].marco = -1;
-    array_tlb[entrada_buscada].estado = 0;
-    array_tlb[entrada_buscada].time_pagina = -1;
-    format_debug_log("tlb.c@borrar_pagina_TLB","Delete Entrada : %dPagina: %d", entrada_buscada, pagina_buscada);
-    return 1;
-  }
-
-  format_error_log("tlb.c@borrar_pagina_TLB", "No se puede borrar Entrada Victima: %d - Pagina: %d", entrada_buscada, pagina_buscada);
-  return 0;
-}
 
 void eliminar_entradas_TLB() {
 

@@ -182,7 +182,7 @@ bool procesar_conexion(int cliente_socket) {
       debug_log("server_mem.c@procesar_conexion", "Envie el contenido");
 
       if(res != 1){
-          error_log("server_mem.c", "Ocurrió un error al enviar la respuesta de READ");
+          error_log("server_mem.c@procesar_conexion", "Ocurrió un error al enviar la respuesta de READ");
       }
 
       free(lectura);
@@ -207,7 +207,7 @@ bool procesar_conexion(int cliente_socket) {
       break;
   }
   case OPCODE_PING_PONG_MEMORIA: {
-    format_warning_log("main.c@main", "Entradas por tabla: %d - Tamaño de pagina: %d", mem_swap_config->entradas_por_tabla,mem_swap_config->tam_pagina); 
+    format_debug_log("server_mem.c@procesar_conexion", "Entradas por tabla: %d - Tamaño de pagina: %d", mem_swap_config->entradas_por_tabla,mem_swap_config->tam_pagina); 
 
     send_codigo_op_con_numeros(cliente_socket,OPCODE_PING_PONG_MEMORIA, mem_swap_config->entradas_por_tabla, mem_swap_config->tam_pagina);
     return true;
@@ -226,33 +226,40 @@ bool procesar_conexion(int cliente_socket) {
   case OPCODE_SUSPENDER_PROCESO: {
     uint32_t pid;
     recv(cliente_socket, &pid, sizeof(uint32_t), false);
-    error_log("asd", "entro en el suspernder proceso!!!!!!!!");
     bool response = suspender_proceso(pid);
    
     if (response) {
       send_ack(cliente_socket, OPCODE_ACK_OK);
       return true;
-     // break; 
+      break; 
     }
 
     send_ack(cliente_socket, OPCODE_ACK_ERROR);
-    return false;
+    return true;
     break; 
   }
 
   case OPCODE_EXIT:{
-    
+    uint32_t pid;
+    recv(cliente_socket, &pid, sizeof(uint32_t), false);
+    bool response = cerrar_proceso(pid);
+   
+    if (response) {
+      send_ack(cliente_socket, OPCODE_ACK_OK);
+      return true;
+      break; 
+    }
+
+    send_ack(cliente_socket, OPCODE_ACK_ERROR);
     return true;
     break; 
   }
   // Errores con las conexiones
   case OPCODE_CLIENTE_DESCONECTADO:
-    error_log("server_swamp.c@procesar_conexion_swamp",
-              "Cliente desconectado de Servidor Memoria");
+    error_log("server_mem.c@procesar_conexion","Cliente desconectado de Servidor Memoria");
     return false;
   default:
-    error_log("server_swamp.cc@procesar_conexion_swamp",
-              "Algo anduvo mal en el Servidor de Swamp");
+    error_log("server_mem.cc@procesar_conexion","Algo anduvo mal en el Servidor de Memoria");
     return false;
     break;
   }

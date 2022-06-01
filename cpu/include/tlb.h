@@ -29,13 +29,10 @@ int algoritmo_First_Fit_TLB();
 int get_victima_tlb(); 
 int algoritmo_reemplazo_TLB(); 
 int escribir_entrada_en_tlb(uint32_t pagina_a_escribir, uint32_t marco_a_escribir); 
-int borrar_pagina_TLB(uint32_t pagina_buscada); 
 void eliminar_entradas_TLB(); 
 uint32_t get_marco_de_pagina_TLB(uint32_t pagina_buscada); 
 uint32_t se_encuentra_en_tlb(uint32_t pagina_buscada); 
 
-
-uint32_t se_encuentra_en_tlb(uint32_t pagina_buscada);  
 
 
 

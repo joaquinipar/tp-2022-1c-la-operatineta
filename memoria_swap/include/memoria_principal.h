@@ -56,8 +56,7 @@ void* leer(uint32_t direccion_fisica);
 void escribir(uint32_t direccion_fisica, void* contenido); 
 
 
-void* leer_pagina_memoria(uint32_t marco_asignado); 
-int escribir_contenido_swap(void* contenido_marco, uint32_t pid, uint32_t marco); 
+
 
 
 void escribir_contenido_en_marco_MP(uint32_t new_pid, pagina_2do_nivel_t *new_page, uint32_t frame_a_escribir, int new_state); 
@@ -67,5 +66,9 @@ uint32_t get_marco_MP(uint32_t pagina_buscada, uint32_t pid_buscado);
 int calcular_marcos_ocupados_por_proceso(uint32_t pid); 
 bool tiene_marcos_reservados_libres(uint32_t pid);
 uint32_t encontrar_marco_libre(uint32_t pid);
+
+void* leer_pagina_memoria(uint32_t marco_asignado); 
+int escribir_contenido_swap(void* contenido_marco, uint32_t pid, uint32_t marco); 
+void bajar_paginas_swamp(uint32_t pid); 
 
 #endif /* MEMORIA_SWAP_INCLUDE_MEMORIA_PRINCIPAL_H_ */
