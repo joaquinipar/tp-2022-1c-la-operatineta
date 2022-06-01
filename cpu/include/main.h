@@ -8,8 +8,18 @@
 #include <utils/logger.h>
 #include "configuracion_cpu.h"
 #include "cerrar_cpu.h"
+#include <utils/structs.h>
 #include "server_dispatch.h"
 #include "server_interrupt.h"
 #include "conexion_client.h"
+#include "cpu_api.h"
+
+
+
+
+
+
 
 #endif /* INCLUDE_MAIN_H_ */
+
+

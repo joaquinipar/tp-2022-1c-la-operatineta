@@ -9,6 +9,7 @@
 #include <utils/protocolo_comunicacion.h>
 #include <utils/structs.h>
 #include "configuracion_cpu.h"
+#include "ciclo_instruccion.h"
 
 pthread_t iniciar_server_interrupt();
 int escuchar_conexiones_nuevas_interrupt(int server_interrupt_socket); 

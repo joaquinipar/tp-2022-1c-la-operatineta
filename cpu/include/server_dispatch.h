@@ -10,8 +10,9 @@
 #include <utils/protocolo_comunicacion.h>
 #include <utils/serializacion.h>
 #include "configuracion_cpu.h"
+#include "cpu_api.h"
 
-
+int cliente_socket;
 int socket_server_dispatch;
 int socket_server_interrupt;
 

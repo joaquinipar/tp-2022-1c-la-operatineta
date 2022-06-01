@@ -138,10 +138,10 @@ return victim;
 }
 
 
-
 int escribir_entrada_en_tlb(uint32_t pagina_a_escribir, uint32_t marco_a_escribir) {
 
   if (esta_llena_tlb() == 1) { // Entra si esta vacío xD!
+    info_log("tlb.c@escribir_entrada_en_tlb", "Hay marcos libres en la TLB"); 
     int entrada_a_escribir = algoritmo_First_Fit_TLB();
 
     array_tlb[entrada_a_escribir].nro_pagina = pagina_a_escribir;
@@ -157,6 +157,13 @@ int escribir_entrada_en_tlb(uint32_t pagina_a_escribir, uint32_t marco_a_escribi
   format_warning_log("tlb.c@escribir_entrada_en_tlb", "TLB LLena - Vamos a reemplazar ... ");
   int entrada_victima = algoritmo_reemplazo_TLB(); 
   format_debug_log("tlb.c@escribir_entrada_en_tlb","Entrada victima: %d",  entrada_victima);
+
+  array_tlb[entrada_victima].nro_pagina = pagina_a_escribir;
+  array_tlb[entrada_victima].marco = marco_a_escribir;
+  array_tlb[entrada_victima].estado = 1;
+
+  format_debug_log("tlb.c@escribir_entrada_en_tlb","Escritura OK - Entrada victima: %d - Pagina:%d - Marco: %d",  entrada_victima, pagina_a_escribir, marco_a_escribir);
+
   return 0;
 }
 
@@ -208,19 +215,17 @@ uint32_t get_marco_de_pagina_TLB(uint32_t pagina_buscada) {
   return -1;
 }
 
+uint32_t se_encuentra_en_tlb(uint32_t pagina_buscada){
 
-uint32_t rutina_tlb(uint32_t pagina_buscada) {
+int resultado_presencia_tlb = pagina_presente_TLB(pagina_buscada); 
 
-  //1-Conocer si la pagina del proceso esta en la tlb
-  int resultado_presencia_tlb = pagina_presente_TLB(pagina_buscada);
+if(resultado_presencia_tlb){
+  format_info_log("tlb.c@se_encuentra_en_tlb", "Pagina: %d se encuentra en TLB", pagina_buscada); 
+  uint32_t marco_asignado = get_marco_de_pagina_TLB(pagina_buscada); 
+  return marco_asignado; 
+}
 
-  if (resultado_presencia_tlb == 1) { //HIT
-    
-    uint32_t marco_asignado = get_marco_de_pagina_TLB(pagina_buscada);
-    format_info_log("tlb.c@get_marco_de_pagina_TLB", "Marco Encontrado TLB: %d -- Pagina: %d", marco_asignado, pagina_buscada);
-    return marco_asignado;
-  }
-  //MISS
-  error_log("tlb.c@get_marco_de_pagina_TLB", "Marco NO ta en TLB"); 
-  return -1;
+format_error_log("tlb.c@se_encuentra_en_tlb", "Pagina: %d NO se encuentra en TLB", pagina_buscada); 
+return -1; 
+
 }

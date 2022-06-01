@@ -102,12 +102,11 @@ bool procesar_conexion_interrupt(int cliente_socket) {
   case OPCODE_DESALOJAR_PROCESO:{
     format_debug_log("server_interrupt.c@procesar_conexion_interrupt", "Recepcion - Nro OP CODE: %d\n", codigo_operacion);
     uint32_t pid; 
-    recv(cliente_socket, &pid, sizeof(uint32_t), 0);
-    //setear_flag_interrupt();
+    int bytes_recibidos = recv(cliente_socket, &pid, sizeof(uint32_t), 0);
     
-    /*Esta hardcodeado para prueba*/ /*Esta hardcodeado para prueba*/ 
-    bool response = true;
-    if (response) {
+    encender_flag_interrupt(); 
+    
+    if (bytes_recibidos != -1 ) {
       send_ack(cliente_socket, OPCODE_ACK_OK);
       debug_log("conexion_client.c@procesar_conexion_interrupt", "Envio mensaje ACK OK - OPCODE_DESALOJAR_PROCESO");
       debug_log("conexion_client.c@procesar_conexion_interrupt", "Termina mensaje OPCODE_DESALOJAR_PROCESO en modulo CPU");
@@ -117,7 +116,6 @@ bool procesar_conexion_interrupt(int cliente_socket) {
     send_ack(cliente_socket, OPCODE_ACK_ERROR);
     debug_log("conexion_client.c@procesar_conexion_interrupt", "Envio mensaje ACK ERROR -OPCODE_DESALOJAR_PROCESO");
     debug_log("conexion_client.c@procesar_conexion_interrupt", "Termina mensaje OPCODE_DESALOJAR_PROCESO en modulo CPU");
-    /*Esta hardcodeado para prueba*/ /*Esta hardcodeado para prueba*/ 
     return true;
     break;
   }
