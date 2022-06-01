@@ -17,10 +17,34 @@ archivo_pid_t* crear_archivo_pid(int pid, uint32_t tam_proceso){
     archivo->path_archivo = obtener_ruta_swap_proceso(pid);
     archivo->tam_proceso = tam_proceso;
     crear_archivo_swap(archivo);
-    int cantidad_marcos = mem_swap_config->tam_memoria / mem_swap_config->tam_pagina;
+    int cantidad_marcos = get_cantidad_marcos(tam_proceso);
     archivo->array_marcos_virtual_del_proceso = malloc(cantidad_marcos * sizeof(marco_virtual_t));
+
+    for(int i=0; i < cantidad_marcos; i++){
+        archivo->array_marcos_virtual_del_proceso[i].pagina = i;
+    }
+
     return archivo;
 }
+
+uint32_t get_cantidad_marcos(uint32_t tam_proceso) {
+
+    double resultado;
+
+    resultado = tam_proceso / mem_swap_config->tam_pagina;
+
+    if (resultado <= 1) {
+        /* Caso: El tamaño es menor de una pagina, o es una pagina justa */
+        return 1;
+    } else if (tam_proceso % mem_swap_config->tam_pagina == 0) {
+        return resultado;
+    } else {
+        /* Caso: El tamaño es mayor a una pagina y hay resto */
+        return (uint32_t)resultado + 1;
+    }
+}
+
+
 
 void admitir_proceso_en_swap(uint32_t pid, uint32_t tamanio){
     format_info_log("swap.c@admitir_proceso_en_swap", "Admision en Swap - Proceso: %d  -- Tamaño %d", pid, tamanio); 
@@ -100,7 +124,7 @@ void* leer_pagina_swap(uint32_t pid, uint32_t marco){
 
     if(archivo == NULL){
         format_error_log("swap.c@escribir_pagina_swap", "El proceso %i no tiene archivo swap creado.", pid);
-        return -1;
+        return NULL;
     }
 
     void* contenido = malloc(mem_swap_config->tam_pagina);

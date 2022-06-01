@@ -339,8 +339,8 @@ uint32_t get_marco_reservado_por_proceso(uint32_t pid) {
 
 int _struct_esta_corrupto(uint32_t bit_uso, uint32_t bit_modificado){
 
-    if ((bit_uso  != 0 && bit_uso) != 1 ||
-        (bit_modificado != 0 && bit_modificado != 1)) {
+    if ( !(bit_uso == 0 || bit_uso == 1)  ||
+         !(bit_modificado == 0 || bit_modificado == 1) ) {
 
         error_log("algoritmos_reemplazo.c@_struct_esta_corrupto","ERROR!! Bit de uso o Bit de modificado con valor inválido");
         format_error_log("algoritmos_reemplazo.c@_struct_esta_corrupto","Esperaba valores (0 | 1) y obtuve: BIT USO:%i BIT MODIFICADO:%i",bit_uso, bit_modificado);

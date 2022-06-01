@@ -121,7 +121,7 @@ int calcular_marcos_ocupados_por_proceso(uint32_t pid) {
       cant_marcos_ocupados_por_proceso++;
     }
   }
-  format_debug_log("memoria_principal.c@calcular_marcos_ocupados_por_proceso", "Marcos ocupados:%d -- Proceso: %d\n", cant_marcos_ocupados_por_proceso);
+  format_debug_log("memoria_principal.c@calcular_marcos_ocupados_por_proceso", "Marcos ocupados:%i -- Proceso: %i", cant_marcos_ocupados_por_proceso, (int)pid);
   return cant_marcos_ocupados_por_proceso;
 }
 

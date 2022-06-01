@@ -21,5 +21,6 @@ int iniciar_cliente_test(int argc, char* ruta);
 void probar_VALUE_TAB_PAG();
 void probar_VALUE_TAB_PAG_con_varios_procesos();
 void probar_VALUE_TAB_PAG_y_OPCODE_ACCESO_1ER_NIVEL_con_varios_procesos();
+void probar_VALUE_TAB_PAG_y_OPCODE_ACCESO_1ER_NIVEL_con_varios_procesos_y_OPCODE_ACCESO_2DO_NIVEL();
 
 #endif //MEMORIA_SWAP_BOTONERA_H

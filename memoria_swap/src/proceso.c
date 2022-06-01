@@ -159,6 +159,8 @@ uint32_t obtener_marco_de_tabla_2do_nivel(uint32_t pid, uint32_t nro_tabla_2do_n
 
     if( tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].bit_presencia == 1 ){
 
+        format_info_log("memoria_api.c@obtener_marco_de_tabla_2do_nivel", "PID: %i Entrada 2do nivel: %i presente en memoria.", pid, nro_entrada_2do_nivel);
+
         // La pagina se encuentra cargado en memoria
         return tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].marco;
 
@@ -168,11 +170,18 @@ uint32_t obtener_marco_de_tabla_2do_nivel(uint32_t pid, uint32_t nro_tabla_2do_n
 
         // Verifico que tengo un marco libre para cargar.
 
+        format_info_log("memoria_api.c@obtener_marco_de_tabla_2do_nivel", "PID: %i Entrada 2do nivel: %i NO presente en memoria.", pid, nro_entrada_2do_nivel);
+
+
         if(calcular_marcos_ocupados_por_proceso(pid) == mem_swap_config->marcos_por_proceso){
             // todo testear calcular_marcos_ocupados_por_proceso
             // No tengo marcos libres, toca reemplazar.
+            format_info_log("memoria_api.c@obtener_marco_de_tabla_2do_nivel", "PID: %i No tengo marcos libres para el proceso", pid);
+            format_info_log("memoria_api.c@obtener_marco_de_tabla_2do_nivel", "PID: %i Busco marco victima para reemplazar...", pid);
 
             uint32_t marco_libre = buscar_y_reemplazar(pid); // marco listo para ser reemplazado!
+
+            format_info_log("memoria_api.c@obtener_marco_de_tabla_2do_nivel", "PID: %i Marco: %i Encontré marco listo para ser reemplazado", pid, marco_libre);
 
             void* contenido = leer_pagina_swap(pid, tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].marco);
 
@@ -180,6 +189,8 @@ uint32_t obtener_marco_de_tabla_2do_nivel(uint32_t pid, uint32_t nro_tabla_2do_n
             memcpy(mem_ppal->memoria_principal + marco_libre * mem_swap_config->tam_pagina, contenido, mem_swap_config->tam_pagina);
 
             // Modifico tabla de paginas
+
+            format_info_log("memoria_api.c@obtener_marco_de_tabla_2do_nivel", "PID: %i Marco: %i Seteo BP=1 BM=0 BU=1", pid, marco_libre);
 
             tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].marco = marco_libre;
             tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].bit_presencia = 1;
@@ -190,21 +201,33 @@ uint32_t obtener_marco_de_tabla_2do_nivel(uint32_t pid, uint32_t nro_tabla_2do_n
 
             array_marcos[marco_libre].estado=1;
             array_marcos[marco_libre].pid=pid;
-            array_marcos[marco_libre].pagina = tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel];
+            array_marcos[marco_libre].pagina = &tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel];
 
             return marco_libre;
 
         }
         else {
             // Tengo marco libre y puedo cargarlo ahi.
+
+            format_info_log("memoria_api.c@obtener_marco_de_tabla_2do_nivel", "PID: %i Tengo marcos libres para el proceso", pid);
+
             uint32_t marco_libre = encontrar_marco_libre(pid);
 
-            void* contenido = leer_pagina_swap(pid, tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].marco);
+            format_info_log("memoria_api.c@obtener_marco_de_tabla_2do_nivel", "PID: %i Marco: %i Encontré marco libre listo", pid, marco_libre);
+
+            void* contenido = leer_pagina_swap(pid, nro_entrada_2do_nivel); // nro_entrada_2do_nivel es la pagina.
 
             // Cargo contenido en memoria principal
-            memcpy(mem_ppal->memoria_principal + marco_libre * mem_swap_config->tam_pagina, contenido, mem_swap_config->tam_pagina);
+            int desplazamiento = marco_libre * mem_swap_config->tam_pagina;
+
+            format_info_log("memoria_api.c@obtener_marco_de_tabla_2do_nivel", "PID: %i Cargo contenido en memoria principal(void*) Marco: %i Desplazamiento: %i", pid, marco_libre, desplazamiento);
+
+            memcpy(mem_ppal->memoria_principal + desplazamiento, contenido, mem_swap_config->tam_pagina);
+
 
             // Modifico tabla de paginas
+
+            format_info_log("memoria_api.c@obtener_marco_de_tabla_2do_nivel", "PID: %i Marco: %i Seteo BP=1 BM=0 BU=1", pid, marco_libre);
 
             tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].marco = marco_libre;
             tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].bit_presencia = 1;
@@ -214,7 +237,7 @@ uint32_t obtener_marco_de_tabla_2do_nivel(uint32_t pid, uint32_t nro_tabla_2do_n
 
             array_marcos[marco_libre].estado=1;
             array_marcos[marco_libre].pid=pid;
-            array_marcos[marco_libre].pagina = tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel];
+            array_marcos[marco_libre].pagina = &tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel];
 
             return marco_libre;
 
