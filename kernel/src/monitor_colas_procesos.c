@@ -1027,16 +1027,16 @@ pcb_t *desencolar_proceso_bloqueado_IO(pcb_t* proceso) {
 
   pthread_mutex_lock(&procesos_bloqueados_mutex);
 
-  pcb_t *proceso = list_remove_by_condition(cola_bloqueados, (void*)buscar_por_pid);
+  pcb_t *proceso_desencolado = list_remove_by_condition(cola_bloqueados, (void*)buscar_por_pid);
 
   pthread_mutex_unlock(&procesos_bloqueados_mutex);
 
   char *mensaje = string_from_format(
-      "Proceso pid: %d desencolado de bloqueados", proceso->pid);
+      "Proceso pid: %d desencolado de bloqueados", proceso_desencolado->pid);
   debug_log("monitor_colas_procesos.c@desencolar_proceso_en_bloqueados", mensaje);
   free(mensaje);
 
-  return proceso;
+  return proceso_desencolado;
 }
 
 pcb_t *desencolar_proceso_bloqueado_suspendido_IO(pcb_t* proceso) {
@@ -1049,8 +1049,8 @@ pcb_t *desencolar_proceso_bloqueado_suspendido_IO(pcb_t* proceso) {
   }
 
   pthread_mutex_lock(&procesos_bloqueados_suspendidos_mutex);
-  pcb_t *proceso = list_remove_by_condition(cola_bloqueados_suspendidos, (void*)buscar_por_pid);
+  pcb_t *proceso_desencolado = list_remove_by_condition(cola_bloqueados_suspendidos, (void*)buscar_por_pid);
   pthread_mutex_unlock(&procesos_bloqueados_suspendidos_mutex);
 
-  return proceso;
+  return proceso_desencolado;
 }
