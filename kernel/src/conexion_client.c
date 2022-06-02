@@ -155,8 +155,41 @@ bool enviar_mensaje_desalojar_proceso(pcb_t* proceso){
     return response;
   }
 
-  error_log("conexion_client.c@enviar_mensaje_desalojar_proceso", "Error al enviar mensaje EJECUTAR");
-  debug_log("conexion_client.c@enviar_mensaje_desalojar_proceso", "Termina mensaje EJECUTAR");
+  error_log("conexion_client.c@enviar_mensaje_desalojar_proceso", "Error al enviar mensaje OPCODE_DESALOJAR_PROCESO");
+  debug_log("conexion_client.c@enviar_mensaje_desalojar_proceso", "Termina mensaje OPCODE_DESALOJAR_PROCESO");
+  return false;
+
+}
+
+//OPCODE_SUSPENDER_PROCESO
+bool enviar_mensaje_suspender_proceso(pcb_t* proceso){
+
+    debug_log("conexion_client.c@enviar_mensaje_suspender_proceso", "Comienza envio de mensaje - OPCODE_SUSPENDER_PROCESO");
+    int stream_size = sizeof(op_code_t) + sizeof(uint32_t);
+    void *stream = malloc(stream_size);
+    op_code_t op_code = OPCODE_SUSPENDER_PROCESO;
+
+    memcpy(stream, &op_code, sizeof(op_code_t));
+    memcpy(stream + sizeof(op_code_t), &(proceso->pid), sizeof(uint32_t));
+    
+    int send_result = send(socket_cliente_kernel, stream, stream_size , false);
+    
+    format_debug_log("conexion_clien.c@enviar_mensaje_suspender_proceso", "Send Result %d", send_result); 
+    if (send_result != -1) {
+    bool response = recv_ack(socket_cliente_kernel);
+
+    if (response) {
+      debug_log("conexion_client.c@enviar_mensaje_suspender_proceso", "Recepcion mensaje ACK OK - OPCODE_SUSPENDER_PROCESO");
+      debug_log("conexion_client.c@enviar_mensaje_suspender_proceso", "Termina mensaje OPCODE_SUSPENDER_PROCESO");
+      return response;
+    }
+    debug_log("conexion_client.c@enviar_mensaje_suspender_proceso", "Recepcion mensaje ACK ERROR -OPCODE_SUSPENDER_PROCESO");
+    debug_log("conexion_client.c@enviar_mensaje_suspender_proceso", "Termina mensaje OPCODE_SUSPENDER_PROCESO");
+    return response;
+  }
+
+  error_log("conexion_client.c@enviar_mensaje_suspender_proceso", "Error al enviar mensaje OPCODE_SUSPENDER_PROCESO");
+  debug_log("conexion_client.c@enviar_mensaje_suspender_proceso", "Termina mensaje OPCODE_SUSPENDER_PROCESO");
   return false;
 
 }

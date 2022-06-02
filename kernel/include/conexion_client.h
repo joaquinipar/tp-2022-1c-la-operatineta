@@ -21,5 +21,6 @@ bool enviar_mensaje_valor_tabla_1er_nivel(uint32_t pid, uint32_t tamanio, uint32
 bool enviar_mensaje_ejecutar(pcb_t* proceso); 
 bool enviar_mensaje_exit(pcb_t* proceso); 
 bool enviar_mensaje_desalojar_proceso(pcb_t* proceso); 
+bool enviar_mensaje_suspender_proceso(pcb_t* proceso);
 
 #endif /* KERNEL_INCLUDE_CONEXION_CLIENT_H_ */
