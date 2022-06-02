@@ -1018,3 +1018,39 @@ t_list *get_procesos_bloqueados() {
   
   return list_filter(procesos, (void *)esta_bloqueado);
 }
+
+pcb_t *desencolar_proceso_bloqueado_IO(pcb_t* proceso) {
+
+  bool buscar_por_pid(pcb_t * process) {
+      return process->pid == proceso->pid;
+  }
+
+  pthread_mutex_lock(&procesos_bloqueados_mutex);
+
+  pcb_t *proceso = list_remove_by_condition(cola_bloqueados, (void*)buscar_por_pid);
+
+  pthread_mutex_unlock(&procesos_bloqueados_mutex);
+
+  char *mensaje = string_from_format(
+      "Proceso pid: %d desencolado de bloqueados", proceso->pid);
+  debug_log("monitor_colas_procesos.c@desencolar_proceso_en_bloqueados", mensaje);
+  free(mensaje);
+
+  return proceso;
+}
+
+pcb_t *desencolar_proceso_bloqueado_suspendido_IO(pcb_t* proceso) {
+
+  debug_log("monitor_colas_procesos.c@desencolar_proceso_bloqueado_suspendido_IO",
+	        "Obteniendo un proceso de la cola bloqueados_suspendidos");
+
+  bool buscar_por_pid(pcb_t * process) {
+      return process->pid == proceso->pid;
+  }
+
+  pthread_mutex_lock(&procesos_bloqueados_suspendidos_mutex);
+  pcb_t *proceso = list_remove_by_condition(cola_bloqueados_suspendidos, (void*)buscar_por_pid);
+  pthread_mutex_unlock(&procesos_bloqueados_suspendidos_mutex);
+
+  return proceso;
+}

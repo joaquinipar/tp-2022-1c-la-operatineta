@@ -43,11 +43,14 @@ pcb_t* desencolar_proceso_bloqueado();
 pcb_t* obtener_ultimo_proceso_bloqueado();
 pcb_t* buscar_y_sacar_proceso_en_bloqueados(int);
 bool lista_de_bloqueados_vacia();
+pcb_t* desencolar_proceso_bloqueado_IO(pcb_t* proceso);
 
 // Operaciones sobre cola de bloqueados suspendidos
 void encolar_proceso_en_bloqueados_suspendidos(pcb_t *proceso);
 pcb_t *desencolar_proceso_bloqueado_suspendido();
 pcb_t* buscar_y_sacar_proceso_en_bloqueados_suspendidos(int);
+pcb_t* desencolar_proceso_bloqueado_suspendido_IO(pcb_t* proceso);
+
 
 // Operaciones sobre cola de suspendidos listos
 void encolar_proceso_en_suspendidos_listos(pcb_t* proceso);

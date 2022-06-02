@@ -51,11 +51,33 @@ bool finalizar_proceso(pcb_t *proceso_actualizado) {
 
 // TODO: implementar
 bool bloquear_proceso(pcb_t *proceso_actualizado, int tiempo_bloqueo) {
-  // buscar proceso => actualizar pcb
-  // sacar proceso de lista de ejecucion
-  // actualizar estimacion
-  // mover proceso a lista de bloqueados => tener en cuenta https://github.com/sisoputnfrba/foro/issues/2559
-  // llamar a planificar
+
+  pcb_t *proceso_desencolado_ejecucion = desencolar_proceso_en_ejecucion();   // sacar proceso de lista de ejecucion
+  proceso_finalizar_rafaga(proceso_desencolado_ejecucion);  // actualizar estimacion
+  proceso_actualizado = proceso_desencolado_ejecucion ;  // buscar proceso => actualizar pcb
+  encolar_proceso_en_bloqueados(proceso_actualizado); // mover proceso a lista de bloqueados => tener en cuenta https://github.com/sisoputnfrba/foro/issues/2559
+
+  int tiempo_suspended_ready = 0;
+  if(kernel_config->TIEMPO_MAXIMO_BLOQUEADO < tiempo_bloqueo){
+    tiempo_suspended_ready = tiempo_bloqueo - kernel_config->TIEMPO_MAXIMO_BLOQUEADO;
+    usleep(kernel_config->TIEMPO_MAXIMO_BLOQUEADO);
+
+    pcb_t *proceso_desencolado_de_bloqueado = desencolar_proceso_bloqueado_IO(proceso_actualizado);
+    encolar_proceso_en_bloqueados_suspendidos(proceso_desencolado_de_bloqueado);
+    enviar_mensaje_suspender_proceso(proceso_desencolado_de_bloqueado);
+    usleep(tiempo_suspended_ready);
+
+    pcb_t *proceso_desencolado_de_suspended_ready = desencolar_proceso_bloqueado_suspendido_IO(proceso_desencolado);
+    encolar_proceso_en_suspendidos_listos(proceso_desencolado_de_suspended_ready);
+
+    sem_post(&sem_proceso_listo);   // llamar a planificar largo plazo
+
+  }else{
+    usleep(tiempo_bloqueo);
+  }
+
+  sem_post(&sem_bin_procesar_listo);   // llamar a planificar corto plazo
+
 }
 
 // TODO: implementar

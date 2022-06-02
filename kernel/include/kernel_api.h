@@ -11,6 +11,7 @@
 #include <pthread.h>
 #include "monitor_colas_procesos.h"
 #include "planificador_corto_plazo.h"
+#include <conexion_client.h>
 
 void inicializar_kernel_api();
 bool ejecutar_proceso_nuevo(pcb_t *proceso);
