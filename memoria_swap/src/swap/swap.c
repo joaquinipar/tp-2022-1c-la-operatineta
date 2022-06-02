@@ -103,6 +103,8 @@ int escribir_pagina_swap(uint32_t pid, uint32_t marco){
         return -1;
     }
 
+    usleep(mem_swap_config->retardo_swap);
+
     memcpy(archivo->area_archivo_swap + marco * mem_swap_config->tam_pagina,
            mem_ppal->memoria_principal + marco * mem_swap_config->tam_pagina,
            mem_swap_config->tam_pagina);
@@ -126,6 +128,8 @@ void* leer_pagina_swap(uint32_t pid, uint32_t marco){
         format_error_log("swap.c@escribir_pagina_swap", "El proceso %i no tiene archivo swap creado.", pid);
         return NULL;
     }
+
+    usleep(mem_swap_config->retardo_swap);
 
     void* contenido = malloc(mem_swap_config->tam_pagina);
 

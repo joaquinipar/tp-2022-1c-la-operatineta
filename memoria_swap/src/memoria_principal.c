@@ -194,7 +194,10 @@ void* leer_pagina_memoria(uint32_t marco_asignado) {
 int escribir_contenido_swap(void* contenido_marco, uint32_t pid, uint32_t marco){
 
   archivo_pid_t* proceso = get_proceso_swap(pid);
-  uint32_t offset = marco * mem_swap_config->tam_pagina; 
+  uint32_t offset = marco * mem_swap_config->tam_pagina;
+
+  usleep(mem_swap_config->retardo_swap);
+
   memcpy(proceso->area_archivo_swap + offset, contenido_marco, mem_swap_config->tam_pagina);
   
   if( msync( proceso->area_archivo_swap, proceso->tam_proceso , MS_SYNC) < 0){
