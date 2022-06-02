@@ -38,7 +38,7 @@ pcb_t *desencolar_proceso_en_ejecucion();
 pcb_t* buscar_proceso_en_ejecucion(int);
 
 // Operaciones sobre cola de bloqueados
-void encolar_proceso_en_bloqueados(pcb_t* proceso);
+void encolar_proceso_en_bloqueados(pcb_t* proceso, int retardo);
 pcb_t* desencolar_proceso_bloqueado();
 pcb_t* obtener_ultimo_proceso_bloqueado();
 pcb_t* buscar_y_sacar_proceso_en_bloqueados(int);

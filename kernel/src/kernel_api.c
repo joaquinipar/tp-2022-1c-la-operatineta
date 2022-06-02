@@ -53,31 +53,10 @@ bool finalizar_proceso(pcb_t *proceso_actualizado) {
 // TODO: implementar
 bool bloquear_proceso(pcb_t *proceso_actualizado, int tiempo_bloqueo) {
 
-  pcb_t *proceso_desencolado_ejecucion = desencolar_proceso_en_ejecucion();   // sacar proceso de lista de ejecucion
-  proceso_finalizar_rafaga(proceso_desencolado_ejecucion);  // actualizar estimacion
-  proceso_desencolado_ejecucion->program_counter = proceso_actualizado->program_counter;  // buscar proceso => actualizar pcb
-  encolar_proceso_en_bloqueados(proceso_actualizado); // mover proceso a lista de bloqueados => tener en cuenta https://github.com/sisoputnfrba/foro/issues/2559
-
-  int tiempo_suspended_ready = 0;
-  if(kernel_config->tiempo_maximo_bloqueado < tiempo_bloqueo){
-    tiempo_suspended_ready = tiempo_bloqueo - kernel_config->tiempo_maximo_bloqueado;
-    usleep(kernel_config->tiempo_maximo_bloqueado);
-
-    pcb_t *proceso_desencolado_de_bloqueado = desencolar_proceso_bloqueado_IO(proceso_actualizado);
-    encolar_proceso_en_bloqueados_suspendidos(proceso_desencolado_de_bloqueado);
-    enviar_mensaje_suspender_proceso(proceso_desencolado_de_bloqueado);
-    usleep(tiempo_suspended_ready);
-
-    pcb_t *proceso_desencolado_de_suspended_ready = desencolar_proceso_bloqueado_suspendido_IO(proceso_desencolado_de_bloqueado);
-    encolar_proceso_en_suspendidos_listos(proceso_desencolado_de_suspended_ready);
-
-    sem_post(&sem_proceso_listo);   // llamar a planificar largo plazo
-
-  }else{
-    usleep(tiempo_bloqueo);
-  }
-
-  sem_post(&sem_bin_procesar_listo);   // llamar a planificar corto plazo
+  pcb_t *proceso = desencolar_proceso_en_ejecucion();   // sacar proceso de lista de ejecucion
+  proceso_finalizar_rafaga(proceso);  // actualizar estimacion
+  proceso->program_counter = proceso_actualizado->program_counter;  // buscar proceso => actualizar pcb
+  encolar_proceso_en_bloqueados(proceso, tiempo_bloqueo); // mover proceso a lista de bloqueados => tener en cuenta https://github.com/sisoputnfrba/foro/issues/2559
 
   return true;
 }

@@ -83,7 +83,6 @@ void escucha_proceso_desalojado()
 
             bloquear_proceso(proceso_actualizado, tiempo_bloqueo);
 
-
         }
 
         case OPCODE_PROCESO_DESALOJADO_INTERRUPT: {

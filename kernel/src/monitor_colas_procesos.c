@@ -367,19 +367,19 @@ pcb_t *buscar_proceso_en_ejecucion(int pid) {
 /*  --------------------------- Funciones Cola Bloqueados
  * ---------------------------  */
 
-void encolar_proceso_en_bloqueados(pcb_t *proceso) {
+void encolar_proceso_en_bloqueados(pcb_t *proceso, int retardo) {
 
   pthread_mutex_lock(&procesos_bloqueados_mutex);
-
-  list_add(cola_bloqueados, proceso);
+  
   proceso->estado = ESTADO_PROCESO_BLOCKED;
+  bloqueo_proceso_t *proceso_bloqueado = malloc(sizeof(bloqueo_proceso_t));
+  proceso_bloqueado->retardo = retardo;
+  proceso_bloqueado->proceso = proceso;
+  list_add(cola_bloqueados, proceso_bloqueado);
 
   pthread_mutex_unlock(&procesos_bloqueados_mutex);
 
-  char *mensaje = string_from_format(
-      "Proceso pid: %d encolado en bloqueados", proceso->pid);
-  debug_log("monitor_colas_procesos.c@encolar_proceso_en_bloqueados", mensaje);
-  free(mensaje);
+  format_debug_log("monitor_colas_procesos.c@encolar_proceso_en_bloqueados", "Proceso pid: %d encolado en bloqueados", proceso->pid);
 }
 
 pcb_t *desencolar_proceso_bloqueado() {
@@ -963,7 +963,7 @@ int cantidad_procesos_terminados() {
   return cantidad;
 }
 
-bool mover_proceso_en_ejecucion_a_bloqueado(int pid) {
+/* bool mover_proceso_en_ejecucion_a_bloqueado(int pid) {
 
 	bool pid_iguales(pcb_t * proceso){
 		return proceso->pid == pid;
@@ -985,7 +985,7 @@ bool mover_proceso_en_ejecucion_a_bloqueado(int pid) {
   encolar_proceso_en_bloqueados(proceso_en_ejecucion);
   
   return true;
-}
+} */
 
 void procesos_lock() {
   pthread_mutex_lock(&procesos_mutex);
