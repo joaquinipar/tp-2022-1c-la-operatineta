@@ -26,7 +26,7 @@ void proceso_ejecutar(pcb_t *proceso) {
   proceso->estado = ESTADO_PROCESO_EXEC;
   proceso_iniciar_rafaga(proceso);
   pthread_mutex_unlock(&proceso_mutex);
-  // TODO: agregar funcion proceso_obtener_tabla_paginas();
+  // TODO: agregar funcion proceso_obtener_tabla_paginas(proceso);
   enviar_proceso_a_cpu(proceso);
 }
 

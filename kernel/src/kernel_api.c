@@ -53,14 +53,15 @@ bool finalizar_proceso(pcb_t *proceso_actualizado) {
   return true;
 }
 
-// TODO: implementar
 bool bloquear_proceso(pcb_t *proceso_actualizado, int tiempo_bloqueo) {
 
   pcb_t *proceso = desencolar_proceso_en_ejecucion();   // sacar proceso de lista de ejecucion
   proceso_finalizar_rafaga(proceso);  // actualizar estimacion
   proceso->program_counter = proceso_actualizado->program_counter;  // buscar proceso => actualizar pcb
-  encolar_proceso_en_bloqueados(proceso, tiempo_bloqueo); // mover proceso a lista de bloqueados => tener en cuenta https://github.com/sisoputnfrba/foro/issues/2559
-
+  encolar_proceso_en_bloqueados(proceso, tiempo_bloqueo); // mover proceso a lista de bloqueados, guardar el tiempo de IO
+  lanzar_thread_suspension_proceso(proceso); // despues del tiempo maximo de bloqueo lo suspende si sigue bloqueado y manda el mensaje a memoria
+  // TODO probar de llamar a signal(sem_cont_procesos_bloqueados);
+  incrementar_cantidad_procesos_bloqueados();
   return true;
 }
 
