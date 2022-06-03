@@ -198,7 +198,7 @@ pcb_t* execute_instruction(instruccion_t* instruccion_a_ejecutar, pcb_t* proceso
 		case 1: //INSTRUCCION I/O
 			debug_log("ciclo_instruccion.c@execute_instruction",  "Se realizará I/O. Requiere desalojo");
 			format_info_log("ciclo_instruccion.c@execute_instruction",  "I/O -  PID: %d - Tiempo de bloqueo: %d", proceso->pid, instruccion_a_ejecutar->argumentos[0]);
-			enviar_mensaje_proceso_desalojado_io(proceso,cliente_socket, instruccion_a_ejecutar->argumentos[0]); 
+			enviar_mensaje_proceso_desalojado_io(proceso, cliente_socket, instruccion_a_ejecutar->argumentos[0]); 
 			proceso->program_counter++;
 			eliminar_entradas_TLB(); 
 			return proceso;

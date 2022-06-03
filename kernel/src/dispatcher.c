@@ -65,12 +65,11 @@ void escucha_proceso_desalojado()
         case OPCODE_PROCESO_DESALOJADO_IO: {
 
             format_debug_log("dispatcher.c@procesar_conexion", "CodOP recibido %d", codigo_operacion);
-            pcb_t* proceso_actualizado = deserializar_proceso(socket_cliente_cpu_dispatch);
             uint32_t tiempo_bloqueo;
-            
             int bytes_recibidos = recv(socket_cliente_cpu_dispatch, &tiempo_bloqueo, sizeof(uint32_t), 0); 
             format_debug_log("dispatcher.c@procesar_conexion", "Tiempo bloqueado %d", tiempo_bloqueo);
-
+            pcb_t* proceso_actualizado = deserializar_proceso(socket_cliente_cpu_dispatch);
+            
             if (bytes_recibidos !=-1) {
                 send_ack(socket_cliente_cpu_dispatch, OPCODE_ACK_OK); 
                 debug_log("conexion_client.c@procesar_conexion", "Envio mensaje ACK OK - OPCODE_PROCESO_DESALOJADO_IO");
