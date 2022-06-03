@@ -8,6 +8,7 @@
 #include <utils/protocolo_comunicacion.h>
 #include <utils/structs.h>
 #include "configuracion_cpu.h"
+#include "ciclo_instruccion.h"
 #include <utils/logger.h>
 
 pthread_t iniciar_server_interrupt();

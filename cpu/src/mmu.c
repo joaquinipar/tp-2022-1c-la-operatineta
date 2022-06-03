@@ -34,3 +34,11 @@ int esta_dentro_espacio_direcciones(pcb_t* un_proceso, uint32_t direccion_logica
     error_log("memoria_principal_helper.c@esta_dentro_espacio_direcciones", "DL fuera del espacio de direcciones");
     return 0; 
 }
+
+//Esta funcion devuelve la direccion fisica correspondiente a un marco asignado y el offset del mismo.
+uint32_t obtener_direccion_fisica(uint32_t marco_asignado, uint32_t desplazamiento) {
+
+  uint32_t direccion_fisica = marco_asignado * datos_traduccion->tamanio_pagina + desplazamiento; // tam de marco = tam de pagina
+  format_debug_log("mmu.c@obtener_direccion_fisica", "[DIRECCION FISICA: %d] -  Marco:%d - Desplazamiento: %d", direccion_fisica, marco_asignado, desplazamiento);
+  return direccion_fisica;
+}

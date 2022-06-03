@@ -132,14 +132,14 @@ algoritmo_reemplazo_tlb_t obtener_algoritmo_enum(char *algoritmo) {
 
   if (!strcmp(algoritmo, "FIFO")) {
     algoritmo_reemplazo = FIFO;
-    info_log("configuracion_cpu.c@obtener_algoritmo_enum", "Algoritmo de reemplazo: FIFO");
+    debug_log("configuracion_cpu.c@obtener_algoritmo_enum", "Algoritmo de reemplazo: FIFO");
     
   } else if (!strcmp(algoritmo, "LRU")) {
-   info_log("configuracion_cpu.c@.c@obtener_algoritmo_enum", "Algoritmo de reemplazo: LRU");
+   debug_log("configuracion_cpu.c@.c@obtener_algoritmo_enum", "Algoritmo de reemplazo: LRU");
 
     algoritmo_reemplazo = LRU;
   } else {
-    info_log("configuracion_cpu.c@.c@obtener_algoritmo_enum", "Algoritmo de reemplazo no disponible. Se setea por default FIFO");
+    debug_log("configuracion_cpu.c@.c@obtener_algoritmo_enum", "Algoritmo de reemplazo no disponible. Se setea por default FIFO");
     algoritmo_reemplazo = FIFO;
   }
 

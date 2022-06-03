@@ -66,6 +66,7 @@ bool enviar_mensaje_valor_tabla_1er_nivel(uint32_t pid, uint32_t tamanio, uint32
 
 }
 
+
 bool enviar_mensaje_exit(pcb_t* proceso){
     debug_log("conexion_client.c@enviar_mensaje_exit", "Comienza envio de mensaje - OPCODE_EXIT");
     //CODOP + PID

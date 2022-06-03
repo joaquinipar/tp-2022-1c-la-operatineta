@@ -18,10 +18,11 @@ uint32_t tamanio_pagina;
 
 mensaje_configuracion_t* datos_traduccion;
 
-bool enviar_mensaje_acceso_1er_nivel(uint32_t pid, uint32_t entrada_1er_nivel, uint32_t nro_tabla_1er_nivel, uint32_t** nro_tabla_2do_nivel);
-bool enviar_mensaje_acceso_2do_nivel(uint32_t pid, uint32_t nro_tabla_2do_nivel, uint32_t nro_pagina, uint32_t** nro_marco);
-bool enviar_mensaje_read(uint32_t pid, uint32_t direccion_fisica, uint32_t** valor_a_imprimir);
-bool enviar_mensaje_write(uint32_t pid, uint32_t direccion_fisica, uint32_t valor_a_escribir); 
+uint32_t enviar_mensaje_acceso_1er_nivel(uint32_t pid, uint32_t entrada_1er_nivel, uint32_t nro_tabla_1er_nivel); 
+uint32_t enviar_mensaje_acceso_2do_nivel(uint32_t pid, uint32_t nro_tabla_2do_nivel, uint32_t entrada_2do_nivel);
+uint32_t enviar_mensaje_read(uint32_t pid, uint32_t direccion_fisica);
+uint32_t enviar_mensaje_write(uint32_t pid, uint32_t direccion_fisica, uint32_t valor_a_escribir);
+
 bool enviar_mensaje_inicial_configuracion(); 
 bool enviar_mensaje_proceso_desalojado_io(pcb_t* proceso_actualizado, int socket, uint32_t tiempo_bloqueo); 
 bool enviar_mensaje_proceso_desalojado_interrupt(pcb_t* proceso_actualizado, int socket); 

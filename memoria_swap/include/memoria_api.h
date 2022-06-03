@@ -6,44 +6,27 @@
 #include <stdint.h>
 #include "struct_mem.h"
 #include "memoria_principal.h"
+#include "proceso.h"
 #include "swap/swap.h"
-#include "memoria_principal_helper.h"
+#include "cerrar_proceso.h"
+#include "suspender_proceso.h"
 
 /**
-* @NAME: inicio_proceso
-* @DESC: Inicializa un proceso creando sus tablas de paginas (1er y 2do nivel) y su archivo de swap. Agrega
- * las tablas y el archivo de swap a sus correspondientes listas. Retorna
+* @NAME: admitir_proceso
+* @DESC: Admite un proceso nuevo en memoria. Se le crean las estructuras. 
 */
-uint32_t inicio_proceso(uint32_t pid, uint32_t tamanio);
+uint32_t admitir_proceso(uint32_t pid, uint32_t tamanio);
 
-uint32_t buscar_nro_tabla_2do_nivel (uint32_t pid, uint32_t nro_tabla_1er_nivel, uint32_t nro_entrada_1er_nivel);
+bool suspender_proceso(uint32_t pid); 
+bool cerrar_proceso(uint32_t pid); 
 
-/**
- * @name leer
- * @desc Lee en la posición de la dirección física (sería el offset que le vamos a agregar al void* de memoria).
- * ATENCIÓN: Esta función devuelve un contenido malloqueado y debe ser liberado posteriormente
- * @param direccion_fisica
- * @return void* (uint32_t)
- */
-void* leer(uint32_t direccion_fisica);
 
-/**
- * @name escribir
- * @desc Escribe N bytes (sizeof(uint32_t)) en la posición indicada por la dirección fisica en la memoria principal.
- * @param direccion_fisica
- * @param contenido
- */
-void escribir(uint32_t direccion_fisica, void* contenido);
 
-/**
- * @name obtener_marco_de_tabla_2do_nivel
- * @desc Ingresa en la entrada (nro_pagina) de la tabla de segundo nivel (nro_tabla_2do_nivel) y devuelve el marco
- * @param pid
- * @param nro_tabla_2do_nivel
- * @param nro_pagina
- * @return uint32_t
- */
-uint32_t obtener_marco_de_tabla_2do_nivel(uint32_t pid, uint32_t nro_tabla_2do_nivel, uint32_t nro_pagina);
+
+
+
+
+
 
 
 #endif /* MEMORIA_SWAP_INCLUDE_MEMORIA_API_H_ */

@@ -10,12 +10,11 @@ pthread_t iniciar_server_dispatch()
 
   debug_log("server_dispatch.c@iniciar_server_dispatch", "Inicializando el server Dispatch");
 
-  int socket_servidor = iniciar_servidor("server_dispatch.c@iniciar_server_dispatch", "", ip, puerto);
+  int socket_server_dispatch = iniciar_servidor("server_dispatch.c@iniciar_server_dispatch", "", ip, puerto);
 
   char *msg_log;
 
-  if (socket_servidor != -1)
-  {
+  if (socket_server_dispatch != -1) {
     msg_log = string_from_format(
         "Servidor Dispatch escuchando conexiones con exito en ip: %s, puerto: %s", ip,
         puerto);
@@ -33,7 +32,7 @@ pthread_t iniciar_server_dispatch()
   free(msg_log);
 
   pthread_create(&hilo_dispatch, NULL, (void *)escuchar_conexiones_nuevas_dispatch,
-                 (void *)socket_servidor);
+                 (void *)socket_server_dispatch);
 
   //debug_log("server_dispatch.c@iniciar_server_dispatch", "Server inicializado");
 
@@ -49,6 +48,7 @@ int escuchar_conexiones_nuevas_dispatch(int server_socket)
   {
     info_log("server_dispatch.c@escuchar_conexiones_nuevas_dispatch", "SIGINT recibida, ejecutando handler para apagar la conexion Dispatch");
     escuchar = false;
+    shutdown(server_socket, SHUT_RD);
     shutdown(server_socket, SHUT_RD);
     close(server_socket);
   }
@@ -108,14 +108,9 @@ bool procesar_conexion_dispatch(int cliente_socket)
     format_debug_log("server_dispatch.c@procesar_conexion", "CodOP recibido %d", codigo_operacion);
 
     pcb_t *proceso_recibido = deserializar_proceso(cliente_socket);
-
     send_ack(cliente_socket, OPCODE_ACK_OK);
 
-    //pcb_t* proceso_actualizado = iniciar_modulo(proceso_recibido); no esta definido
-    sleep(3);
-
-    // TODO: mover a ciclo de instruccion, esto es solo para probar
-    enviar_mensaje_proceso_desalojado_exit(proceso_recibido, cliente_socket);
+    iniciar_modulo(proceso_recibido);
 
     return true;
     break;

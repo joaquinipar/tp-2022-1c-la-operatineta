@@ -10,7 +10,11 @@
 #include <utils/protocolo_comunicacion.h>
 #include <utils/serializacion.h>
 #include "configuracion_cpu.h"
+#include "cpu_api.h"
 
+int cliente_socket;
+int socket_server_dispatch;
+int socket_server_interrupt;
 
 pthread_t iniciar_server_dispatch();
 int escuchar_conexiones_nuevas_dispatch(int server_socket); 

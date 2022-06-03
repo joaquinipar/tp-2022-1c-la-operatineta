@@ -45,7 +45,7 @@ ssize_t serializar_lista_de_instrucciones(t_list *lista_de_instrucciones, ssize_
 	return tamanio_stream;
 }
 
-uint32_t recibir_tamanio_proceso (socket) {
+uint32_t recibir_tamanio_proceso (int socket) {
 	uint32_t tamanio;
 	recv(socket, &tamanio, sizeof(uint32_t), 0);
 	return tamanio;

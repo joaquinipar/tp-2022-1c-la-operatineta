@@ -11,8 +11,7 @@ typedef struct {
     uint32_t marco; 
     uint32_t bit_presencia; 
     uint32_t bit_modificado;
-    uint32_t bit_uso;  
-    long long time_ref;  
+    uint32_t bit_uso;
 } pagina_2do_nivel_t; 
 
 typedef struct {
@@ -32,9 +31,9 @@ typedef struct {
 
 //Estructuras Memoria 
 typedef struct {
-    uint32_t pid;
-    pagina_2do_nivel_t* pagina; 
-    int estado;       
+    uint32_t pid; // == -1 -> Sin asignar.
+    pagina_2do_nivel_t* pagina;
+    int estado; // == 1 -> Ocupado. == 0 -> Libre
 }marco_t;  
 
 typedef struct{

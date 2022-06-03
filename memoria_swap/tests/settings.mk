@@ -5,7 +5,7 @@ PROJ_PATH=..
 EXCLUDE=main.c
 
 # Libraries
-LIBS=cunit static commons m
+LIBS=cunit static commons pthread m
 
 # Custom libraries' paths
 SHARED_LIBPATHS=
