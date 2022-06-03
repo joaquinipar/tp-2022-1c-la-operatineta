@@ -29,7 +29,7 @@ bool ejecutar_proceso_nuevo(pcb_t *proceso) {
 
 bool finalizar_proceso(pcb_t *proceso_actualizado) {
 
-  pcb_t *proceso = buscar_proceso(proceso_actualizado->pid);
+  pcb_t *proceso = buscar_proceso(proceso_actualizado->pid); // ?
   proceso_finalizar_rafaga(proceso);
   proceso->estado = EXIT;
 
@@ -44,7 +44,10 @@ bool finalizar_proceso(pcb_t *proceso_actualizado) {
   // TODO: enviar mensaje a memoria para eliminar proceso de memoria
 
   // TODO: revisar posible condicion de carrera, si no se ejecuta el plani de largo plazo a tiempo (y hay suspended-ready), puede agarrar uno de menor prioridad de ready (porque no llego a ready un suspended-ready a tiempo)
-  sem_post(&sem_proceso_listo); //libero un grado de multiprogramacion, hay que mover alguno a ready
+  //sem_post(&sem_proceso_listo); //libero un grado de multiprogramacion, hay que mover alguno a ready
+  // no realmente, el semaforo que esta abajo va a dar luz verde para que pase un nuevo proceso si es que hay
+  // hacer este sem_post es obligar a pasar a un nuevo proceso a ready cuando este no existe y boom. 
+  
   sem_post(&sem_bin_procesar_listo);
 
   return true;
