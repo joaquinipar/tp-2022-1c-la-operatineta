@@ -26,6 +26,3 @@ bool ejecutar_proceso_nuevo(pcb_t *proceso) {
   return encolar_proceso_en_nuevos(proceso);
 
 }
-
-
-//bool cerrar_proceso(uint32_t pid);

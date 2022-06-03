@@ -12,5 +12,8 @@
 #include "kernel_api.h"
 #include "monitor_colas_procesos.h"
 #include "planificador_largo_plazo.h"
+#include "planificador_corto_plazo.h"
+#include "dispatcher.h"
+#include "inicializacion.h"
 
 #endif //KERNEL_MAIN_H

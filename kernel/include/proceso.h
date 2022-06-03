@@ -2,6 +2,7 @@
 #define PROCESOS_H
 
 #include "config_kernel.h"
+#include "monitor_colas_procesos.h"
 #include <utils/logger.h>
 #include "structs.h"
 #include <commons/collections/dictionary.h>
@@ -12,6 +13,7 @@
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <unistd.h>
+#include "dispatcher.h"
 
 pcb_t *crear_proceso(int id, int socket, int socket_memoria);
 void proceso_destruir(pcb_t *);

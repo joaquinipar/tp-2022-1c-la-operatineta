@@ -48,6 +48,7 @@ void iniciar_monitor_colas_procesos() {
   sem_init(&sem_proceso_listo, 0, 0);
   sem_init(&sem_grado_multiprogramacion_completo, 0, 0);
   sem_init(&sem_proceso_suspendido, 0, 0);
+  sem_init(&sem_bin_procesar_listo, 0, 1);
 
   debug_log("monitor_colas_procesos.c@init",
             "Variables del monitor de colas de procesos inicializadas");
@@ -111,6 +112,8 @@ bool encolar_proceso_en_nuevos(pcb_t *proceso) {
   pthread_mutex_lock(&procesos_nuevos_mutex);
   list_add(cola_nuevos, proceso);
   proceso->estado = ESTADO_PROCESO_NEW;
+  proceso->duracion_ultima_rafaga = 0; // agregado
+  proceso->estimacion = kernel_config->estimacion_inicial; // agregado
   pthread_mutex_unlock(&procesos_nuevos_mutex);
 
   format_debug_log("monitor_cols_procesos@encolar_proceso_en_nuevos", "Proceso pid: %d encolado en nuevos", proceso->pid);
@@ -241,7 +244,7 @@ void ordenar_cola_listos() {
 
   list_sort(cola_listos, (void *)mayor_prioridad);
 
-  list_iterate(cola_listos, (void*) actualizar_estimacion_anterior);
+  //list_iterate(cola_listos, (void*) actualizar_estimacion_anterior);
 
   info_log("monitor_colas_procesos.c@ordenar_cola_listos", "Cola listos ordenada: ");
   list_iterate(cola_listos, (void*) iterator);
@@ -663,7 +666,6 @@ void mover_proceso_nuevo_a_suspendido_listo() {
 pcb_t *mover_proceso_listo_a_ejecucion() {
   pcb_t *proceso;
 
-  actualizar_espera_listos();
   ordenar_cola_listos();
   proceso = desencolar_proceso_listo();
   encolar_proceso_en_ejecucion(proceso);
@@ -852,7 +854,7 @@ bool mayor_prioridad(pcb_t *proceso1, pcb_t *proceso2) {
   bool resultado;
 
   switch (kernel_config->algoritmo_planificacion) {
-  case SJF:
+  case SRT:
 
     resultado =
         proxima_rafaga_estimada(proceso1) <= proxima_rafaga_estimada(proceso2);
@@ -862,10 +864,10 @@ bool mayor_prioridad(pcb_t *proceso1, pcb_t *proceso2) {
 
     break;
 
-  case HRRN:
+  case FIFO:
 
-    resultado = response_ratio(proceso1) >= response_ratio(proceso2);
-
+    resultado = (proceso1->estimacion - proceso2->estimacion) > 0;
+    
     break;
   }
 
@@ -877,16 +879,7 @@ int proxima_rafaga_estimada(pcb_t *proceso) {
   // Fórmula SJF	pr = ur * alpha + (1 - alpha) * t estimado ur
 
   return proceso->duracion_ultima_rafaga * kernel_config->alfa +
-         (1 - kernel_config->alfa) * proceso->estimacion;
-}
-
-int response_ratio(pcb_t *proceso) {
-
-  return 0;
-
-  // TODO: implementar SJF
-  /* return (proxima_rafaga_estimada(proceso) + proceso->tiempo_espera) /
-         proxima_rafaga_estimada(proceso); */
+         ((1 - kernel_config->alfa) * proceso->estimacion);
 }
 
 // TODO: implementar

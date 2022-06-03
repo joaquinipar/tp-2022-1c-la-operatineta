@@ -241,7 +241,7 @@ void mover_puntero_fija(int marco, uint32_t pid){
     puntero_clock_modificado* puntero_struct = (puntero_clock_modificado*) list_find(punteros_procesos, (void*) pid_iguales);
 
 
-    uint32_t marco_inicial = get_primer_marco_allocado(pid);
+    uint32_t marco_inicial = get_primer_marco_usado(pid);
 
     if(marco_inicial != -1 && puntero_struct != NULL){
 
@@ -312,7 +312,7 @@ uint32_t get_primer_marco_usado(uint32_t pid) {
         }
     }
     char *msg = string_from_format("El primer marco reservado sin pagina asignada libre del array de marcos es: %d", marco_asignado);
-    trace_log("algoritmos_reemplazo.c@get_primer_marco_allocado", msg);
+    trace_log("algoritmos_reemplazo.c@get_primer_marco_usado", msg);
     free(msg);
     ////
     return marco_asignado;

@@ -13,6 +13,7 @@
 ssize_t tamanio_stream_lista_instrucciones(t_list* lista_de_instrucciones); 
 ssize_t serializar_lista_de_instrucciones (t_list* lista_de_instrucciones , ssize_t desplazamiento_inicial, void *stream); 
 t_list* recibir_lista_de_instrucciones (int socket);
+uint32_t recibir_tamanio_proceso (int socket);
 uint32_t serializar_proceso(pcb_t* proceso, op_code_t codigo_operacion, void** stream); 
 pcb_t* deserializar_proceso(int cliente_socket); 
 

@@ -17,7 +17,7 @@ void proceso_destruir(pcb_t *proceso) {
 }
 
 void proceso_iniciar_rafaga(pcb_t *proceso) {
-  // TODO: implementar
+  gettimeofday(&(proceso->rafaga_actual).inicio, NULL);
 }
 
 void proceso_ejecutar(pcb_t *proceso) {
@@ -25,17 +25,28 @@ void proceso_ejecutar(pcb_t *proceso) {
   pthread_mutex_lock(&proceso_mutex);
   proceso->estado = ESTADO_PROCESO_EXEC;
   proceso_iniciar_rafaga(proceso);
-
   pthread_mutex_unlock(&proceso_mutex);
+  enviar_proceso_a_cpu(proceso);
+}
+
+// TODO: IMPLEMENTAR 
+void proceso_bloquear(pcb_t *proceso, int tiempo_bloqueado) {
+  // Si TIEMPO_MAXIMO_BLOQUEADO >= tiempo_bloqueado
+  //      usleep(tiempo_bloqueado)
+  //      mover a ready
+  // else
+  //    usleep(TIEMPO_MAXIMO_BLOQUEADO);
+  //    mover_a_suspendido_bloqueado(pcb_t *proceso)
+  //    usleep(tiempo_bloqueado - TIEMPO_MAXIMO_BLOQUEADO);
 }
 
 void proceso_finalizar_rafaga(pcb_t *proceso) {
   //TODO: implementar
-  /* gettimeofday(&proceso->rafaga->fin, NULL);
-  proceso->ultima_rafaga =
-      timedifference_msec(proceso->rafaga->inicio, proceso->rafaga->fin);
- */
-  //printf("\n\nTiempo de ráfaga: %d\n\n", proceso->ultima_rafaga);
+  gettimeofday(&(proceso->rafaga_actual).fin, NULL);
+  proceso->duracion_ultima_rafaga = timedifference_msec((proceso->rafaga_actual).inicio, (proceso->rafaga_actual).fin);
+  format_debug_log("proceso.c@proceso_finalizar_rafaga", "Proceso: %d tiempo total ultima rafaga", proceso->duracion_ultima_rafaga);
+  proceso->estimacion = proxima_rafaga_estimada(proceso);
+  format_debug_log("proceso.c@proceso_finalizar_rafaga", "Proceso: %d proxima rafaga estimada", proceso->estimacion);
 }
 
 /* void proceso_iniciar_espera(pcb_t *proceso) {
