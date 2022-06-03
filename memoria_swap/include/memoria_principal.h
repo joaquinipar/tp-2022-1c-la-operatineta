@@ -43,9 +43,9 @@ void destruir_listas_globales_de_tablas();
  * @desc Lee en la posición de la dirección física (sería el offset que le vamos a agregar al void* de memoria).
  * ATENCIÓN: Esta función devuelve un contenido malloqueado y debe ser liberado posteriormente
  * @param direccion_fisica
- * @return void* (uint32_t)
+ * @return uint32_t*
  */
-void* leer(uint32_t direccion_fisica); 
+uint32_t* leer(uint32_t direccion_fisica);
 
 /**
  * @name escribir
@@ -53,7 +53,7 @@ void* leer(uint32_t direccion_fisica);
  * @param direccion_fisica
  * @param contenido
  */
-void escribir(uint32_t direccion_fisica, void* contenido); 
+void escribir(uint32_t direccion_fisica, uint32_t contenido);
 
 
 

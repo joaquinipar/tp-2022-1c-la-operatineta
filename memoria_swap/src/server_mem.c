@@ -174,10 +174,10 @@ bool procesar_conexion(int cliente_socket) {
       uint32_t direccion_fisica;
       recv(cliente_socket, &direccion_fisica, sizeof(uint32_t), false);
 
-      void* lectura = leer(direccion_fisica);
+      uint32_t* lectura = leer(direccion_fisica);
 
 
-      int res = send_codigo_op_con_numero(OPCODE_READ, pid, lectura);
+      int res = send_codigo_op_con_numeros(cliente_socket, OPCODE_READ, pid, *lectura);
 
       debug_log("server_mem.c@procesar_conexion", "Envie el contenido");
 
@@ -194,12 +194,15 @@ bool procesar_conexion(int cliente_socket) {
       recv(cliente_socket, &pid, sizeof(uint32_t), false);
       uint32_t direccion_fisica;
       recv(cliente_socket, &direccion_fisica, sizeof(uint32_t), false);
-      void* contenido; // igual sabemos que siempre es un uint32_t
+      uint32_t contenido; // igual sabemos que siempre es un uint32_t
       recv(cliente_socket, &contenido, sizeof(uint32_t), false);
 
       escribir(direccion_fisica, contenido);
 
       // todo Actualizar bit de modificado. calcular marco con DF. Direccion fisica / tamaño de pagina
+      int marco = direccion_fisica / mem_swap_config->tam_pagina;
+
+      array_marcos[marco].pagina->bit_modificado = 1;
 
       send_ack(cliente_socket, OPCODE_ACK_OK);
 

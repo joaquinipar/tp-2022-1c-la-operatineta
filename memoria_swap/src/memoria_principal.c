@@ -168,15 +168,15 @@ void iniciar_memoria(){
 }
 
 
-void* leer(uint32_t direccion_fisica) {
-    void* contenido = malloc(sizeof (uint32_t));
+uint32_t* leer(uint32_t direccion_fisica) {
+    uint32_t* contenido = malloc(sizeof (uint32_t));
     memcpy( contenido ,mem_ppal->memoria_principal + direccion_fisica, sizeof(uint32_t));
     return contenido;
 }
 
-void escribir(uint32_t direccion_fisica, void* contenido){
+void escribir(uint32_t direccion_fisica, uint32_t contenido){
 
-    memcpy(mem_ppal->memoria_principal + direccion_fisica, contenido, sizeof(uint32_t));
+    memcpy(mem_ppal->memoria_principal + direccion_fisica, &contenido, sizeof(uint32_t));
 }
 
 
