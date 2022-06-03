@@ -214,7 +214,7 @@ bool enviar_mensaje_proceso_desalojado_io(pcb_t* proceso_actualizado, int socket
 
 	// format_debug_log("serializacion.c@serializar_proceso", "Stream List Instrucciones %d", tam_stream_list_instruc);
 	format_debug_log("serializacion.c@serializar_proceso", "Stream Size %d", stream_size);
-
+  op_code_t codigo_operacion = OPCODE_PROCESO_DESALOJADO_IO; 
 	int desplazamiento = 0;
 	memcpy(*stream, &codigo_operacion, sizeof(op_code_t));
 	desplazamiento += sizeof(op_code_t);
