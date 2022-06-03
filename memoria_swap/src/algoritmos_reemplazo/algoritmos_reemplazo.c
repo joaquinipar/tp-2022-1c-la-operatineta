@@ -300,7 +300,7 @@ uint32_t get_proximo_marco_del_proceso(uint32_t pid, uint32_t marco_actual){
     return -1;
 }
 
-uint32_t get_primer_marco_allocado(uint32_t pid) {
+uint32_t get_primer_marco_usado(uint32_t pid) {
     //
     int marco;
     int marco_asignado = -1;
