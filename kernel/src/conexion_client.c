@@ -118,7 +118,7 @@ bool enviar_mensaje_ejecutar(pcb_t* proceso) {
       return response;
     }
     debug_log("conexion_client.c@enviar_mensaje_ejecutar", "Recepcion mensaje ACK ERROR -EJECUTAR");
-    debug_log("conexion_client.c@enviar_mensaje_ejecutar", "Termina mensaje EJECUTAR");
+    debug_log("conexion_client.c@enviar_mensaje_ejecutar", "Termina mensaje EJECUTAR"); 
     return response;
   }
 

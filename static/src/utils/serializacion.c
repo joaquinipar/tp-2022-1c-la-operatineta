@@ -21,8 +21,11 @@ ssize_t serializar_lista_de_instrucciones(t_list *lista_de_instrucciones, ssize_
 {
 	//CODOP + LIST_SIZE + (UINT32 + INT32 + INT32)*
 	ssize_t tamanio_stream = tamanio_stream_lista_instrucciones(lista_de_instrucciones);
+	format_debug_log("serializacion.c@serializar_lista_de_instrucciones", "El tamanio del stream de la lista es %d ", tamanio_stream);
 	int desplazamiento = desplazamiento_inicial;
+	format_debug_log("serializacion.c@serializar_lista_de_instrucciones", "El tamanio del desplazamiento es %d ", desplazamiento);
 	uint32_t cantidad_lista_instrucciones = (uint32_t)list_size(lista_de_instrucciones);
+	format_debug_log("serializacion.c@serializar_lista_de_instrucciones", "Cantidad de instrucciones es %d ", cantidad_lista_instrucciones);
 
 	memcpy(stream + desplazamiento, &cantidad_lista_instrucciones, sizeof(uint32_t));
 	desplazamiento += sizeof(uint32_t);
@@ -41,6 +44,7 @@ ssize_t serializar_lista_de_instrucciones(t_list *lista_de_instrucciones, ssize_
 	};
 
 	list_iterate(lista_de_instrucciones, (void *)cargar_instruccion_a_stream);
+	format_debug_log("serializacion.c@serializar_lista_de_instrucciones", "El tamanio del desplazamiento es %d ", desplazamiento);
 
 	return tamanio_stream;
 }

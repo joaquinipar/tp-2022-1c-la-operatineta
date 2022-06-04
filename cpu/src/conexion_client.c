@@ -209,7 +209,6 @@ bool enviar_mensaje_proceso_desalojado_io(pcb_t* proceso_actualizado, int socket
 
 	/*COD OP  +PID+ TAMANIO+PC +  TP + ESTADO+ ESTIMACIONRAFAGA+ ESTIMACION+DURACION+RAFAGAACTUAL + cant de instru + c/instruccion* 3 parametros*/
 	uint32_t stream_size = sizeof(op_code_t) + sizeof(uint32_t) +sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t) + tam_stream_list_instruc ;
-
 	void *stream = malloc(stream_size);
 
 	// format_debug_log("serializacion.c@serializar_proceso", "Stream List Instrucciones %d", tam_stream_list_instruc);
@@ -238,7 +237,7 @@ bool enviar_mensaje_proceso_desalojado_io(pcb_t* proceso_actualizado, int socket
 	desplazamiento += sizeof(uint32_t);
 	memcpy(stream + desplazamiento, &(proceso_actualizado->rafaga_actual), sizeof(uint32_t));
 	desplazamiento += sizeof(uint32_t);
-	serializar_lista_de_instrucciones(proceso_actualizado->lista_instrucciones, desplazamiento, &stream);
+	serializar_lista_de_instrucciones(proceso_actualizado->lista_instrucciones, desplazamiento, stream);
 
     int send_result = send(socket, stream, stream_size , false);
     

@@ -81,6 +81,7 @@ void escucha_proceso_desalojado()
             }
 
             bloquear_proceso(proceso_actualizado, tiempo_bloqueo);
+            break;
 
         }
 
@@ -98,6 +99,8 @@ void escucha_proceso_desalojado()
                 debug_log("conexion_client.c@procesar_conexion", "Envio mensaje ACK ERROR -OPCODE_PROCESO_DESALOJADO_INTERRUPT");
                 debug_log("conexion_client.c@procesar_conexion", "Termina mensaje OPCODE_PROCESO_DESALOJADO_INTERRUPT");
             }
+
+            break;
             
         }
 
@@ -117,6 +120,8 @@ void escucha_proceso_desalojado()
             }
 
             finalizar_proceso(proceso_actualizado);
+
+            break;
 
             // TODO: logica de proceso desalojado por exit
         }

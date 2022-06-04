@@ -271,9 +271,11 @@ bool hay_interrupcion(pcb_t * proceso){
    instruccion_t* instruccion_a_ejecutar; 
 
    do{
+		format_debug_log("ciclo_instruccion.c@iniciar_ciclo_instruccion", "procesando instruccion: %d, para el proceso: %d ", proceso->program_counter, proceso->pid );
+		
 		instruccion_a_ejecutar = fetch_instruction(proceso); 
    		proceso = execute_instruction(instruccion_a_ejecutar, proceso); 
 		
-   }while(!requiere_desalojo(instruccion_a_ejecutar) || !hay_interrupcion(proceso));
+   }while(!requiere_desalojo(instruccion_a_ejecutar) && !hay_interrupcion(proceso));
 
  }
