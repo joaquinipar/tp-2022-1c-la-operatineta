@@ -197,6 +197,7 @@ void encolar_proceso_en_listos(pcb_t *proceso) {
 
   
   proceso->estado = ESTADO_PROCESO_READY;
+  //TODO revisar porque se cuelga aca
   /*if(proceso->tabla_paginas == -1){
   proceso = proceso_obtener_tabla_paginas(proceso); 
   }*/
