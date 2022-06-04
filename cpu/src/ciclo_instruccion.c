@@ -27,9 +27,9 @@ void print_instruccion(instruccion_t* una_instruccion){
 			break;
 	}
 
-	format_info_log("ciclo_instruccion.c@printear_lista", "Instruccion: %s", inst_name );
-	format_info_log("ciclo_instruccion.c@printear_lista", "Valores parametro 1: %d", una_instruccion->argumentos[0]);
-    format_info_log("ciclo_instruccion.c@printear_lista", "Valores parametro 2: %d",una_instruccion->argumentos[1]);
+	format_debug_log("ciclo_instruccion.c@printear_lista", "Instruccion: %s", inst_name );
+	format_debug_log("ciclo_instruccion.c@printear_lista", "Valores parametro 1: %d", una_instruccion->argumentos[0]);
+    format_debug_log("ciclo_instruccion.c@printear_lista", "Valores parametro 2: %d",una_instruccion->argumentos[1]);
 
 }
  /*
@@ -241,10 +241,10 @@ bool requiere_desalojo(instruccion_t* instruccion){
 
   if(instruccion->instruccion == IO || instruccion->instruccion == EXIT){
 	  format_info_log("ciclo_instruccion.c@requiere_desalojo", "Requiere desalojo - Instruccion: %d", instruccion->instruccion); 
-	  return true;
+	  return false;
   }
   format_info_log("ciclo_instruccion.c@requiere_desalojo", "NO - Requiere desalojo - Instruccion: %d", instruccion->instruccion);
-  return false; 
+  return true; 
 
 }
 

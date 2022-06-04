@@ -16,5 +16,6 @@ pthread_t iniciar_server_kernel();
 int escuchar_conexiones_nuevas(int server_socket); 
 bool recibir_mensaje_proceso_nuevo(int cliente_socket); 
 bool procesar_conexion(int cliente_socket);
+pcb_t *deserealizar_nuevo_proceso(int socket);
 
 #endif /* KERNEL_INCLUDE_SERVER_KERNEL_H_ */

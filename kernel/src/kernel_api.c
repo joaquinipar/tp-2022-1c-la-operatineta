@@ -19,7 +19,8 @@ pid_t obtener_siguiente_pid () {
 
 bool ejecutar_proceso_nuevo(pcb_t *proceso) {
 
-  format_info_log("kernel/kernel_api@admitir_proceso_nuevo", "Admitiendo proceso nuevo con id: %d al sistema", proceso->pid);
+  format_info_log("kernel/kernel_api@ejecutar_proceso_nuevo", "Admitiendo proceso nuevo con id: %d al sistema", proceso->pid);
+  format_debug_log("kernel/kernel_api@ejecutar_proceso_nuevo", "Tamaño de proceso: %d ", proceso->tamanio);
 
   agregar_proceso_a_lista_de_procesos(proceso);
 

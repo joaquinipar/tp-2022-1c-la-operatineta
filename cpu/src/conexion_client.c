@@ -202,13 +202,12 @@ bool enviar_mensaje_inicial_configuracion(){
 //OPCODE_PROCESO_DESALOJADO_IO
 bool enviar_mensaje_proceso_desalojado_io(pcb_t* proceso_actualizado, int socket, uint32_t tiempo_bloqueo){
   debug_log("conexion_client.c@enviar_mensaje_proceso_desalojado_io", "Comienza envio de mensaje - OPCODE_PROCESO_DESALOJADO_IO");
-
    // uint32_t stream_size_parcial = serializar_proceso(proceso_actualizado, OPCODE_PROCESO_DESALOJADO_IO, &stream);
-
   uint32_t tam_stream_list_instruc = tamanio_stream_lista_instrucciones(proceso_actualizado->lista_instrucciones);
 
 	/*COD OP  +PID+ TAMANIO+PC +  TP + ESTADO+ ESTIMACIONRAFAGA+ ESTIMACION+DURACION+RAFAGAACTUAL + cant de instru + c/instruccion* 3 parametros*/
 	uint32_t stream_size = sizeof(op_code_t) + sizeof(uint32_t) +sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t) + tam_stream_list_instruc ;
+
 	void *stream = malloc(stream_size);
 
 	// format_debug_log("serializacion.c@serializar_proceso", "Stream List Instrucciones %d", tam_stream_list_instruc);
@@ -240,11 +239,10 @@ bool enviar_mensaje_proceso_desalojado_io(pcb_t* proceso_actualizado, int socket
 	serializar_lista_de_instrucciones(proceso_actualizado->lista_instrucciones, desplazamiento, stream);
 
     int send_result = send(socket, stream, stream_size , false);
-    
+
     format_debug_log("conexion_clien.c@enviar_mensaje_proceso_desalojado_io", "Send Result %d", send_result); 
     if (send_result != -1) {
     bool response = recv_ack(socket);
-
     if (response) {
       debug_log("conexion_client.c@enviar_mensaje_proceso_desalojado_io", "Recepcion mensaje ACK OK - OPCODE_PROCESO_DESALOJADO_IO");
       debug_log("conexion_client.c@enviar_mensaje_proceso_desalojado_io", "Termina mensaje OPCODE_PROCESO_DESALOJADO_IO");
@@ -254,14 +252,10 @@ bool enviar_mensaje_proceso_desalojado_io(pcb_t* proceso_actualizado, int socket
     debug_log("conexion_client.c@enviar_mensaje_proceso_desalojado_io", "Termina mensaje OPCODE_PROCESO_DESALOJADO_IO");
     return response;
   }
-
   error_log("conexion_client.c@enviar_mensaje_proceso_desalojado_io", "Error al enviar mensaje OPCODE_PROCESO_DESALOJADO_IO");
   debug_log("conexion_client.c@enviar_mensaje_proceso_desalojado_io", "Termina mensaje OPCODE_PROCESO_DESALOJADO_IO");
   return false;
-
-
 }
-
 //OPCODE_PROCESO_DESALOJADO_INTERRUPT
 
 bool enviar_mensaje_proceso_desalojado_interrupt(pcb_t* proceso_actualizado, int socket){

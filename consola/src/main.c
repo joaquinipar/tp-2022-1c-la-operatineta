@@ -24,7 +24,7 @@ int main(int argc /*cantidad de argumentos*/, char* argv[]/*path instruccion +ta
 	char* path_arch_config = argv[3];;
 
     format_info_log("main.c@main", "Path de instrucciones: %s", path_instruction);
-    format_info_log("main.c@main", "Tamaño del proceso: %d", argv[2]);
+    format_info_log("main.c@main", "Tamaño del proceso: %d", tamanio_proceso);
     format_info_log("main.c@main", "Path del archivo de configuración: %s", path_arch_config);
 
 	debug_log("main.c@main", "Parseando lista de instrucciones");
@@ -35,7 +35,7 @@ int main(int argc /*cantidad de argumentos*/, char* argv[]/*path instruccion +ta
 
     
 	debug_log("main.c@main", "Enviando lista de instrucciones a kernel");
-    enviar_proceso_a_kernel(lista_de_instrucciones);
+    enviar_proceso_a_kernel(lista_de_instrucciones, tamanio_proceso);
 
 	//DESERIALIZAR
 	//t_list* instrucciones_deserializadas = deserializar_lista_de_instrucciones(stream);

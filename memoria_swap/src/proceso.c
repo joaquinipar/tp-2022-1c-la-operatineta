@@ -121,6 +121,7 @@ uint32_t inicio_proceso(uint32_t pid, uint32_t tamanio){
         return posicion_tabla_1er_nivel_en_lista_global;
 
     }
+
     return -1; 
 }
 

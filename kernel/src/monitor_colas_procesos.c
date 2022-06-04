@@ -195,14 +195,17 @@ void encolar_proceso_en_listos(pcb_t *proceso) {
   
   pthread_mutex_lock(&procesos_listos_mutex);
 
-  list_add(cola_listos, proceso);
+  
   proceso->estado = ESTADO_PROCESO_READY;
+  if(proceso->tabla_paginas == -1){
+  proceso = proceso_obtener_tabla_paginas(proceso); 
+  }
   //proceso_iniciar_espera(proceso);
+  list_add(cola_listos, proceso);
 
   pthread_mutex_unlock(&procesos_listos_mutex);
 
-  char *mensaje = string_from_format(
-      "Proceso pid: %d encolado en listos", proceso->pid);
+  char *mensaje = string_from_format( "Proceso pid: %d encolado en listos", proceso->pid);
   info_log("monitor_colas_procesos.c@encolar_proceso_en_listos", mensaje);
   free(mensaje);
 

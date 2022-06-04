@@ -68,6 +68,12 @@ void escucha_proceso_desalojado()
             uint32_t tiempo_bloqueo;
             int bytes_recibidos = recv(socket_cliente_cpu_dispatch, &tiempo_bloqueo, sizeof(uint32_t), 0); 
             format_debug_log("dispatcher.c@procesar_conexion", "Tiempo bloqueado %d", tiempo_bloqueo);
+
+            pcb_t* proceso_recibido = malloc(sizeof(pcb_t));
+            int bytes_recibidos1 = recv(socket_cliente_cpu_dispatch, &(proceso_recibido->pid), sizeof(uint32_t), 0);
+            format_debug_log("serializacion@deserializar_proceso", "Proceso: %d", proceso_recibido->pid);
+            format_debug_log("serializacion@deserializar_proceso", "Bytes: %d", bytes_recibidos1);
+
             pcb_t* proceso_actualizado = deserializar_proceso(socket_cliente_cpu_dispatch);
             
             if (bytes_recibidos !=-1) {
@@ -80,7 +86,7 @@ void escucha_proceso_desalojado()
                 debug_log("conexion_client.c@procesar_conexion", "Termina mensaje OPCODE_PROCESO_DESALOJADO_IO");
             }
 
-            bloquear_proceso(proceso_actualizado, tiempo_bloqueo);
+           // bloquear_proceso(proceso_actualizado, tiempo_bloqueo);
             break;
 
         }

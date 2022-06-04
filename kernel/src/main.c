@@ -11,6 +11,8 @@ int main(int argc, char* argv[]) {
 
     int *server_exit_code = NULL;
 
+    iniciar_conexion_memoria(); 
+
     pthread_t hilo_servidor = iniciar_server_kernel();
     pthread_join(hilo_servidor, (void *)server_exit_code);
 
