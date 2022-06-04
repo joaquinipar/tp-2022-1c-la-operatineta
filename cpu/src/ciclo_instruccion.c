@@ -170,7 +170,7 @@ void gestionar_instruccion_write(pcb_t* proceso, int32_t direccion_logica, int32
 			format_info_log("ciclo_instruccion.c@gestionar_instruccion_write", "Direccion Fisica: %d", dir_fisica);
 		    format_debug_log("ciclo_instruccion.c@gestionar_instruccion_write", "Valor a copiar en Memoria: %d", valor_a_copiar);
 			enviar_mensaje_write(proceso->pid, dir_fisica, valor_a_copiar); 
-			
+			hay_interrupcion;
 		}
 	}
 
@@ -241,10 +241,10 @@ bool requiere_desalojo(instruccion_t* instruccion){
 
   if(instruccion->instruccion == IO || instruccion->instruccion == EXIT){
 	  format_info_log("ciclo_instruccion.c@requiere_desalojo", "Requiere desalojo - Instruccion: %d", instruccion->instruccion); 
-	  return false;
+	  return true;
   }
   format_info_log("ciclo_instruccion.c@requiere_desalojo", "NO - Requiere desalojo - Instruccion: %d", instruccion->instruccion);
-  return true; 
+  return false; 
 
 }
 
@@ -276,6 +276,6 @@ bool hay_interrupcion(pcb_t * proceso){
 		instruccion_a_ejecutar = fetch_instruction(proceso); 
    		proceso = execute_instruction(instruccion_a_ejecutar, proceso); 
 		
-   }while(!requiere_desalojo(instruccion_a_ejecutar) && !hay_interrupcion(proceso));
+   }while( !requiere_desalojo(instruccion_a_ejecutar) && !hay_interrupcion(proceso));
 
- }
+ } 

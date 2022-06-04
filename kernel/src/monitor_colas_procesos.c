@@ -197,9 +197,9 @@ void encolar_proceso_en_listos(pcb_t *proceso) {
 
   
   proceso->estado = ESTADO_PROCESO_READY;
-  if(proceso->tabla_paginas == -1){
+  /*if(proceso->tabla_paginas == -1){
   proceso = proceso_obtener_tabla_paginas(proceso); 
-  }
+  }*/
   //proceso_iniciar_espera(proceso);
   list_add(cola_listos, proceso);
 
@@ -638,7 +638,7 @@ void mover_proceso_a_listo() {
     proceso = desencolar_proceso_suspendido_listo();
     encolar_proceso_en_listos(proceso);
 
-  } else if (cantidad_procesos_listos() > 0) {
+  } else if (cantidad_procesos_nuevos() > 0) {
 
     proceso = desencolar_proceso_nuevo();
     encolar_proceso_en_listos(proceso);
