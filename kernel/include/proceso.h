@@ -25,4 +25,7 @@ void proceso_finalizar_espera(pcb_t *);
 
 float timedifference_msec(struct timeval, struct timeval);
 
+// TODO: implementar
+void proceso_obtener_tabla_paginas(pcb_t *proceso);
+
 #endif

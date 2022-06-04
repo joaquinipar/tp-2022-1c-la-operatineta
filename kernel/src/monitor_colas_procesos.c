@@ -368,7 +368,6 @@ pcb_t *buscar_proceso_en_ejecucion(int pid) {
  * ---------------------------  */
 
 void encolar_proceso_en_bloqueados(pcb_t *proceso, int retardo) {
-
   pthread_mutex_lock(&procesos_bloqueados_mutex);
   
   proceso->estado = ESTADO_PROCESO_BLOCKED;
@@ -376,10 +375,11 @@ void encolar_proceso_en_bloqueados(pcb_t *proceso, int retardo) {
   proceso_bloqueado->retardo = retardo;
   proceso_bloqueado->proceso = proceso;
   list_add(cola_bloqueados, proceso_bloqueado);
+  format_debug_log("monitor_colas_procesos.c@encolar_proceso_en_bloqueados", "Proceso pid: %d encolado en bloqueados", proceso->pid);
 
   pthread_mutex_unlock(&procesos_bloqueados_mutex);
 
-  format_debug_log("monitor_colas_procesos.c@encolar_proceso_en_bloqueados", "Proceso pid: %d encolado en bloqueados", proceso->pid);
+  //TODO: hacer signal de sem_cont_procesos_bloqueados (en lo posible llamar a funcion en dispositivo_io.c que lo haga)
 }
 
 pcb_t *desencolar_proceso_bloqueado() {
