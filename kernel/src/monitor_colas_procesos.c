@@ -221,18 +221,18 @@ void ordenar_cola_listos() {
 
 	//printf("\n\nCola listos previo a ordenarse: \n");
 
-	void iterator(pcb_t* proceso)
+	/* void iterator(pcb_t* proceso)
 	{
     format_info_log("monitor_colas_procesos.c@ordenar_cola_listos", "Proceso pid: %d", proceso->pid);
     format_info_log("monitor_colas_procesos.c@ordenar_cola_listos", "Ultima rafaga: %d", proceso->duracion_ultima_rafaga);
     format_info_log("monitor_colas_procesos.c@ordenar_cola_listos", "Proxima ráfaga estimada: %d", proxima_rafaga_estimada(proceso));
     format_info_log("monitor_colas_procesos.c@ordenar_cola_listos", "Estimación anterior: %d", proceso->estimacion);
-	}
+	} */
 
-	void actualizar_estimacion_anterior(pcb_t* proceso)
+	/* void actualizar_estimacion_anterior(pcb_t* proceso)
 	{
 		proceso->estimacion = proxima_rafaga_estimada(proceso);
-	}
+	} */
 
 	//list_iterate(cola_listos, (void*) iterator);
 
