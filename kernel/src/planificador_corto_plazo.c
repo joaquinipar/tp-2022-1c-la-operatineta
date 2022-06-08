@@ -25,15 +25,6 @@ void planificar_procesos() {
   }
 }
 
-void replanificar_procesos(){
-  if(kernel_config -> algoritmo_planificacion == FIFO){
-
-    info_log("planificador_corto_plazo.c@replanificar_procesos", "replanificando procesos");
-    sem_post(&sem_bin_procesar_listo);
-  }
-}
-
-
 void finalizar_planificador_corto_plazo() {
 
   pthread_cancel(hilo_procesador);

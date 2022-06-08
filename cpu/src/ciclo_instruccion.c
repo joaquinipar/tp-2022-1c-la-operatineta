@@ -192,7 +192,7 @@ pcb_t* execute_instruction(instruccion_t* instruccion_a_ejecutar, pcb_t* proceso
 		case 0: //INSTRUCCION NO_OP
 			format_info_log("ciclo_instruccion.c@execute_instruction",  "NOOP - PID: %d - Se realizará un sleep de: %d ",proceso->pid, cpu_config->retardo_noop);
 			proceso->program_counter++;
-			usleep(cpu_config->retardo_noop);
+			usleep(cpu_config->retardo_noop * 1000);
 			return proceso;
 			break;
 		case 1: //INSTRUCCION I/O
@@ -241,10 +241,10 @@ bool requiere_desalojo(instruccion_t* instruccion){
 
   if(instruccion->instruccion == IO || instruccion->instruccion == EXIT){
 	  format_info_log("ciclo_instruccion.c@requiere_desalojo", "Requiere desalojo - Instruccion: %d", instruccion->instruccion); 
-	  return false;
+	  return true;
   }
   format_info_log("ciclo_instruccion.c@requiere_desalojo", "NO - Requiere desalojo - Instruccion: %d", instruccion->instruccion);
-  return true; 
+  return false; 
 
 }
 

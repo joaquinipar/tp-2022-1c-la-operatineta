@@ -62,10 +62,10 @@ bool bloquear_proceso(pcb_t *proceso_actualizado, int tiempo_bloqueo) {
   proceso->program_counter = proceso_actualizado->program_counter;  // buscar proceso => actualizar pcb
   encolar_proceso_en_bloqueados(proceso, tiempo_bloqueo); // mover proceso a lista de bloqueados, guardar el tiempo de IO
   lanzar_thread_suspension_proceso(proceso); // despues del tiempo maximo de bloqueo lo suspende si sigue bloqueado y manda el mensaje a memoria
-  // TODO probar de llamar a signal(sem_cont_procesos_bloqueados);
   incrementar_cantidad_procesos_bloqueados();
   sem_post(&sem_bin_procesar_listo); // como se libera la cpu se puede ejecutar otro proceso, si es que hay.
   return true;
+
 }
 
 // TODO: implementar
