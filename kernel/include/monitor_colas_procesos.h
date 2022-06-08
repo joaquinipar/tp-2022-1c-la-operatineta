@@ -62,7 +62,7 @@ bool lista_de_suspendidos_listos_vacia();
 void encolar_proceso_en_terminados(pcb_t *proceso);
 
 // Otras funciones
-void mover_proceso_nuevo_a_listo();
+void mover_proceso_a_listo();
 pcb_t *mover_proceso_listo_a_ejecucion();
 void mover_ultimo_proceso_bloqueado_a_suspendido();
 void mover_proceso_ejecutando_a_terminados();
@@ -88,7 +88,7 @@ int cantidad_procesos_terminados();
 
 sem_t sem_proceso_nuevo;
 sem_t sem_proceso_listo;
-sem_t sem_grado_multiprogramacion_disponible;
+sem_t sem_grado_multiprogramacion_completo;
 sem_t sem_proceso_suspendido;
 sem_t sem_bin_procesar_listo;
 
