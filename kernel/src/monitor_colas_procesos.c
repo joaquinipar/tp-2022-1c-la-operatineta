@@ -46,12 +46,11 @@ void iniciar_monitor_colas_procesos() {
 
   sem_init(&sem_proceso_nuevo, 0, 0);
   sem_init(&sem_proceso_listo, 0, 0);
-  sem_init(&sem_grado_multiprogramacion_completo, 0, 0);
+  sem_init(&sem_grado_multiprogramacion_disponible, 0, kernel_config->grado_multiprogramacion);
   sem_init(&sem_proceso_suspendido, 0, 0);
   sem_init(&sem_bin_procesar_listo, 0, 1);
 
-  debug_log("monitor_colas_procesos.c@init",
-            "Variables del monitor de colas de procesos inicializadas");
+  debug_log("monitor_colas_procesos.c@init", "Variables del monitor de colas de procesos inicializadas");
 }
 
 void destruir_monitor_colas_procesos() {
@@ -187,14 +186,10 @@ bool lista_de_nuevos_vacia()
 
 /*  --------------------------- Funciones Cola Listos
  * ---------------------------  */
-
 void encolar_proceso_en_listos(pcb_t *proceso) {
-  char *msg = string_from_format("El proceso con pid: %d sera movido a cola de listos", proceso->pid);
-  debug_log("monitor_colas_procesos.c@encolar_proceso_en_listos", msg);
-  free(msg);
+  format_debug_log("monitor_colas_procesos.c@encolar_proceso_en_listos", "El proceso con pid: %d sera movido a cola de listos", proceso->pid);
   
   pthread_mutex_lock(&procesos_listos_mutex);
-
   
   proceso->estado = ESTADO_PROCESO_READY;
   //TODO revisar porque se cuelga aca
@@ -206,9 +201,7 @@ void encolar_proceso_en_listos(pcb_t *proceso) {
 
   pthread_mutex_unlock(&procesos_listos_mutex);
 
-  char *mensaje = string_from_format( "Proceso pid: %d encolado en listos", proceso->pid);
-  info_log("monitor_colas_procesos.c@encolar_proceso_en_listos", mensaje);
-  free(mensaje);
+  format_info_log("monitor_colas_procesos.c@encolar_proceso_en_listos", "Proceso pid: %d encolado en listos", proceso->pid);
 
   sem_post(&sem_proceso_listo);
 }
@@ -218,7 +211,6 @@ pcb_t *desencolar_proceso_listo() {
   pthread_mutex_lock(&procesos_listos_mutex);
 
   pcb_t *proceso = list_remove(cola_listos, 0);
-  //proceso_finalizar_espera(proceso);
 
   pthread_mutex_unlock(&procesos_listos_mutex);
 
@@ -313,10 +305,8 @@ void encolar_proceso_en_ejecucion(pcb_t *proceso) {
 
   pthread_mutex_unlock(&procesos_ejecutando_mutex);
 
-  char *mensaje = string_from_format(
-      "Proceso pid: %d encolado en ejecucion", proceso->pid);
-  info_log("monitor_colas_procesos.c@encolar_proceso_en_ejecucion", mensaje);
-  free(mensaje);
+  format_info_log("monitor_colas_procesos.c@encolar_proceso_en_ejecucion", "Proceso pid: %d encolado en ejecucion", proceso->pid);
+
 }
 
 pcb_t *desencolar_proceso_en_ejecucion() {
@@ -534,14 +524,11 @@ void encolar_proceso_en_suspendidos_listos(pcb_t *proceso) {
 
   list_add(cola_suspendidos_listos, proceso);
   proceso->estado = ESTADO_PROCESO_SUSPENDED_READY;
-
+  // TODO: llamar a memoria para suspender el proceso, no se si es necesario
   pthread_mutex_unlock(&procesos_suspendidos_listos_mutex);
 
-  char *mensaje = string_from_format(
-      "Proceso pid: %d encolado en suspendidos_listos", proceso->pid);
-  info_log("monitor_colas_procesos.c@encolar_proceso_suspendido_listo", mensaje);
-  free(mensaje);
-
+  format_info_log("monitor_colas_procesos.c@encolar_proceso_suspendido_listo", "Proceso pid: %d encolado en suspendidos_listos", proceso->pid);
+  sem_post(&sem_proceso_suspendido);
 }
 
 pcb_t *desencolar_proceso_suspendido_listo() {
@@ -631,20 +618,17 @@ void encolar_proceso_en_terminados(pcb_t *proceso) {
 
 /*  --------------------------- Otras funciones ---------------------------  */
 
-void mover_proceso_a_listo() {
-  pcb_t *proceso;
-
-  if (cantidad_procesos_suspendidos_listos() > 0) {
-
-    proceso = desencolar_proceso_suspendido_listo();
-    encolar_proceso_en_listos(proceso);
-
-  } else if (cantidad_procesos_nuevos() > 0) {
-
-    proceso = desencolar_proceso_nuevo();
-    encolar_proceso_en_listos(proceso);
-
+void mover_proceso_nuevo_a_listo(pcb_t *proceso) {
+  // El grado de multiprogramacion esta completo, hay que suspender el proceso
+  if (grado_multiprogramacion_completo()) {
+    info_log("monitor_colas_procesos.c@mover_proceso_nuevo_a_listo", "El grado de multiprogramacion esta completo, se suspende el proceso nuevo");
+    encolar_proceso_en_suspendidos_listos(proceso);
+    return;
   }
+
+
+  info_log("monitor_colas_procesos.c@mover_proceso_nuevo_a_listo", "El grado de multiprogramacion NO esta completo, se mueve el proceso nuevo a listos");
+  encolar_proceso_en_listos(proceso);
 }
 
 void mover_proceso_nuevo_a_suspendido_listo() {
@@ -663,7 +647,10 @@ pcb_t *mover_proceso_listo_a_ejecucion() {
   if(kernel_config -> algoritmo_planificacion == SRT){
     ordenar_cola_listos();
   }
+
   proceso = desencolar_proceso_listo();
+  format_info_log("monitor_cola_procesos.c@mover_listo_a_ejecucion", "Moviendo proceso con id: %d a ejecucion", proceso->pid);
+  
   encolar_proceso_en_ejecucion(proceso);
   proceso_ejecutar(proceso);
 
@@ -780,9 +767,7 @@ bool grado_multiprogramacion_completo()
 
 	if(resultado == true)
 	{
-    info_log("monitor_colas_procesos.c@grado_de_multiprogramacion", "Grado de multiprogramacion completo");
-		/*debug_log("kernel/grado_de_multiprogramacion_completo.c",
-				  "Grado de multiprogramación completo");*/
+    debug_log("monitor_colas_procesos.c@grado_de_multiprogramacion", "Grado de multiprogramacion completo");
 	}
 
 	return resultado;
