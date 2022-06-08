@@ -372,20 +372,15 @@ void encolar_proceso_en_bloqueados(pcb_t *proceso, int retardo) {
   pthread_mutex_unlock(&procesos_bloqueados_mutex);
 }
 
-pcb_t *desencolar_proceso_bloqueado() {
+bloqueo_proceso_t *desencolar_proceso_bloqueado() {
 
   pthread_mutex_lock(&procesos_bloqueados_mutex);
-
-  pcb_t *proceso = list_remove(cola_bloqueados, 0);
-
+  bloqueo_proceso_t *bloqueo_proceso = list_remove(cola_bloqueados, 0);
   pthread_mutex_unlock(&procesos_bloqueados_mutex);
 
-  char *mensaje = string_from_format(
-      "Proceso pid: %d desencolado de bloqueados", proceso->pid);
-  debug_log("monitor_colas_procesos.c@desencolar_proceso_en_bloqueados", mensaje);
-  free(mensaje);
+  format_debug_log("monitor_colas_procesos.c@desencolar_proceso_en_bloqueados", "Proceso pid: %d desencolado de bloqueados", bloqueo_proceso->proceso->pid);
 
-  return proceso;
+  return bloqueo_proceso;
 }
 
 pcb_t *obtener_ultimo_proceso_bloqueado() {

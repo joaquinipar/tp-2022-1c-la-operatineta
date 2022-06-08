@@ -20,9 +20,9 @@ void despertar_procesos() {
   while (1) {
 
     // Hay un proceso suspendido
-    wait(&sem_proceso_suspendido);
+    sem_wait(&sem_proceso_suspendido);
     // Se libera un grado de multiprogramacion
-    wait(&sem_grado_multiprogramacion_disponible);
+    sem_wait(&sem_grado_multiprogramacion_disponible);
     info_log("planificador_mediano_plazo.c@despertar_procesos", "Plani de mediano plazo despertado");
     mover_proceso_suspendido_a_listo();
 

@@ -28,13 +28,13 @@ int escuchar_peticiones_dispositivo() {
 
     bloqueo_proceso_t *proceso_bloqueado = desencolar_proceso_bloqueado();
     pcb_t *proceso = proceso_bloqueado->proceso;
-    int tiempo_bloqueo = proceso_bloqueado->retardo;
+    int retardo = proceso_bloqueado->retardo;
 
-    format_debug_log("dispositivos_io.c@escuchar_peticiones_dispositivo", "Llamada a IO recibida para dispositivo IO. Esperando %d ms para el proceso: %d", proceso_bloqueado->retardo, proceso_bloqueado->proceso->pid);
+    format_debug_log("dispositivos_io.c@escuchar_peticiones_dispositivo", "Llamada a IO recibida para dispositivo IO. Esperando %d ms para el proceso: %d", retardo, proceso->pid);
 
-    usleep(tiempo_bloqueo * 1000);
+    usleep(retardo * 1000);
 
-    format_debug_log("dispositivos_io.c@escuchar_peticiones_dispositivo", "El proceso: %d ya cumplio sus %d ms, mover a suspended-ready o ready dependiendo su estado", proceso_bloqueado->proceso->pid, proceso_bloqueado->retardo);
+    format_debug_log("dispositivos_io.c@escuchar_peticiones_dispositivo", "El proceso: %d ya cumplio sus %d ms, mover a suspended-ready o ready dependiendo su estado", proceso->pid, retardo);
 
     io_dispositivo_finalizada(proceso_bloqueado->proceso);
 

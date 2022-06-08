@@ -13,5 +13,6 @@ sem_t sem_grado_multiprogramacion_liberado;
 void iniciar_planificador_mediano_plazo(); 
 void finalizar_planificador_mediano_plazo();
 void lanzar_thread_suspension_proceso(pcb_t *proceso);
+void io_dispositivo_finalizada(pcb_t *proceso);
 
 #endif /* KERNEL_INCLUDE_PLANIFICADOR_MEDIANO_PLAZO_H_ */
