@@ -7,7 +7,6 @@
 #include "conexion_client.h"
 #include "monitor_colas_procesos.h"
 
-pthread_t planificador_mediano_plazo;
 sem_t sem_grado_multiprogramacion_liberado;
 
 

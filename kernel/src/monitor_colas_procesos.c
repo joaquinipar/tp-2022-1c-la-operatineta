@@ -657,6 +657,13 @@ pcb_t *mover_proceso_listo_a_ejecucion() {
   return proceso;
 }
 
+void mover_proceso_suspendido_a_listo() {
+  pcb_t *proceso = desencolar_proceso_suspendido_listo();
+  format_info_log("monitor_colas_procesos.c@mover_proceso_suspendido_a_listo", "Moviendo proceso con id: %d de suspendido a listos", proceso->pid);
+  proceso->estado = ESTADO_PROCESO_READY;
+  encolar_proceso_en_listos(proceso);
+}
+
 void mover_ultimo_proceso_bloqueado_a_suspendido() {
   pcb_t *proceso;
 

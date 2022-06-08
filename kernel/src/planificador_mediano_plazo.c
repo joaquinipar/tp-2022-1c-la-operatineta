@@ -1,16 +1,17 @@
 #include "../include/planificador_mediano_plazo.h"
 
+pthread_t planificador_mediano_plazo;
+
 void suspender_proceso_despues_de_tiempo_maximo(pcb_t *proceso);
 void despertar_procesos();
 
 void iniciar_planificador_mediano_plazo() {
-
+  debug_log("planificador_mediano_plazo.c@iniciar_planificador_mediano_plazo", "Iniciando planificador mediano plazo");
   pthread_create(&planificador_mediano_plazo, NULL, (void *)despertar_procesos, NULL);
   pthread_detach(planificador_mediano_plazo);
 }
 
 void finalizar_planificador_mediano_plazo() {
-
   pthread_cancel(planificador_mediano_plazo);
 }
 
@@ -18,10 +19,12 @@ void despertar_procesos() {
 
   while (1) {
 
-    // TODO se libero un grado de multiprogramacion, ver si entra un suspendido listo a listos
-    // esto se debe postear cuando un proceso hace exit o se suspende uno bloqueado (agregar el post en esos archivos)
-    //wait(&sem_grado_multiprogramacion_liberado);
-    
+    // Hay un proceso suspendido
+    wait(&sem_proceso_suspendido);
+    // Se libera un grado de multiprogramacion
+    wait(&sem_grado_multiprogramacion_disponible);
+    info_log("planificador_mediano_plazo.c@despertar_procesos", "Plani de mediano plazo despertado");
+    mover_proceso_suspendido_a_listo();
 
   }
 }
@@ -36,11 +39,8 @@ void io_dispositivo_finalizada(pcb_t *proceso) {
   // TODO me parece que en realidad hay que checkear tambien si el proceso esta bloqueado-suspendido o solo bloqueado
   if (proceso->estado == ESTADO_PROCESO_BLOCKED_SUSPENDED) {
     encolar_proceso_en_suspendidos_listos(proceso);
-
-    //sem_post(&sem_proceso_nuevo); // esto llama a el plani de largo, tenemos la logica de mover proceso suspendido-listo o nuevo a ejecucion
-  }
-  else
-  {
+    sem_post(&sem_proceso_suspendido); // esto llama al plani de mediano plazo
+  } else {
 	  encolar_proceso_en_listos(proceso);
   }
 
@@ -60,7 +60,7 @@ void suspender_proceso_despues_de_tiempo_maximo(pcb_t *proceso) {
   sleep(kernel_config->tiempo_maximo_bloqueado);
   format_debug_log("planificador_mediano_plazo.c@lanzar_thread_suspension_proceso", "Chequeando si tengo que dormir proceso %d", proceso->pid);
   if (proceso->estado == ESTADO_PROCESO_BLOCKED) {
-    format_debug_log("planificador_mediano_plazo.c@lanzar_thread_suspension_proceso", "Paso el tiempo maximo y tengo que dormir al proceso: %d", proceso->pid);
+    format_info_log("planificador_mediano_plazo.c@lanzar_thread_suspension_proceso", "Paso el tiempo maximo y tengo que dormir al proceso: %d", proceso->pid);
     proceso->estado = ESTADO_PROCESO_BLOCKED_SUSPENDED;
     enviar_mensaje_suspender_proceso(proceso);
   } else {

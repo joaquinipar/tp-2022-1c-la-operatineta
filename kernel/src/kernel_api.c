@@ -29,8 +29,9 @@ bool ejecutar_proceso_nuevo(pcb_t *proceso) {
 }
 
 bool finalizar_proceso(pcb_t *proceso_actualizado) {
+  format_info_log("kernel_api.c@finalizar_proceso", "Instruccion EXIT recibida para proceso con id: %d", proceso_actualizado->pid);
 
-  pcb_t *proceso = buscar_proceso(proceso_actualizado->pid); // ?
+  pcb_t *proceso = buscar_proceso(proceso_actualizado->pid);
   proceso_finalizar_rafaga(proceso);
   proceso->estado = EXIT;
 
@@ -48,7 +49,7 @@ bool finalizar_proceso(pcb_t *proceso_actualizado) {
   //sem_post(&sem_proceso_listo); //libero un grado de multiprogramacion, hay que mover alguno a ready
   // no realmente, el semaforo que esta abajo va a dar luz verde para que pase un nuevo proceso si es que hay
   // hacer este sem_post es obligar a pasar a un nuevo proceso a ready cuando este no existe y boom. 
-  
+  sem_post(&sem_grado_multiprogramacion_disponible);
   sem_post(&sem_bin_procesar_listo);
 
   return true;

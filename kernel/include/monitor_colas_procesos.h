@@ -76,6 +76,7 @@ bool mover_proceso_en_ejecucion_a_bloqueado(int proceso);
 bool grado_multiprogramacion_completo();
 void mover_proceso_de_bloqueados_a_terminados(uint32_t pid);
 void mover_proceso_nuevo_a_suspendido_listo();
+void mover_proceso_suspendido_a_listo();
 
 // Funciones a eliminar quizás
 int cantidad_procesos_nuevos();

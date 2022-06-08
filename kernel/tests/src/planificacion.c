@@ -30,21 +30,29 @@ void test_planificacion_inicial() {
     pcb_t *nuevo_proceso3 = crear_proceso_prueba();
     ejecutar_proceso_nuevo(nuevo_proceso3);
 
+    pcb_t *nuevo_proceso4 = crear_proceso_prueba();
+    ejecutar_proceso_nuevo(nuevo_proceso4);
+
+    pcb_t *nuevo_proceso5 = crear_proceso_prueba();
+    ejecutar_proceso_nuevo(nuevo_proceso5);
+
     // le damos tiempo al plani de correr
     sleep(5); 
 
     finalizar_proceso(nuevo_proceso1);
 
-    sleep(5); 
+    sleep(15);
 
-    // A esta altura el primer proceso ya deberia estar ejecutando
-    // otros 2 procesos en listos
-    // nos fijamos que esten en la cola correcta
-    CU_ASSERT_EQUAL(cantidad_procesos_listos(), 0);
-    CU_ASSERT_EQUAL(cantidad_procesos_suspendidos_listos(), 1);
+    // La config tiene grado de multiprogramacion 2
+    // A esta altura el primer proceso ya deberia estar terminado
+    // deberia haber: 
+    // 2 procesos en cola de listos
+    // 1 procesos en cola de suspendidos listos
+    // 1 proceso en cola de ejecucion
+    // 1 proceso en cola de terminados
+    CU_ASSERT_EQUAL(cantidad_procesos_listos(), 2);
+    CU_ASSERT_EQUAL(cantidad_procesos_suspendidos_listos(), 2);
     CU_ASSERT_EQUAL(cantidad_procesos_ejecutando(), 1);
-
-    //CU_ASSERT_EQUAL(suma(0,2), 2);
-
+    CU_ASSERT_EQUAL(cantidad_procesos_terminados(), 1);
 
 }

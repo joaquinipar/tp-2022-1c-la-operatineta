@@ -9,6 +9,7 @@ void inicializar_kernel(int argc, char* argv[]) {
     iniciar_monitor_colas_procesos();
     iniciar_planificador_largo_plazo();
     iniciar_planificador_corto_plazo();
+    iniciar_planificador_mediano_plazo();
     iniciar_conexion_cpu_dispatch();
     iniciar_dispositivo_io();
 }
