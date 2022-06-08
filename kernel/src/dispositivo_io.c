@@ -32,7 +32,7 @@ int escuchar_peticiones_dispositivo() {
 
     format_debug_log("dispositivos_io.c@escuchar_peticiones_dispositivo", "Llamada a IO recibida para dispositivo IO. Esperando %d ms para el proceso: %d", proceso_bloqueado->retardo, proceso_bloqueado->proceso->pid);
 
-    usleep(tiempo_bloqueo);
+    usleep(tiempo_bloqueo * 1000);
 
     format_debug_log("dispositivos_io.c@escuchar_peticiones_dispositivo", "El proceso: %d ya cumplio sus %d ms, mover a suspended-ready o ready dependiendo su estado", proceso_bloqueado->proceso->pid, proceso_bloqueado->retardo);
 
