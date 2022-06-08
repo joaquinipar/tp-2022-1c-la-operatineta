@@ -40,8 +40,9 @@ void test_planificacion_inicial() {
     // A esta altura el primer proceso ya deberia estar ejecutando
     // otros 2 procesos en listos
     // nos fijamos que esten en la cola correcta
-    CU_ASSERT_EQUAL(cantidad_procesos_listos(), 2);
-    CU_ASSERT_EQUAL(cantidad_procesos_ejecutando(), 0);
+    CU_ASSERT_EQUAL(cantidad_procesos_listos(), 0);
+    CU_ASSERT_EQUAL(cantidad_procesos_suspendidos_listos(), 1);
+    CU_ASSERT_EQUAL(cantidad_procesos_ejecutando(), 1);
 
     //CU_ASSERT_EQUAL(suma(0,2), 2);
 
