@@ -187,6 +187,9 @@ bool lista_de_nuevos_vacia()
 /*  --------------------------- Funciones Cola Listos
  * ---------------------------  */
 void encolar_proceso_en_listos(pcb_t *proceso) {
+
+  sem_wait(&sem_grado_multiprogramacion_disponible);
+  
   format_debug_log("monitor_colas_procesos.c@encolar_proceso_en_listos", "El proceso con pid: %d sera movido a cola de listos", proceso->pid);
   
   pthread_mutex_lock(&procesos_listos_mutex);

@@ -63,6 +63,7 @@ bool bloquear_proceso(pcb_t *proceso_actualizado, int tiempo_bloqueo) {
   encolar_proceso_en_bloqueados(proceso, tiempo_bloqueo); // mover proceso a lista de bloqueados, guardar el tiempo de IO
   lanzar_thread_suspension_proceso(proceso); // despues del tiempo maximo de bloqueo lo suspende si sigue bloqueado y manda el mensaje a memoria
   incrementar_cantidad_procesos_bloqueados();
+  sem_post(&sem_grado_multiprogramacion_disponible);
   sem_post(&sem_bin_procesar_listo); // como se libera la cpu se puede ejecutar otro proceso, si es que hay.
   return true;
 

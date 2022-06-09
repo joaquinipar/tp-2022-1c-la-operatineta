@@ -22,7 +22,7 @@ void despertar_procesos() {
     // Hay un proceso suspendido
     sem_wait(&sem_proceso_suspendido);
     // Se libera un grado de multiprogramacion
-    sem_wait(&sem_grado_multiprogramacion_disponible);
+    //sem_wait(&sem_grado_multiprogramacion_disponible);
     info_log("planificador_mediano_plazo.c@despertar_procesos", "Plani de mediano plazo despertado");
     mover_proceso_suspendido_a_listo();
 
@@ -61,6 +61,7 @@ void suspender_proceso_despues_de_tiempo_maximo(pcb_t *proceso) {
   if (proceso->estado == ESTADO_PROCESO_BLOCKED) {
     format_info_log("planificador_mediano_plazo.c@lanzar_thread_suspension_proceso", "Paso el tiempo maximo, el proceso sigue bloqueado lo tengo que dormir, pid: %d", proceso->pid);
     proceso->estado = ESTADO_PROCESO_BLOCKED_SUSPENDED;
+    sem_post(&sem_grado_multiprogramacion_disponible);
     enviar_mensaje_suspender_proceso(proceso);
   } else {
     format_debug_log("planificador_mediano_plazo.c@lanzar_thread_suspension_proceso", "Paso el tiempo maximo y al proceso: %d no sigue bloqueado, no hace falta dormir", proceso->pid);
