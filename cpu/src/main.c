@@ -15,6 +15,7 @@ int main(int argc, char* argv[]) {
       cerrar_cpu();
       return EXIT_FAILURE;
     }
+    iniciar_tlb(); 
     enviar_mensaje_inicial_configuracion(); 
    // send_prueba(socket_cliente_cpu); 
     int *server_exit_code = NULL;

@@ -11,6 +11,8 @@ int main(int argc, char* argv[]) {
 
     int *server_exit_code = NULL;
 
+    iniciar_conexion_memoria(); 
+
     pthread_t hilo_servidor = iniciar_server_kernel();
     pthread_join(hilo_servidor, (void *)server_exit_code);
 
@@ -19,7 +21,7 @@ int main(int argc, char* argv[]) {
       return EXIT_FAILURE;
     }
 
-   
+    /*
     pcb_t* un_proceso = malloc(sizeof(pcb_t)); 
     un_proceso->pid = 846; 
     un_proceso->tamanio= 40; 
@@ -46,7 +48,7 @@ int main(int argc, char* argv[]) {
 
     // send_prueba(socket_cliente_cpu_dispatch);
    
-    enviar_mensaje_ejecutar(un_proceso); 
+    enviar_mensaje_ejecutar(un_proceso); */
  
     char *exit_msg = string_from_format("El servidor de Kernel finalizo con exit code: %p", server_exit_code);
     info_log("kernel/main.c@main", exit_msg);

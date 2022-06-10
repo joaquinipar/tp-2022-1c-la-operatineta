@@ -4,6 +4,7 @@ void cerrar_cpu() {
 info_log("cerrar_cpu.c@cerrar_mem_swap", "Se comienza a cerrar aplicacion CPU ");
 destruir_estructura_cpu_config();
 free(datos_traduccion); 
+destruir_estructura_TLB(); 
 //shutdown(socket_server_dispatch, SHUT_RD);
 //shutdown(socket_server_interrupt, SHUT_RD);
 }

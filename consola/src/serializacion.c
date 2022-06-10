@@ -1,21 +1,22 @@
 #include "../include/serializacion.h"
 
-uint32_t serializar_lista_de_instrucciones (t_list* lista_de_instrucciones , uint32_t codop, void **stream) {
+uint32_t serializar_lista_de_instrucciones (t_list* lista_de_instrucciones , op_code_t codop, void **stream, uint32_t tamanio) {
 
 	//CODOP + LIST_SIZE + (UINT32 + INT32 + INT32)*
 
 	uint32_t cantidad_lista_instrucciones = (uint32_t) list_size(lista_de_instrucciones);
-	uint32_t tamanio_codop = sizeof(uint32_t);
+	format_debug_log("serializacion.c@serializar_lista_de_instrucciones", "Cant List Instr: %d", cantidad_lista_instrucciones); 
+	//uint32_t tamanio_codop = sizeof(uint32_t);
 	uint32_t tamanio_instruccion = sizeof(uint32_t) + sizeof(int32_t) + sizeof(int32_t);
-	uint32_t tamanio_stream = tamanio_codop + cantidad_lista_instrucciones + (cantidad_lista_instrucciones * tamanio_instruccion);
+	uint32_t tamanio_stream = sizeof(op_code_t) + cantidad_lista_instrucciones + (cantidad_lista_instrucciones * tamanio_instruccion * sizeof(uint32_t)) + sizeof(uint32_t);
 
-
+	format_debug_log("serializacion.c@serializar_lista_de_instrucciones", "Tamaño del proceso: %d", tamanio); 
 	*stream = malloc(tamanio_stream);
 
 	int desplazamiento = 0;
 
-	memcpy(*stream, &codop , tamanio_codop);
-	desplazamiento+= sizeof(uint32_t);
+	memcpy(*stream, &codop , sizeof(op_code_t));
+	desplazamiento+= sizeof(op_code_t);
 
 	memcpy(*stream + desplazamiento, &cantidad_lista_instrucciones , sizeof(uint32_t));
 	desplazamiento+= sizeof(uint32_t);
@@ -36,6 +37,8 @@ uint32_t serializar_lista_de_instrucciones (t_list* lista_de_instrucciones , uin
 	list_iterate(lista_de_instrucciones, (void*)cargar_instruccion_a_stream);
 
 
+	memcpy(*stream + desplazamiento, &tamanio , sizeof(uint32_t));
+		//desplazamiento+= sizeof(op_code_t);
 
 	return tamanio_stream;
 }
@@ -106,4 +109,4 @@ void printear_instruccion(instruccion_t* una_instruccion){
     format_debug_log("serializacion.c@printear_lista", "Instruccion(numero): %d", una_instruccion->instruccion);
     format_debug_log("serializacion.c@printear_lista", "argumento 1: %d",   una_instruccion->argumentos[0]);
     format_debug_log("serializacion.c@printear_lista", "argumento 2: %d",  una_instruccion->argumentos[1]);
-};
+}

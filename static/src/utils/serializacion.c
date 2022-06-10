@@ -21,8 +21,11 @@ ssize_t serializar_lista_de_instrucciones(t_list *lista_de_instrucciones, ssize_
 {
 	//CODOP + LIST_SIZE + (UINT32 + INT32 + INT32)*
 	ssize_t tamanio_stream = tamanio_stream_lista_instrucciones(lista_de_instrucciones);
+	format_debug_log("serializacion.c@serializar_lista_de_instrucciones", "El tamanio del stream de la lista es %d ", tamanio_stream);
 	int desplazamiento = desplazamiento_inicial;
+	format_debug_log("serializacion.c@serializar_lista_de_instrucciones", "El tamanio del desplazamiento es %d ", desplazamiento);
 	uint32_t cantidad_lista_instrucciones = (uint32_t)list_size(lista_de_instrucciones);
+	format_debug_log("serializacion.c@serializar_lista_de_instrucciones", "Cantidad de instrucciones es %d ", cantidad_lista_instrucciones);
 
 	memcpy(stream + desplazamiento, &cantidad_lista_instrucciones, sizeof(uint32_t));
 	desplazamiento += sizeof(uint32_t);
@@ -41,6 +44,7 @@ ssize_t serializar_lista_de_instrucciones(t_list *lista_de_instrucciones, ssize_
 	};
 
 	list_iterate(lista_de_instrucciones, (void *)cargar_instruccion_a_stream);
+	format_debug_log("serializacion.c@serializar_lista_de_instrucciones", "El tamanio del desplazamiento es %d ", desplazamiento);
 
 	return tamanio_stream;
 }
@@ -148,25 +152,25 @@ pcb_t *deserializar_proceso(int cliente_socket){
 	pcb_t *proceso_recibido = malloc(sizeof(pcb_t));
 	debug_log("serializacion@deserializar_proceso", "Recibiendo los datos del proceso");
 	int bytes_recibidos = recv(cliente_socket, &(proceso_recibido->pid), sizeof(uint32_t), 0);
-	format_debug_log("serializacion@deserializar_proceso", "Proceso: %d", proceso_recibido->pid);
-	format_debug_log("serializacion@deserializar_proceso", "Bytes: %d", bytes_recibidos);
+	//format_debug_log("serializacion@deserializar_proceso", "Proceso: %d", proceso_recibido->pid);
+	//format_debug_log("serializacion@deserializar_proceso", "Bytes: %d", bytes_recibidos);
 	int bytes_recibidos1 = recv(cliente_socket, &(proceso_recibido->tamanio), sizeof(uint32_t), 0);
-	format_debug_log("serializacion@deserializar_proceso", "Tamanio: %d", proceso_recibido->tamanio);
-	format_debug_log("serializacion@deserializar_proceso", "Bytes: %d", bytes_recibidos1);
+	//format_debug_log("serializacion@deserializar_proceso", "Tamanio: %d", proceso_recibido->tamanio);
+	//format_debug_log("serializacion@deserializar_proceso", "Bytes: %d", bytes_recibidos1);
 	recv(cliente_socket, &(proceso_recibido->program_counter), sizeof(uint32_t), 0);
-	format_debug_log("serializacion@deserializar_proceso", "Program_Counter: %d", proceso_recibido->program_counter);
+	//format_debug_log("serializacion@deserializar_proceso", "Program_Counter: %d", proceso_recibido->program_counter);
 	recv(cliente_socket, &(proceso_recibido->tabla_paginas), sizeof(uint32_t), 0);
-	format_debug_log("serializacion@deserializar_proceso", "Nro Tabla de paginas: %d", proceso_recibido->tabla_paginas);
+	//format_debug_log("serializacion@deserializar_proceso", "Nro Tabla de paginas: %d", proceso_recibido->tabla_paginas);
 	recv(cliente_socket, &(proceso_recibido->estado), sizeof(uint32_t), 0);
-	format_debug_log("serializacion@deserializar_proceso", "Estado: %d", proceso_recibido->estado);
+	//format_debug_log("serializacion@deserializar_proceso", "Estado: %d", proceso_recibido->estado);
 	recv(cliente_socket, &(proceso_recibido->estimacion_rafaga), sizeof(uint32_t), 0);
-	format_debug_log("serializacion@deserializar_proceso", "Estimacion Rafaga: %d", proceso_recibido->estimacion_rafaga);
+	//format_debug_log("serializacion@deserializar_proceso", "Estimacion Rafaga: %d", proceso_recibido->estimacion_rafaga);
 	recv(cliente_socket, &(proceso_recibido->estimacion), sizeof(uint32_t), 0);
-	format_debug_log("serializacion@deserializar_proceso", "Estimacion: %d", proceso_recibido->estimacion);
+	//format_debug_log("serializacion@deserializar_proceso", "Estimacion: %d", proceso_recibido->estimacion);
 	recv(cliente_socket, &(proceso_recibido->duracion_ultima_rafaga), sizeof(uint32_t), 0);
-	format_debug_log("serializacion@deserializar_proceso", "Duracion Ultima Rafaga: %d", proceso_recibido->duracion_ultima_rafaga);
+	//format_debug_log("serializacion@deserializar_proceso", "Duracion Ultima Rafaga: %d", proceso_recibido->duracion_ultima_rafaga);
 	recv(cliente_socket, &(proceso_recibido->rafaga_actual), sizeof(uint32_t), 0);
-	format_debug_log("serializacion@deserializar_proceso", "Rafaga Actual: %d", proceso_recibido->rafaga_actual);
+	//format_debug_log("serializacion@deserializar_proceso", "Rafaga Actual: %d", proceso_recibido->rafaga_actual);
 	proceso_recibido->lista_instrucciones = recibir_lista_de_instrucciones(cliente_socket);
 
 	return proceso_recibido;

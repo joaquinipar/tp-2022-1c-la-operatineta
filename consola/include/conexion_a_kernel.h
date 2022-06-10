@@ -8,6 +8,6 @@
 #include "config_consola.h"
 #include "serializacion.h"
 
-void enviar_proceso_a_kernel(t_list *lista_de_instrucciones);
+void enviar_proceso_a_kernel(t_list *lista_de_instrucciones, uint32_t tamanio_proceso); 
 
 #endif /* CONSOLA_INCLUDE_CONEXION_A_KERNEL_H */

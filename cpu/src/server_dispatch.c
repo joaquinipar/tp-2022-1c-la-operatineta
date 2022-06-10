@@ -106,7 +106,7 @@ bool procesar_conexion_dispatch(int cliente_socket)
   case OPCODE_EJECUTAR:
   {
     format_debug_log("server_dispatch.c@procesar_conexion", "CodOP recibido %d", codigo_operacion);
-
+    debug_log("server_dispatch.c@procesar_conexion", "Comienza opcode EJECUTAR");
     pcb_t *proceso_recibido = deserializar_proceso(cliente_socket);
     send_ack(cliente_socket, OPCODE_ACK_OK);
 

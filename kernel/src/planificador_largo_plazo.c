@@ -1,34 +1,28 @@
 #include "../include/planificador_largo_plazo.h"
 
 static pthread_t planificador_largo_plazo;
+void admitir_proceso_nuevo();
 
 void iniciar_planificador_largo_plazo() {
 
   pthread_create(&planificador_largo_plazo, NULL,
-                 (void *)controlar_grado_de_multiprogramacion, NULL);
+                 (void *)admitir_proceso_nuevo, NULL);
   pthread_detach(planificador_largo_plazo);
 
 }
 
-void controlar_grado_de_multiprogramacion() {
+void admitir_proceso_nuevo() {
 
-  info_log("planificador_largo_plazo.c@controlar_grado_de_multiprogramacion", "Iniciar planificador largo plazo");
+  info_log("planificador_largo_plazo.c@admitir_proceso_nuevo", "Iniciar planificador largo plazo");
 
   while (1) {
 
+    // Este semaforo se llama cuando viene un proceso nuevo
     sem_wait(&sem_proceso_nuevo);
 
-    if (!grado_multiprogramacion_completo()) {
-
-      info_log("planificador_largo_plazo.c@controlar_grado_de_multiprogramacion", "Grado de multiprogramacion no esta completo, moviendo un proceso a ready");
-      mover_proceso_a_listo();
-
-    } else {
-
-      info_log("planificador_largo_plazo.c@controlar_grado_de_multiprogramacion", "Grado de multiprogramacion COMPLETO, moviendo un proceso a suspended-ready");
-      mover_proceso_nuevo_a_suspendido_listo();
-
-    }
+    info_log("planificador_largo_plazo.c@admitir_proceso_nuevo", "Moviendo un proceso de nuevo a ready");
+    pcb_t *proceso = desencolar_proceso_nuevo();
+    mover_proceso_nuevo_a_listo(proceso);
 
   }
 }

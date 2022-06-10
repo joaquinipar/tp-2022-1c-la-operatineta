@@ -10,6 +10,7 @@
 #include <stdint.h>
 #include "structs.h"
 #include "proceso.h"
+#include "planificador_corto_plazo.h"
 
 void agregar_proceso_a_lista_de_procesos(pcb_t *proceso);
 pcb_t *buscar_proceso(uint32_t pid);
@@ -37,16 +38,19 @@ pcb_t *desencolar_proceso_en_ejecucion();
 pcb_t* buscar_proceso_en_ejecucion(int);
 
 // Operaciones sobre cola de bloqueados
-void encolar_proceso_en_bloqueados(pcb_t* proceso);
-pcb_t* desencolar_proceso_bloqueado();
+void encolar_proceso_en_bloqueados(pcb_t* proceso, int retardo);
+bloqueo_proceso_t* desencolar_proceso_bloqueado();
 pcb_t* obtener_ultimo_proceso_bloqueado();
 pcb_t* buscar_y_sacar_proceso_en_bloqueados(int);
 bool lista_de_bloqueados_vacia();
+pcb_t* desencolar_proceso_bloqueado_IO(pcb_t* proceso);
 
 // Operaciones sobre cola de bloqueados suspendidos
 void encolar_proceso_en_bloqueados_suspendidos(pcb_t *proceso);
 pcb_t *desencolar_proceso_bloqueado_suspendido();
 pcb_t* buscar_y_sacar_proceso_en_bloqueados_suspendidos(int);
+pcb_t* desencolar_proceso_bloqueado_suspendido_IO(pcb_t* proceso);
+
 
 // Operaciones sobre cola de suspendidos listos
 void encolar_proceso_en_suspendidos_listos(pcb_t* proceso);
@@ -58,7 +62,7 @@ bool lista_de_suspendidos_listos_vacia();
 void encolar_proceso_en_terminados(pcb_t *proceso);
 
 // Otras funciones
-void mover_proceso_a_listo();
+void mover_proceso_nuevo_a_listo();
 pcb_t *mover_proceso_listo_a_ejecucion();
 void mover_ultimo_proceso_bloqueado_a_suspendido();
 void mover_proceso_ejecutando_a_terminados();
@@ -72,6 +76,14 @@ bool mover_proceso_en_ejecucion_a_bloqueado(int proceso);
 bool grado_multiprogramacion_completo();
 void mover_proceso_de_bloqueados_a_terminados(uint32_t pid);
 void mover_proceso_nuevo_a_suspendido_listo();
+void mover_proceso_suspendido_a_listo();
+bool lista_de_ejecucion_vacia();
+
+void replanificar_srt(pcb_t *proceso);
+void proceso_comparacion_srt(pcb_t *proceso_en_listo, pcb_t *proceso_en_cpu);
+int proceso_estimar_rafaga_restante(pcb_t *proceso);
+pcb_t *copiar_primer_proceso_listo();
+pcb_t *copiar_proceso_en_ejecucion();
 
 // Funciones a eliminar quizás
 int cantidad_procesos_nuevos();
@@ -84,7 +96,7 @@ int cantidad_procesos_terminados();
 
 sem_t sem_proceso_nuevo;
 sem_t sem_proceso_listo;
-sem_t sem_grado_multiprogramacion_completo;
+sem_t sem_grado_multiprogramacion_disponible;
 sem_t sem_proceso_suspendido;
 sem_t sem_bin_procesar_listo;
 

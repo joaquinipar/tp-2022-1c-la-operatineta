@@ -9,6 +9,7 @@
 #include <pthread.h>
 #include "structs.h"
 #include "conexion_client.h"
+#include <kernel_api.h>
 
 int iniciar_conexion_cpu_dispatch();
 void enviar_proceso_a_cpu(pcb_t *proceso);

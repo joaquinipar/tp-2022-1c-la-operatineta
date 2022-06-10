@@ -12,7 +12,7 @@
 #include <utils/protocolo_comunicacion.h>
 
 
-uint32_t serializar_lista_de_instrucciones(t_list*, uint32_t, void**);
+uint32_t serializar_lista_de_instrucciones (t_list* lista_de_instrucciones , op_code_t codop, void **stream, uint32_t tamanio); 
 t_list* deserializar_lista_de_instrucciones (void*);
 void printear_instruccion(instruccion_t* una_instruccion);
 

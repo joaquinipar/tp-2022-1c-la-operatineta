@@ -202,16 +202,47 @@ bool enviar_mensaje_inicial_configuracion(){
 //OPCODE_PROCESO_DESALOJADO_IO
 bool enviar_mensaje_proceso_desalojado_io(pcb_t* proceso_actualizado, int socket, uint32_t tiempo_bloqueo){
   debug_log("conexion_client.c@enviar_mensaje_proceso_desalojado_io", "Comienza envio de mensaje - OPCODE_PROCESO_DESALOJADO_IO");
-    void *stream;
-    uint32_t stream_size_parcial = serializar_proceso(proceso_actualizado, OPCODE_PROCESO_DESALOJADO_IO, &stream);
-    uint32_t stream_size = stream_size_parcial + sizeof(uint32_t); 
-    memcpy(stream, &tiempo_bloqueo, sizeof(uint32_t));
+   // uint32_t stream_size_parcial = serializar_proceso(proceso_actualizado, OPCODE_PROCESO_DESALOJADO_IO, &stream);
+  uint32_t tam_stream_list_instruc = tamanio_stream_lista_instrucciones(proceso_actualizado->lista_instrucciones);
+
+	/*COD OP  +PID+ TAMANIO+PC +  TP + ESTADO+ ESTIMACIONRAFAGA+ ESTIMACION+DURACION+RAFAGAACTUAL + cant de instru + c/instruccion* 3 parametros*/
+	uint32_t stream_size = sizeof(op_code_t) + sizeof(uint32_t) +sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t) + tam_stream_list_instruc ;
+
+	void *stream = malloc(stream_size);
+
+	// format_debug_log("serializacion.c@serializar_proceso", "Stream List Instrucciones %d", tam_stream_list_instruc);
+	format_debug_log("serializacion.c@serializar_proceso", "Stream Size %d", stream_size);
+  op_code_t codigo_operacion = OPCODE_PROCESO_DESALOJADO_IO; 
+	int desplazamiento = 0;
+	memcpy(stream, &codigo_operacion, sizeof(op_code_t));
+	desplazamiento += sizeof(op_code_t);
+  memcpy(stream + desplazamiento, &tiempo_bloqueo, sizeof(uint32_t));
+  desplazamiento += sizeof(uint32_t);
+	memcpy(stream + desplazamiento, &(proceso_actualizado->pid), sizeof(uint32_t));
+	desplazamiento += sizeof(uint32_t);
+	memcpy(stream + desplazamiento, &(proceso_actualizado->tamanio), sizeof(uint32_t));
+	desplazamiento += sizeof(uint32_t);
+	memcpy(stream + desplazamiento, &(proceso_actualizado->program_counter), sizeof(uint32_t));
+	desplazamiento += sizeof(uint32_t);
+	memcpy(stream + desplazamiento, &(proceso_actualizado->tabla_paginas), sizeof(uint32_t));
+	desplazamiento += sizeof(uint32_t);
+	memcpy(stream + desplazamiento, &(proceso_actualizado->estado), sizeof(uint32_t));
+	desplazamiento += sizeof(uint32_t);
+	memcpy(stream + desplazamiento, &(proceso_actualizado->estimacion_rafaga), sizeof(uint32_t));
+	desplazamiento += sizeof(uint32_t);
+	memcpy(stream + desplazamiento, &(proceso_actualizado->estimacion), sizeof(uint32_t));
+	desplazamiento += sizeof(uint32_t);
+	memcpy(stream + desplazamiento, &(proceso_actualizado->duracion_ultima_rafaga), sizeof(uint32_t));
+	desplazamiento += sizeof(uint32_t);
+	memcpy(stream + desplazamiento, &(proceso_actualizado->rafaga_actual), sizeof(uint32_t));
+	desplazamiento += sizeof(uint32_t);
+	serializar_lista_de_instrucciones(proceso_actualizado->lista_instrucciones, desplazamiento, stream);
+
     int send_result = send(socket, stream, stream_size , false);
-    
+
     format_debug_log("conexion_clien.c@enviar_mensaje_proceso_desalojado_io", "Send Result %d", send_result); 
     if (send_result != -1) {
     bool response = recv_ack(socket);
-
     if (response) {
       debug_log("conexion_client.c@enviar_mensaje_proceso_desalojado_io", "Recepcion mensaje ACK OK - OPCODE_PROCESO_DESALOJADO_IO");
       debug_log("conexion_client.c@enviar_mensaje_proceso_desalojado_io", "Termina mensaje OPCODE_PROCESO_DESALOJADO_IO");
@@ -221,20 +252,49 @@ bool enviar_mensaje_proceso_desalojado_io(pcb_t* proceso_actualizado, int socket
     debug_log("conexion_client.c@enviar_mensaje_proceso_desalojado_io", "Termina mensaje OPCODE_PROCESO_DESALOJADO_IO");
     return response;
   }
-
   error_log("conexion_client.c@enviar_mensaje_proceso_desalojado_io", "Error al enviar mensaje OPCODE_PROCESO_DESALOJADO_IO");
   debug_log("conexion_client.c@enviar_mensaje_proceso_desalojado_io", "Termina mensaje OPCODE_PROCESO_DESALOJADO_IO");
   return false;
-
-
 }
-
 //OPCODE_PROCESO_DESALOJADO_INTERRUPT
 
 bool enviar_mensaje_proceso_desalojado_interrupt(pcb_t* proceso_actualizado, int socket){
   debug_log("conexion_client.c@enviar_mensaje_proceso_desalojado_interrupt", "Comienza envio de mensaje - OPCODE_PROCESO_DESALOJADO_INTERRUPT");
-    void *stream;
-    uint32_t stream_size = serializar_proceso(proceso_actualizado,OPCODE_PROCESO_DESALOJADO_INTERRUPT, &stream);
+    /*void *stream;
+    uint32_t stream_size = serializar_proceso(proceso_actualizado,OPCODE_PROCESO_DESALOJADO_INTERRUPT, &stream);*/
+    uint32_t tam_stream_list_instruc = tamanio_stream_lista_instrucciones(proceso_actualizado->lista_instrucciones);
+
+    /*COD OP  +PID+ TAMANIO+PC +  TP + ESTADO+ ESTIMACIONRAFAGA+ ESTIMACION+DURACION+RAFAGAACTUAL + cant de instru + c/instruccion* 3 parametros*/
+    uint32_t stream_size = sizeof(op_code_t) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t) + tam_stream_list_instruc ;
+
+    void *stream = malloc(stream_size);
+
+    // format_debug_log("serializacion.c@serializar_proceso", "Stream List Instrucciones %d", tam_stream_list_instruc);
+    format_debug_log("serializacion.c@serializar_proceso", "Stream Size %d", stream_size);
+    op_code_t codigo_operacion = OPCODE_PROCESO_DESALOJADO_INTERRUPT; 
+    int desplazamiento = 0;
+    memcpy(stream, &codigo_operacion, sizeof(op_code_t));
+    desplazamiento += sizeof(op_code_t);
+    memcpy(stream + desplazamiento, &(proceso_actualizado->pid), sizeof(uint32_t));
+    desplazamiento += sizeof(uint32_t);
+    memcpy(stream + desplazamiento, &(proceso_actualizado->tamanio), sizeof(uint32_t));
+    desplazamiento += sizeof(uint32_t);
+    memcpy(stream + desplazamiento, &(proceso_actualizado->program_counter), sizeof(uint32_t));
+    desplazamiento += sizeof(uint32_t);
+    memcpy(stream + desplazamiento, &(proceso_actualizado->tabla_paginas), sizeof(uint32_t));
+    desplazamiento += sizeof(uint32_t);
+    memcpy(stream + desplazamiento, &(proceso_actualizado->estado), sizeof(uint32_t));
+    desplazamiento += sizeof(uint32_t);
+    memcpy(stream + desplazamiento, &(proceso_actualizado->estimacion_rafaga), sizeof(uint32_t));
+    desplazamiento += sizeof(uint32_t);
+    memcpy(stream + desplazamiento, &(proceso_actualizado->estimacion), sizeof(uint32_t));
+    desplazamiento += sizeof(uint32_t);
+    memcpy(stream + desplazamiento, &(proceso_actualizado->duracion_ultima_rafaga), sizeof(uint32_t));
+    desplazamiento += sizeof(uint32_t);
+    memcpy(stream + desplazamiento, &(proceso_actualizado->rafaga_actual), sizeof(uint32_t));
+    desplazamiento += sizeof(uint32_t);
+    serializar_lista_de_instrucciones(proceso_actualizado->lista_instrucciones, desplazamiento, stream);
+    
     int send_result = send(socket, stream, stream_size , false);
     
     format_debug_log("conexion_clien.c@enviar_mensaje_proceso_desalojado_interrupt", "Send Result %d", send_result); 

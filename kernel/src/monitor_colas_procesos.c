@@ -46,12 +46,11 @@ void iniciar_monitor_colas_procesos() {
 
   sem_init(&sem_proceso_nuevo, 0, 0);
   sem_init(&sem_proceso_listo, 0, 0);
-  sem_init(&sem_grado_multiprogramacion_completo, 0, 0);
+  sem_init(&sem_grado_multiprogramacion_disponible, 0, kernel_config->grado_multiprogramacion);
   sem_init(&sem_proceso_suspendido, 0, 0);
   sem_init(&sem_bin_procesar_listo, 0, 1);
 
-  debug_log("monitor_colas_procesos.c@init",
-            "Variables del monitor de colas de procesos inicializadas");
+  debug_log("monitor_colas_procesos.c@init", "Variables del monitor de colas de procesos inicializadas");
 }
 
 void destruir_monitor_colas_procesos() {
@@ -187,34 +186,31 @@ bool lista_de_nuevos_vacia()
 
 /*  --------------------------- Funciones Cola Listos
  * ---------------------------  */
-
+/*
 void encolar_proceso_en_listos(pcb_t *proceso) {
-  char *msg = string_from_format("El proceso con pid: %d sera movido a cola de listos", proceso->pid);
-  debug_log("monitor_colas_procesos.c@encolar_proceso_en_listos", msg);
-  free(msg);
+
+  sem_wait(&sem_grado_multiprogramacion_disponible);
+  
+  format_debug_log("monitor_colas_procesos.c@encolar_proceso_en_listos", "El proceso con pid: %d sera movido a cola de listos", proceso->pid);
   
   pthread_mutex_lock(&procesos_listos_mutex);
+  
+  proceso->estado = ESTADO_PROCESO_READY;
 
   list_add(cola_listos, proceso);
-  proceso->estado = ESTADO_PROCESO_READY;
-  //proceso_iniciar_espera(proceso);
 
   pthread_mutex_unlock(&procesos_listos_mutex);
 
-  char *mensaje = string_from_format(
-      "Proceso pid: %d encolado en listos", proceso->pid);
-  info_log("monitor_colas_procesos.c@encolar_proceso_en_listos", mensaje);
-  free(mensaje);
+  format_info_log("monitor_colas_procesos.c@encolar_proceso_en_listos", "Proceso pid: %d encolado en listos", proceso->pid);
 
   sem_post(&sem_proceso_listo);
-}
+}*/
 
 pcb_t *desencolar_proceso_listo() {
 
   pthread_mutex_lock(&procesos_listos_mutex);
 
   pcb_t *proceso = list_remove(cola_listos, 0);
-  //proceso_finalizar_espera(proceso);
 
   pthread_mutex_unlock(&procesos_listos_mutex);
 
@@ -247,7 +243,7 @@ void ordenar_cola_listos() {
   //list_iterate(cola_listos, (void*) actualizar_estimacion_anterior);
 
   info_log("monitor_colas_procesos.c@ordenar_cola_listos", "Cola listos ordenada: ");
-  list_iterate(cola_listos, (void*) iterator);
+  //list_iterate(cola_listos, (void*) iterator);
 
   pthread_mutex_unlock(&procesos_listos_mutex);
 }
@@ -309,25 +305,17 @@ void encolar_proceso_en_ejecucion(pcb_t *proceso) {
 
   pthread_mutex_unlock(&procesos_ejecutando_mutex);
 
-  char *mensaje = string_from_format(
-      "Proceso pid: %d encolado en ejecucion", proceso->pid);
-  info_log("monitor_colas_procesos.c@encolar_proceso_en_ejecucion", mensaje);
-  free(mensaje);
+  format_info_log("monitor_colas_procesos.c@encolar_proceso_en_ejecucion", "Proceso pid: %d encolado en ejecucion", proceso->pid);
+
 }
 
 pcb_t *desencolar_proceso_en_ejecucion() {
 
   pthread_mutex_lock(&procesos_ejecutando_mutex);
-
   pcb_t *proceso_en_ejecucion = list_remove(cola_ejecucion, 0);
-  proceso_finalizar_rafaga(proceso_en_ejecucion);
-
   pthread_mutex_unlock(&procesos_ejecutando_mutex);
 
-  char *mensaje = string_from_format(
-      "Proceso pid: %d desencolado de ejecucion", proceso_en_ejecucion->pid);
-  debug_log("monitor_colas_procesos.c@desencolar_proceso_en_ejecucion", mensaje);
-  free(mensaje);
+  format_debug_log("monitor_colas_procesos.c@desencolar_proceso_en_ejecucion", "Proceso pid: %d desencolado de ejecucion", proceso_en_ejecucion->pid);
 
   return proceso_en_ejecucion;
 }
@@ -370,38 +358,42 @@ pcb_t *buscar_proceso_en_ejecucion(int pid) {
   return proceso_en_ejecucion;
 }
 
+bool lista_de_ejecucion_vacia()
+{
+	bool resultado;
+
+    pthread_mutex_lock(&procesos_ejecutando_mutex);
+
+    resultado = list_is_empty(cola_ejecucion);
+
+    pthread_mutex_unlock(&procesos_ejecutando_mutex);
+
+    return resultado;
+}
+
 /*  --------------------------- Funciones Cola Bloqueados
  * ---------------------------  */
 
-void encolar_proceso_en_bloqueados(pcb_t *proceso) {
-
+void encolar_proceso_en_bloqueados(pcb_t *proceso, int retardo) {
   pthread_mutex_lock(&procesos_bloqueados_mutex);
-
-  list_add(cola_bloqueados, proceso);
   proceso->estado = ESTADO_PROCESO_BLOCKED;
-
+  bloqueo_proceso_t *proceso_bloqueado = malloc(sizeof(bloqueo_proceso_t));
+  proceso_bloqueado->retardo = retardo;
+  proceso_bloqueado->proceso = proceso;
+  list_add(cola_bloqueados, proceso_bloqueado);
+  format_debug_log("monitor_colas_procesos.c@encolar_proceso_en_bloqueados", "Proceso pid: %d encolado en bloqueados", proceso->pid);
   pthread_mutex_unlock(&procesos_bloqueados_mutex);
-
-  char *mensaje = string_from_format(
-      "Proceso pid: %d encolado en bloqueados", proceso->pid);
-  debug_log("monitor_colas_procesos.c@encolar_proceso_en_bloqueados", mensaje);
-  free(mensaje);
 }
 
-pcb_t *desencolar_proceso_bloqueado() {
+bloqueo_proceso_t *desencolar_proceso_bloqueado() {
 
   pthread_mutex_lock(&procesos_bloqueados_mutex);
-
-  pcb_t *proceso = list_remove(cola_bloqueados, 0);
-
+  bloqueo_proceso_t *bloqueo_proceso = list_remove(cola_bloqueados, 0);
   pthread_mutex_unlock(&procesos_bloqueados_mutex);
 
-  char *mensaje = string_from_format(
-      "Proceso pid: %d desencolado de bloqueados", proceso->pid);
-  debug_log("monitor_colas_procesos.c@desencolar_proceso_en_bloqueados", mensaje);
-  free(mensaje);
+  format_debug_log("monitor_colas_procesos.c@desencolar_proceso_en_bloqueados", "Proceso pid: %d desencolado de bloqueados", bloqueo_proceso->proceso->pid);
 
-  return proceso;
+  return bloqueo_proceso;
 }
 
 pcb_t *obtener_ultimo_proceso_bloqueado() {
@@ -540,14 +532,11 @@ void encolar_proceso_en_suspendidos_listos(pcb_t *proceso) {
 
   list_add(cola_suspendidos_listos, proceso);
   proceso->estado = ESTADO_PROCESO_SUSPENDED_READY;
-
+  // TODO: llamar a memoria para suspender el proceso, no se si es necesario
   pthread_mutex_unlock(&procesos_suspendidos_listos_mutex);
 
-  char *mensaje = string_from_format(
-      "Proceso pid: %d encolado en suspendidos_listos", proceso->pid);
-  info_log("monitor_colas_procesos.c@encolar_proceso_suspendido_listo", mensaje);
-  free(mensaje);
-
+  format_info_log("monitor_colas_procesos.c@encolar_proceso_suspendido_listo", "Proceso pid: %d encolado en suspendidos_listos", proceso->pid);
+  sem_post(&sem_proceso_suspendido);
 }
 
 pcb_t *desencolar_proceso_suspendido_listo() {
@@ -637,20 +626,17 @@ void encolar_proceso_en_terminados(pcb_t *proceso) {
 
 /*  --------------------------- Otras funciones ---------------------------  */
 
-void mover_proceso_a_listo() {
-  pcb_t *proceso;
-
-  if (cantidad_procesos_suspendidos_listos() > 0) {
-
-    proceso = desencolar_proceso_suspendido_listo();
-    encolar_proceso_en_listos(proceso);
-
-  } else {
-
-    proceso = desencolar_proceso_nuevo();
-    encolar_proceso_en_listos(proceso);
-
+void mover_proceso_nuevo_a_listo(pcb_t *proceso) {
+  // El grado de multiprogramacion esta completo, hay que suspender el proceso
+  if (grado_multiprogramacion_completo()) {
+    info_log("monitor_colas_procesos.c@mover_proceso_nuevo_a_listo", "El grado de multiprogramacion esta completo, se suspende el proceso nuevo");
+    encolar_proceso_en_suspendidos_listos(proceso);
+    return;
   }
+
+
+  info_log("monitor_colas_procesos.c@mover_proceso_nuevo_a_listo", "El grado de multiprogramacion NO esta completo, se mueve el proceso nuevo a listos");
+  encolar_proceso_en_listos(proceso);
 }
 
 void mover_proceso_nuevo_a_suspendido_listo() {
@@ -662,16 +648,28 @@ void mover_proceso_nuevo_a_suspendido_listo() {
   format_debug_log("monitor_colas_procesos.c@mover_proceso_nuevo_a_suspendido_listo", "Proceso: %d movido a suspendido-listo", proceso->pid);
   cantidad_procesos_suspendidos_listos();
 }
-
+/*
 pcb_t *mover_proceso_listo_a_ejecucion() {
   pcb_t *proceso;
 
-  ordenar_cola_listos();
+  if(kernel_config -> algoritmo_planificacion == SRT){
+    ordenar_cola_listos();
+  }
+
   proceso = desencolar_proceso_listo();
+  format_info_log("monitor_cola_procesos.c@mover_listo_a_ejecucion", "Moviendo proceso con id: %d a ejecucion", proceso->pid);
+  
   encolar_proceso_en_ejecucion(proceso);
   proceso_ejecutar(proceso);
 
   return proceso;
+}*/
+
+void mover_proceso_suspendido_a_listo() {
+  pcb_t *proceso = desencolar_proceso_suspendido_listo();
+  format_info_log("monitor_colas_procesos.c@mover_proceso_suspendido_a_listo", "Moviendo proceso con id: %d de suspendido a listos", proceso->pid);
+  proceso->estado = ESTADO_PROCESO_READY;
+  encolar_proceso_en_listos(proceso);
 }
 
 void mover_ultimo_proceso_bloqueado_a_suspendido() {
@@ -784,9 +782,7 @@ bool grado_multiprogramacion_completo()
 
 	if(resultado == true)
 	{
-    info_log("monitor_colas_procesos.c@grado_de_multiprogramacion", "Grado de multiprogramacion completo");
-		/*debug_log("kernel/grado_de_multiprogramacion_completo.c",
-				  "Grado de multiprogramación completo");*/
+    debug_log("monitor_colas_procesos.c@grado_de_multiprogramacion", "Grado de multiprogramacion completo");
 	}
 
 	return resultado;
@@ -866,7 +862,9 @@ bool mayor_prioridad(pcb_t *proceso1, pcb_t *proceso2) {
 
   case FIFO:
 
-    resultado = (proceso1->estimacion - proceso2->estimacion) > 0;
+    //(Sebas)esto no deberia hacer nada
+
+    //resultado = (proceso1->estimacion - proceso2->estimacion) > 0;
     
     break;
   }
@@ -965,7 +963,7 @@ int cantidad_procesos_terminados() {
   return cantidad;
 }
 
-bool mover_proceso_en_ejecucion_a_bloqueado(int pid) {
+/* bool mover_proceso_en_ejecucion_a_bloqueado(int pid) {
 
 	bool pid_iguales(pcb_t * proceso){
 		return proceso->pid == pid;
@@ -987,7 +985,7 @@ bool mover_proceso_en_ejecucion_a_bloqueado(int pid) {
   encolar_proceso_en_bloqueados(proceso_en_ejecucion);
   
   return true;
-}
+} */
 
 void procesos_lock() {
   pthread_mutex_lock(&procesos_mutex);
@@ -1019,4 +1017,145 @@ t_list *get_procesos_bloqueados() {
   }
   
   return list_filter(procesos, (void *)esta_bloqueado);
+}
+
+pcb_t *desencolar_proceso_bloqueado_IO(pcb_t* proceso) {
+
+  bool buscar_por_pid(pcb_t * process) {
+      return process->pid == proceso->pid;
+  }
+
+  pthread_mutex_lock(&procesos_bloqueados_mutex);
+
+  pcb_t *proceso_desencolado = list_remove_by_condition(cola_bloqueados, (void*)buscar_por_pid);
+
+  pthread_mutex_unlock(&procesos_bloqueados_mutex);
+
+  char *mensaje = string_from_format(
+      "Proceso pid: %d desencolado de bloqueados", proceso_desencolado->pid);
+  debug_log("monitor_colas_procesos.c@desencolar_proceso_en_bloqueados", mensaje);
+  free(mensaje);
+
+  return proceso_desencolado;
+}
+
+pcb_t *desencolar_proceso_bloqueado_suspendido_IO(pcb_t* proceso) {
+
+  debug_log("monitor_colas_procesos.c@desencolar_proceso_bloqueado_suspendido_IO",
+	        "Obteniendo un proceso de la cola bloqueados_suspendidos");
+
+  bool buscar_por_pid(pcb_t * process) {
+      return process->pid == proceso->pid;
+  }
+
+  pthread_mutex_lock(&procesos_bloqueados_suspendidos_mutex);
+  pcb_t *proceso_desencolado = list_remove_by_condition(cola_bloqueados_suspendidos, (void*)buscar_por_pid);
+  pthread_mutex_unlock(&procesos_bloqueados_suspendidos_mutex);
+
+  return proceso_desencolado;
+}
+
+
+/*********************** MODIFICACIONES TEST SRT ************************/
+
+pcb_t *mover_proceso_listo_a_ejecucion() {
+  pcb_t *proceso;
+
+  proceso = desencolar_proceso_listo();
+  format_info_log("monitor_cola_procesos.c@mover_listo_a_ejecucion", "Moviendo proceso con id: %d a ejecucion", proceso->pid);
+  
+  encolar_proceso_en_ejecucion(proceso);
+  proceso_ejecutar(proceso);
+
+  return proceso;
+}
+
+void encolar_proceso_en_listos(pcb_t *proceso) {
+
+  format_debug_log("monitor_colas_procesos.c@encolar_proceso_en_listos", "Encolando el proceso con pid: %d en estado: %d en la cola de listos", proceso->pid, proceso->estado);
+
+  if(!(proceso->estado == ESTADO_PROCESO_BLOCKED || proceso->estado == ESTADO_PROCESO_EXEC)){
+    sem_wait(&sem_grado_multiprogramacion_disponible);
+  }
+  format_debug_log("monitor_colas_procesos.c@encolar_proceso_en_listos", "El proceso con pid: %d sera movido a cola de listos", proceso->pid);
+  
+  pthread_mutex_lock(&procesos_listos_mutex);
+  
+  proceso->estado = ESTADO_PROCESO_READY;
+
+  list_add(cola_listos, proceso);
+
+  pthread_mutex_unlock(&procesos_listos_mutex);
+
+  format_info_log("monitor_colas_procesos.c@encolar_proceso_en_listos", "Proceso pid: %d encolado en listos", proceso->pid);
+
+  replanificar_srt(proceso);
+
+}
+
+void replanificar_srt(pcb_t *proceso){
+  if( (kernel_config -> algoritmo_planificacion == SRT) && !lista_de_ejecucion_vacia() ){
+
+    format_debug_log("monitor_colas_procesos.c@replanificar_srt", "Replanificando SRT");
+    ordenar_cola_listos();
+    pcb_t *proceso_en_listo = copiar_primer_proceso_listo(); 
+    pcb_t *proceso_en_cpu = copiar_proceso_en_ejecucion(); 
+    proceso_comparacion_srt(proceso_en_listo, proceso_en_cpu);
+  }
+  
+  sem_post(&sem_proceso_listo);
+  
+}
+
+/* esto iria a proceso.c*/
+
+void proceso_comparacion_srt(pcb_t *proceso_en_listo, pcb_t *proceso_en_cpu){
+
+  format_debug_log("monitor_colas_procesos.c@proceso_comparacion_srt", "Comparando el proceso en ready con pid: %d con el proceso en cpu pid: %d", proceso_en_listo->pid, proceso_en_cpu->pid);
+  int estimacion_proceso_listo = proceso_en_listo->estimacion;
+  format_debug_log("monitor_colas_procesos.c@proceso_comparacion_srt", "Estimacion restante proceso listo pid: %d es: %d", proceso_en_listo->pid, estimacion_proceso_listo);
+  int estimacion_proceso_cpu = proceso_estimar_rafaga_restante(proceso_en_cpu);
+  format_debug_log("monitor_colas_procesos.c@proceso_comparacion_srt", "Estimacion restante proceso cpu pid: %d es: %d", proceso_en_cpu->pid, estimacion_proceso_cpu);
+
+  if(estimacion_proceso_listo < estimacion_proceso_cpu || estimacion_proceso_cpu < 0 ){
+    format_debug_log("monitor_colas_procesos.c@proceso_comparacion_srt", "requiere desalojo del proceso en cpu pid: %d", proceso_en_cpu->pid);
+    enviar_mensaje_desalojar_proceso(proceso_en_cpu);
+
+  }else{
+    format_debug_log("monitor_colas_procesos.c@proceso_comparacion_srt", "No se requiere desalojo del proceso en cpu pid: %d", proceso_en_cpu->pid);
+  }
+  //sem_post(&sem_proceso_listo); // lamo al de corto plazo
+
+}
+
+int proceso_estimar_rafaga_restante(pcb_t *proceso) {
+  gettimeofday(&(proceso->rafaga_actual).fin, NULL);
+  int tiempo_en_cpu_ejecutado = timedifference_msec((proceso->rafaga_actual).inicio, (proceso->rafaga_actual).fin);
+  int estimacion_restante = proceso->estimacion - tiempo_en_cpu_ejecutado;
+  return estimacion_restante;
+}
+
+
+/* esto quedaria aca */
+
+pcb_t *copiar_primer_proceso_listo() {
+
+  pthread_mutex_lock(&procesos_listos_mutex);
+
+  pcb_t *proceso = list_get(cola_listos, 0);
+
+  pthread_mutex_unlock(&procesos_listos_mutex);
+
+  return proceso;
+}
+
+pcb_t *copiar_proceso_en_ejecucion() {
+
+  pthread_mutex_lock(&procesos_listos_mutex);
+
+  pcb_t *proceso = list_get(cola_ejecucion, 0);
+
+  pthread_mutex_unlock(&procesos_listos_mutex);
+
+  return proceso;
 }

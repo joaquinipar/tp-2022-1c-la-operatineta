@@ -18,7 +18,7 @@ void iniciar_tlb() {
     array_tlb[entrada].time_pagina = -1; /// Seteo todo en -1 por las dudas.
   }
 
-  debug_log("tlb.c@iniciar_tlb", "Finaliza la inicializacion la TLB vacia");
+  //debug_log("tlb.c@iniciar_tlb", "Finaliza la inicializacion la TLB vacia");
 }
 void destruir_estructura_TLB() {
   info_log("tlb.c@iniciar_tlb", "Se destruye estructura TLB"); 

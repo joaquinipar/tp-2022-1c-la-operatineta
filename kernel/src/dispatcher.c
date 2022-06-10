@@ -65,11 +65,19 @@ void escucha_proceso_desalojado()
         case OPCODE_PROCESO_DESALOJADO_IO: {
 
             format_debug_log("dispatcher.c@procesar_conexion", "CodOP recibido %d", codigo_operacion);
-            pcb_t* proceso_actualizado = deserializar_proceso(socket_cliente_cpu_dispatch);
             uint32_t tiempo_bloqueo;
             int bytes_recibidos = recv(socket_cliente_cpu_dispatch, &tiempo_bloqueo, sizeof(uint32_t), 0); 
             format_debug_log("dispatcher.c@procesar_conexion", "Tiempo bloqueado %d", tiempo_bloqueo);
+            
+            /* TODO: codigo viejo, borrar si no se usa
+            pcb_t* proceso_recibido = malloc(sizeof(pcb_t));
+            int bytes_recibidos1 = recv(socket_cliente_cpu_dispatch, &(proceso_recibido->pid), sizeof(uint32_t), 0);
+            format_debug_log("serializacion@deserializar_proceso", "Proceso: %d", proceso_recibido->pid);
+            format_debug_log("serializacion@deserializar_proceso", "Bytes: %d", bytes_recibidos1);
+            */
 
+            pcb_t* proceso_actualizado = deserializar_proceso(socket_cliente_cpu_dispatch);
+            
             if (bytes_recibidos !=-1) {
                 send_ack(socket_cliente_cpu_dispatch, OPCODE_ACK_OK); 
                 debug_log("conexion_client.c@procesar_conexion", "Envio mensaje ACK OK - OPCODE_PROCESO_DESALOJADO_IO");
@@ -80,6 +88,8 @@ void escucha_proceso_desalojado()
                 debug_log("conexion_client.c@procesar_conexion", "Termina mensaje OPCODE_PROCESO_DESALOJADO_IO");
             }
 
+            bloquear_proceso(proceso_actualizado, tiempo_bloqueo);
+            break;
 
         }
 
@@ -97,6 +107,10 @@ void escucha_proceso_desalojado()
                 debug_log("conexion_client.c@procesar_conexion", "Envio mensaje ACK ERROR -OPCODE_PROCESO_DESALOJADO_INTERRUPT");
                 debug_log("conexion_client.c@procesar_conexion", "Termina mensaje OPCODE_PROCESO_DESALOJADO_INTERRUPT");
             }
+
+            desalojar_proceso_interrupt(proceso_actualizado);
+
+            break;
             
         }
 
@@ -114,6 +128,10 @@ void escucha_proceso_desalojado()
                 debug_log("conexion_client.c@procesar_conexion", "Envio mensaje ACK ERROR -OPCODE_PROCESO_DESALOJADO_EXIT");
                 debug_log("conexion_client.c@procesar_conexion", "Termina mensaje OPCODE_PROCESO_DESALOJADO_EXIT");
             }
+
+            finalizar_proceso(proceso_actualizado);
+
+            break;
 
             // TODO: logica de proceso desalojado por exit
         }

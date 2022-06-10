@@ -27,9 +27,9 @@ void print_instruccion(instruccion_t* una_instruccion){
 			break;
 	}
 
-	format_info_log("ciclo_instruccion.c@printear_lista", "Instruccion: %s", inst_name );
-	format_info_log("ciclo_instruccion.c@printear_lista", "Valores parametro 1: %d", una_instruccion->argumentos[0]);
-    format_info_log("ciclo_instruccion.c@printear_lista", "Valores parametro 2: %d",una_instruccion->argumentos[1]);
+	format_debug_log("ciclo_instruccion.c@printear_lista", "Instruccion: %s", inst_name );
+	format_debug_log("ciclo_instruccion.c@printear_lista", "Valores parametro 1: %d", una_instruccion->argumentos[0]);
+    format_debug_log("ciclo_instruccion.c@printear_lista", "Valores parametro 2: %d",una_instruccion->argumentos[1]);
 
 }
  /*
@@ -192,14 +192,14 @@ pcb_t* execute_instruction(instruccion_t* instruccion_a_ejecutar, pcb_t* proceso
 		case 0: //INSTRUCCION NO_OP
 			format_info_log("ciclo_instruccion.c@execute_instruction",  "NOOP - PID: %d - Se realizará un sleep de: %d ",proceso->pid, cpu_config->retardo_noop);
 			proceso->program_counter++;
-			usleep(cpu_config->retardo_noop);
+			usleep(cpu_config->retardo_noop * 1000);
 			return proceso;
 			break;
 		case 1: //INSTRUCCION I/O
 			debug_log("ciclo_instruccion.c@execute_instruction",  "Se realizará I/O. Requiere desalojo");
 			format_info_log("ciclo_instruccion.c@execute_instruction",  "I/O -  PID: %d - Tiempo de bloqueo: %d", proceso->pid, instruccion_a_ejecutar->argumentos[0]);
-			enviar_mensaje_proceso_desalojado_io(proceso,cliente_socket, instruccion_a_ejecutar->argumentos[0]); 
 			proceso->program_counter++;
+			enviar_mensaje_proceso_desalojado_io(proceso, cliente_socket, instruccion_a_ejecutar->argumentos[0]); 
 			eliminar_entradas_TLB(); 
 			return proceso;
 			break;
@@ -218,7 +218,7 @@ pcb_t* execute_instruction(instruccion_t* instruccion_a_ejecutar, pcb_t* proceso
 		case 4://INSTRUCCION COPY
 			format_info_log("ciclo_instruccion.c@execute_instruction",  "COPY - PID: %d - Destino / DL:%d - Origen / DL: %d ",proceso->pid, instruccion_a_ejecutar->argumentos[0], instruccion_a_ejecutar->argumentos[1]);			
 			gestionar_instruccion_copy(proceso, instruccion_a_ejecutar); 
-			proceso->program_counter++;
+			proceso->program_counter++; 
 			return proceso;
 			break;
 		case 5://INSTRUCCION EXIT
@@ -271,9 +271,11 @@ bool hay_interrupcion(pcb_t * proceso){
    instruccion_t* instruccion_a_ejecutar; 
 
    do{
+		format_debug_log("ciclo_instruccion.c@iniciar_ciclo_instruccion", "procesando instruccion: %d, para el proceso: %d ", proceso->program_counter, proceso->pid );
+		
 		instruccion_a_ejecutar = fetch_instruction(proceso); 
    		proceso = execute_instruction(instruccion_a_ejecutar, proceso); 
 		
-   }while(!requiere_desalojo(instruccion_a_ejecutar) || !hay_interrupcion(proceso));
+   }while(!requiere_desalojo(instruccion_a_ejecutar) && !hay_interrupcion(proceso));
 
  }

@@ -1,11 +1,5 @@
 #include "../include/planificacion.h"
 
-/* int suma(int a, int b);
-
-int suma (int a, int b ) {
-    return (a + b);
-} */
-
 pcb_t *crear_proceso_prueba() {
     pcb_t *nuevo_proceso = malloc(sizeof(pcb_t));
     nuevo_proceso->pid = obtener_siguiente_pid();
@@ -27,23 +21,38 @@ void test_planificacion_inicial() {
     inicializar_kernel(2, argumentos);
 
     // PONER UN PROCESO EN COLA DE LISTOS
-    pcb_t *nuevo_proceso = crear_proceso_prueba();
-    ejecutar_proceso_nuevo(nuevo_proceso);
+    pcb_t *nuevo_proceso1 = crear_proceso_prueba();
+    ejecutar_proceso_nuevo(nuevo_proceso1);
 
-    nuevo_proceso = crear_proceso_prueba();
-    ejecutar_proceso_nuevo(nuevo_proceso);
+    pcb_t *nuevo_proceso2 = crear_proceso_prueba();
+    ejecutar_proceso_nuevo(nuevo_proceso2);
 
-    nuevo_proceso = crear_proceso_prueba();
-    ejecutar_proceso_nuevo(nuevo_proceso);
+    pcb_t *nuevo_proceso3 = crear_proceso_prueba();
+    ejecutar_proceso_nuevo(nuevo_proceso3);
+
+    pcb_t *nuevo_proceso4 = crear_proceso_prueba();
+    ejecutar_proceso_nuevo(nuevo_proceso4);
+
+    pcb_t *nuevo_proceso5 = crear_proceso_prueba();
+    ejecutar_proceso_nuevo(nuevo_proceso5);
 
     // le damos tiempo al plani de correr
     sleep(5); 
 
-    // A esta altura el primer proceso ya deberia estar ejecutando
-    // otros 2 procesos en listos
-    // nos fijamos que esten en la cola correcta
-    CU_ASSERT_EQUAL(cantidad_procesos_listos(), 2);
-    CU_ASSERT_EQUAL(cantidad_procesos_ejecutando(), 1);
+    finalizar_proceso(nuevo_proceso1);
 
-    //CU_ASSERT_EQUAL(suma(0,2), 2);
+    sleep(15);
+
+    // La config tiene grado de multiprogramacion 2
+    // A esta altura el primer proceso ya deberia estar terminado
+    // deberia haber: 
+    // 2 procesos en cola de listos
+    // 1 procesos en cola de suspendidos listos
+    // 1 proceso en cola de ejecucion
+    // 1 proceso en cola de terminados
+    CU_ASSERT_EQUAL(cantidad_procesos_listos(), 2);
+    CU_ASSERT_EQUAL(cantidad_procesos_suspendidos_listos(), 2);
+    CU_ASSERT_EQUAL(cantidad_procesos_ejecutando(), 1);
+    CU_ASSERT_EQUAL(cantidad_procesos_terminados(), 1);
+
 }
