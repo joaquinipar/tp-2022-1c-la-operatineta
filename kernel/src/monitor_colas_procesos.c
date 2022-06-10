@@ -628,6 +628,9 @@ void encolar_proceso_en_terminados(pcb_t *proceso) {
 
 void mover_proceso_nuevo_a_listo(pcb_t *proceso) {
   // El grado de multiprogramacion esta completo, hay que suspender el proceso
+  uint32_t value_table = enviar_mensaje_valor_tabla_1er_nivel(proceso->pid, proceso->tamanio); 
+  proceso->tabla_paginas = value_table; 
+
   if (grado_multiprogramacion_completo()) {
     info_log("monitor_colas_procesos.c@mover_proceso_nuevo_a_listo", "El grado de multiprogramacion esta completo, se suspende el proceso nuevo");
     encolar_proceso_en_suspendidos_listos(proceso);
