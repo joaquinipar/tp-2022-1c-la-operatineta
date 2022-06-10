@@ -71,8 +71,19 @@ int escuchar_conexiones_nuevas(int server_socket) {
 
     if (cliente_socket != -1) {
       info_log("server_mem_swap.c@escuchar_conexiones_nuevas","Cliente nuevo conectado");
-      while (procesar_conexion(cliente_socket))
-        ;
+    hilo_cpu = -1;
+    hilo_kernel = -1;
+
+     if(hilo_cpu == -1){
+      pthread_create(&hilo_cpu, NULL, (void*) procesar_conexion, (void*) cliente_socket); 
+     } else if(hilo_kernel== -1){
+       pthread_create(&hilo_kernel, NULL, (void*) procesar_conexion, (void*) cliente_socket); 
+     } else {
+       error_log("server_mem_swap.c@escuchar_conexiones_nuevas", "ERROR - Ya hay dos clientes conectados"); 
+     }
+      
+      //while (procesar_conexion(cliente_socket))
+       // ;
       continue;
     }
     error_log("server_mem_swap.c@escuchar_conexiones_nuevas", "Error en nueva conexion o socket servidor cerrado");
@@ -83,19 +94,19 @@ int escuchar_conexiones_nuevas(int server_socket) {
 }
 
 bool procesar_conexion(int cliente_socket) {
-  debug_log("server_swamp.c@procesar_conexion", "Procesando nuevo mensaje");
+  
+
+  debug_log("server_swap.c@procesar_conexion", "Procesando nuevo mensaje");
   op_code_t codigo_operacion;
 
   if (recv(cliente_socket, &codigo_operacion, sizeof(op_code_t), 0) !=
       sizeof(op_code_t)) {
-    info_log("server_swamp.c@procesar_conexion",
-             "Se recibio un codigo_operacion invalido!");
+    info_log("server_swap.c@procesar_conexion", "Se recibio un codigo_operacion invalido!");
     return false;
   }
 
-  char *mensaje_recibido_log =
-      string_from_format("OPCODE recibido: %d", codigo_operacion);
-  trace_log("server_swamp.c@procesar_conexion", mensaje_recibido_log);
+  char *mensaje_recibido_log = string_from_format("OPCODE recibido: %d", codigo_operacion);
+  trace_log("server_swap.c@procesar_conexion", mensaje_recibido_log);
   free(mensaje_recibido_log);
 
   switch (codigo_operacion) {
@@ -103,7 +114,7 @@ bool procesar_conexion(int cliente_socket) {
   case OPCODE_PRUEBA: {
     char *mensaje_log =
         string_from_format("Recepcion Op Code Nro %d\n", codigo_operacion);
-    info_log("server_swamp.c@procesar_conexion", mensaje_log);
+    info_log("server_swap.c@procesar_conexion", mensaje_log);
     free(mensaje_log);
     send_ack(cliente_socket, OPCODE_ACK_OK);
     return true;

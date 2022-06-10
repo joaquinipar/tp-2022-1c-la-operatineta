@@ -9,7 +9,8 @@ destruir_array_mem();
 destruir_estructura_mem_principal(); 
 destruir_listas_globales_de_tablas();
 destruir_list_swap(); 
-
+pthread_cancel(hilo_cpu); 
+pthread_cancel(hilo_kernel);  
 //cerrar_server_memoria(); 
 
 }

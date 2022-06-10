@@ -69,6 +69,6 @@ uint32_t encontrar_marco_libre(uint32_t pid);
 
 void* leer_pagina_memoria(uint32_t marco_asignado); 
 int escribir_contenido_swap(void* contenido_marco, uint32_t pid, uint32_t marco); 
-void bajar_paginas_swamp(uint32_t pid); 
+void bajar_paginas_swap(uint32_t pid); 
 
 #endif /* MEMORIA_SWAP_INCLUDE_MEMORIA_PRINCIPAL_H_ */

@@ -207,7 +207,7 @@ int escribir_contenido_swap(void* contenido_marco, uint32_t pid, uint32_t marco)
   format_info_log("memoria_principal.c@escribir_contenido_swap", "EXITO al escribir cambios en SWAP - Proceso: %d", pid);
   return 1; 
 }
-void bajar_paginas_swamp(uint32_t pid) {
+void bajar_paginas_swap(uint32_t pid) {
 
   for (int marco = 0; marco < mem_ppal->cant_marcos; marco++) {
 
@@ -217,17 +217,17 @@ void bajar_paginas_swamp(uint32_t pid) {
 
       if(resultado){
 
-        pagina_2do_nivel_t *pagina_swampeada = array_marcos[marco].pagina;
-        pagina_swampeada->bit_modificado = 0;
-        pagina_swampeada->bit_presencia = 0;
-        pagina_swampeada->bit_uso = 0;
-        pagina_swampeada->marco = -1;
+        pagina_2do_nivel_t *pagina_swapeada = array_marcos[marco].pagina;
+        pagina_swapeada->bit_modificado = 0;
+        pagina_swapeada->bit_presencia = 0;
+        pagina_swapeada->bit_uso = 0;
+        pagina_swapeada->marco = -1;
         array_marcos[marco].estado = 0; 
         array_marcos[marco].pid = -1; 
         free(contenido_marco);
-        format_debug_log("memoria_suspender_proceso.c@bajar_paginas_swamp", "Pagina: %d - Viajo a Swamp", array_marcos[marco].pagina->nro_pagina);
+        format_debug_log("memoria_suspender_proceso.c@bajar_paginas_swap", "Pagina: %d - Viajo a swap", array_marcos[marco].pagina->nro_pagina);
       } 
-      format_debug_log("memoria_suspender_proceso.c@bajar_paginas_swamp", "ERROR - No se puede bajar pagina a Swap", array_marcos[marco].pagina->nro_pagina);
+      format_debug_log("memoria_suspender_proceso.c@bajar_paginas_swap", "ERROR - No se puede bajar pagina a Swap", array_marcos[marco].pagina->nro_pagina);
     }
 
   }
