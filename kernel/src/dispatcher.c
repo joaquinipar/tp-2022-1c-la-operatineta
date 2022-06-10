@@ -108,6 +108,8 @@ void escucha_proceso_desalojado()
                 debug_log("conexion_client.c@procesar_conexion", "Termina mensaje OPCODE_PROCESO_DESALOJADO_INTERRUPT");
             }
 
+            desalojar_proceso_interrupt(proceso_actualizado);
+
             break;
             
         }

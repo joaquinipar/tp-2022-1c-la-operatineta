@@ -46,6 +46,15 @@ void proceso_finalizar_rafaga(pcb_t *proceso) {
   format_debug_log("proceso.c@proceso_finalizar_rafaga", "Proceso: %d proxima rafaga estimada", proceso->estimacion);
 }
 
+void proceso_actualizar_rafaga_por_desalojo(pcb_t *proceso){
+  
+  gettimeofday(&(proceso->rafaga_actual).fin, NULL);
+  int duracion_ultima_rafaga = timedifference_msec((proceso->rafaga_actual).inicio, (proceso->rafaga_actual).fin);
+  proceso->estimacion = proceso->estimacion -  duracion_ultima_rafaga;
+  format_debug_log("proceso.c@proceso_actualizar_rafaga_por_desalojo", "Proceso: %d tiempo restante de rafaga", proceso->estimacion);
+
+}
+
 /* void proceso_iniciar_espera(pcb_t *proceso) {
   gettimeofday(&proceso->espera->inicio, NULL);
 }

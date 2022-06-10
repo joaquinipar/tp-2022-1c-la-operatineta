@@ -77,6 +77,13 @@ bool grado_multiprogramacion_completo();
 void mover_proceso_de_bloqueados_a_terminados(uint32_t pid);
 void mover_proceso_nuevo_a_suspendido_listo();
 void mover_proceso_suspendido_a_listo();
+bool lista_de_ejecucion_vacia();
+
+void replanificar_srt(pcb_t *proceso);
+void proceso_comparacion_srt(pcb_t *proceso_en_listo, pcb_t *proceso_en_cpu);
+int proceso_estimar_rafaga_restante(pcb_t *proceso);
+pcb_t *copiar_primer_proceso_listo();
+pcb_t *copiar_proceso_en_ejecucion();
 
 // Funciones a eliminar quizás
 int cantidad_procesos_nuevos();

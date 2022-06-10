@@ -23,6 +23,7 @@ void proceso_ejecutar(pcb_t *);
 void proceso_iniciar_espera(pcb_t *);
 void proceso_finalizar_espera(pcb_t *);
 pcb_t* proceso_obtener_tabla_paginas(pcb_t *proceso); 
+void proceso_actualizar_rafaga_por_desalojo(pcb_t *proceso);
 
 float timedifference_msec(struct timeval, struct timeval);
 

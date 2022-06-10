@@ -103,6 +103,7 @@ bool procesar_conexion_interrupt(int cliente_socket) {
     format_debug_log("server_interrupt.c@procesar_conexion_interrupt", "Recepcion - Nro OP CODE: %d\n", codigo_operacion);
     uint32_t pid; 
     int bytes_recibidos = recv(cliente_socket, &pid, sizeof(uint32_t), 0);
+    format_debug_log("server_interrupt.c@procesar_conexion_interrupt", "Recepcion desalojo pid: %d\n", pid);
     
     encender_flag_interrupt(); 
     
