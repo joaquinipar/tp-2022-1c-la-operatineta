@@ -630,6 +630,7 @@ void mover_proceso_nuevo_a_listo(pcb_t *proceso) {
   // El grado de multiprogramacion esta completo, hay que suspender el proceso
   uint32_t value_table = enviar_mensaje_valor_tabla_1er_nivel(proceso->pid, proceso->tamanio); 
   proceso->tabla_paginas = value_table; 
+  format_debug_log("monitor_colas_procesos.c@mover_proceso_nuevo_a_listo", "PID: %d - Nro de Tabla de pagina asignado: %d", proceso->pid, proceso->tabla_paginas);
 
   if (grado_multiprogramacion_completo()) {
     info_log("monitor_colas_procesos.c@mover_proceso_nuevo_a_listo", "El grado de multiprogramacion esta completo, se suspende el proceso nuevo");
