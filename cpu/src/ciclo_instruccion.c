@@ -170,7 +170,7 @@ void gestionar_instruccion_write(pcb_t* proceso, int32_t direccion_logica, int32
 			format_info_log("ciclo_instruccion.c@gestionar_instruccion_write", "Direccion Fisica: %d", dir_fisica);
 		    format_debug_log("ciclo_instruccion.c@gestionar_instruccion_write", "Valor a copiar en Memoria: %d", valor_a_copiar);
 			enviar_mensaje_write(proceso->pid, dir_fisica, valor_a_copiar); 
-			
+			return;
 		}
 	}
 
