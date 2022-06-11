@@ -74,16 +74,19 @@ int escuchar_conexiones_nuevas(int server_socket) {
     hilo_cpu = -1;
     hilo_kernel = -1;
 
+        void loopear_procesar_conexion(int cliente_socket){
+            while(procesar_conexion(cliente_socket));
+        }
+
+
      if(hilo_cpu == -1){
-      pthread_create(&hilo_cpu, NULL, (void*) procesar_conexion, (void*) cliente_socket); 
+      pthread_create(&hilo_cpu, NULL, (void*) loopear_procesar_conexion, (void*) cliente_socket);
      } else if(hilo_kernel== -1){
-       pthread_create(&hilo_kernel, NULL, (void*) procesar_conexion, (void*) cliente_socket); 
+       pthread_create(&hilo_kernel, NULL, (void*) loopear_procesar_conexion, (void*) cliente_socket);
      } else {
        error_log("server_mem_swap.c@escuchar_conexiones_nuevas", "ERROR - Ya hay dos clientes conectados"); 
      }
-      
-      //while (procesar_conexion(cliente_socket))
-       // ;
+
       continue;
     }
     error_log("server_mem_swap.c@escuchar_conexiones_nuevas", "Error en nueva conexion o socket servidor cerrado");
