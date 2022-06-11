@@ -19,6 +19,5 @@ int escuchar_conexiones_nuevas(int server_socket);
 bool procesar_conexion(int cliente_socket);
 void cerrar_server_memoria();
 bool enviar_mensaje_inicial_configuracion(int cliente_socket);
-void loopear_conexion( int cliente_socket); 
 
 #endif /* MEMORIA_SWAP_INCLUDE_SERVER_MEM_H_ */
