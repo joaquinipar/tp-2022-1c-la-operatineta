@@ -188,7 +188,7 @@ uint32_t get_marco_de_pagina_TLB(uint32_t pagina_buscada) {
   if (entrada_buscada != -1) {
 
     uint32_t nro_marco = array_tlb[entrada_buscada].marco;
-    format_trace_log("tlb.c@get_marco_de_pagina_TLB", "Decime que -> Algoritmo TLB: %s", cpu_config->reemplazo_tlb);
+    format_debug_log("tlb.c@get_marco_de_pagina_TLB", "Decime que -> Algoritmo TLB: %d", cpu_config->reemplazo_tlb);
 
     if (cpu_config->reemplazo_tlb == 1) {
       array_tlb[entrada_buscada].time_pagina = get_timestamp();
