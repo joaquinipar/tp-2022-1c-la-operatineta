@@ -19,10 +19,11 @@ void admitir_proceso_nuevo() {
 
     // Este semaforo se llama cuando viene un proceso nuevo
     sem_wait(&sem_proceso_nuevo);
+    sem_wait(&sem_grado_multiprogramacion_disponible);
 
     info_log("planificador_largo_plazo.c@admitir_proceso_nuevo", "Moviendo un proceso de nuevo a ready");
-    pcb_t *proceso = desencolar_proceso_nuevo();
-    mover_proceso_nuevo_a_listo(proceso);
+    //pcb_t *proceso = desencolar_proceso_nuevo();
+    mover_proceso_a_listo();
 
   }
 }

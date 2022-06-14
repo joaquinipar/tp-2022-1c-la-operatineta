@@ -24,7 +24,8 @@ void despertar_procesos() {
     // Se libera un grado de multiprogramacion
     //sem_wait(&sem_grado_multiprogramacion_disponible);
     info_log("planificador_mediano_plazo.c@despertar_procesos", "Plani de mediano plazo despertado");
-    mover_proceso_suspendido_a_listo();
+    //mover_proceso_suspendido_a_listo();
+    mover_proceso_a_listo();
 
   }
 }

@@ -632,15 +632,33 @@ void mover_proceso_nuevo_a_listo(pcb_t *proceso) {
   proceso->tabla_paginas = value_table; 
   format_debug_log("monitor_colas_procesos.c@mover_proceso_nuevo_a_listo", "PID: %d - Nro de Tabla de pagina asignado: %d", proceso->pid, proceso->tabla_paginas);
 
-  if (grado_multiprogramacion_completo()) {
+  /*if (grado_multiprogramacion_completo()) {
     info_log("monitor_colas_procesos.c@mover_proceso_nuevo_a_listo", "El grado de multiprogramacion esta completo, se suspende el proceso nuevo");
     encolar_proceso_en_suspendidos_listos(proceso);
     return;
+  }*/
+
+
+  //info_log("monitor_colas_procesos.c@mover_proceso_nuevo_a_listo", "El grado de multiprogramacion NO esta completo, se mueve el proceso nuevo a listos");
+  encolar_proceso_en_listos(proceso);
+}
+
+void mover_proceso_a_listo(){
+
+  if(!grado_multiprogramacion_completo() && !lista_de_suspendidos_listos_vacia()){
+    info_log("monitor_colas_procesos.c@mover_proceso_a_listo", "El grado de multiprogramacion NO esta completo, se mueve un proceso suspendido-listo a listos");
+    mover_proceso_suspendido_a_listo();
+
+  }else if (!grado_multiprogramacion_completo()){
+    info_log("monitor_colas_procesos.c@mover_proceso_a_listo", "El grado de multiprogramacion NO esta completo, se mueve un proceso nuevo a listos");
+    pcb_t *proceso = desencolar_proceso_nuevo();
+    mover_proceso_nuevo_a_listo(proceso);
+
+  }else{
+    //info_log("monitor_colas_procesos.c@mover_proceso_a_listo", "El grado de multiprogramacion  esta completo, se espera que se libere el grado de multiprogramacion");
+    mover_proceso_a_listo();
   }
 
-
-  info_log("monitor_colas_procesos.c@mover_proceso_nuevo_a_listo", "El grado de multiprogramacion NO esta completo, se mueve el proceso nuevo a listos");
-  encolar_proceso_en_listos(proceso);
 }
 
 void mover_proceso_nuevo_a_suspendido_listo() {
@@ -1078,9 +1096,9 @@ void encolar_proceso_en_listos(pcb_t *proceso) {
 
   format_debug_log("monitor_colas_procesos.c@encolar_proceso_en_listos", "Encolando el proceso con pid: %d en estado: %d en la cola de listos", proceso->pid, proceso->estado);
 
-  if(!(proceso->estado == ESTADO_PROCESO_BLOCKED || proceso->estado == ESTADO_PROCESO_EXEC)){
+  /*if(!(proceso->estado == ESTADO_PROCESO_BLOCKED || proceso->estado == ESTADO_PROCESO_EXEC)){
     sem_wait(&sem_grado_multiprogramacion_disponible);
-  }
+  }*/
   format_debug_log("monitor_colas_procesos.c@encolar_proceso_en_listos", "El proceso con pid: %d sera movido a cola de listos", proceso->pid);
   
   pthread_mutex_lock(&procesos_listos_mutex);
