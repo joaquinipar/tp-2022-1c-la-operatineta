@@ -8,9 +8,10 @@ destruir_estructura_mem_swap_config();
 destruir_array_mem(); 
 destruir_estructura_mem_principal(); 
 destruir_listas_globales_de_tablas();
-destruir_list_swap(); 
+destruir_list_swap();
 pthread_cancel(hilo_cpu); 
-pthread_cancel(hilo_kernel);  
+pthread_cancel(hilo_kernel);
+pthread_mutex_destroy(&sem_procesar_conexion);
 //cerrar_server_memoria(); 
 
 }

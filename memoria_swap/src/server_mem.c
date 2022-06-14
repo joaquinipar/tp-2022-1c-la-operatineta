@@ -31,6 +31,8 @@ void iniciar_server_mem_swap(char* ip, char* puerto) {
 
   debug_log("server_mem_swap.c@iniciar_server_mem_swap", "Inicializando el Servidor Memoria");
 
+  pthread_mutex_init(&sem_procesar_conexion, NULL);
+
   socket_server_mem= iniciar_servidor("server_mem_swap.c@iniciar_server_mem_swap","", ip, puerto);
 
   if (socket_server_mem != -1) {
@@ -125,15 +127,20 @@ bool procesar_conexion(int cliente_socket) {
   }
   /*Crea las estructuras adm en memoria y devuelve el nro de tabla del 1er nivel"*/
   case OPCODE_VALUE_TAB_PAG:{
+
   // | codop | pid | tamanio
     uint32_t pid;
     recv(cliente_socket, &pid, sizeof(uint32_t), false);
     uint32_t tamanio;
     recv(cliente_socket, &tamanio, sizeof(uint32_t), false);
+
+    pthread_mutex_lock(&sem_procesar_conexion);
+
     uint32_t valor_tabla_1er_nivel = admitir_proceso(pid, tamanio);
     // Voy a enviar | CODOP | VALOR_TABLA_1ER_NIVEL |
-    
     send_codigo_op_con_numero(cliente_socket, OPCODE_VALUE_TAB_PAG, valor_tabla_1er_nivel);
+
+    pthread_mutex_unlock(&sem_procesar_conexion);
     return true;
     break; 
   }
@@ -146,6 +153,8 @@ bool procesar_conexion(int cliente_socket) {
       uint32_t numero_entrada_1er_nivel;
       recv(cliente_socket, &numero_entrada_1er_nivel, sizeof(uint32_t), false);
 
+      pthread_mutex_lock(&sem_procesar_conexion);
+
       uint32_t numero_tabla_2do_nivel =  buscar_nro_tabla_2do_nivel( pid, posicion_tabla_1er_nivel, numero_entrada_1er_nivel);
 
       /* Envio | CODOP | PID | numero_tabla_2do_nivel */
@@ -156,6 +165,7 @@ bool procesar_conexion(int cliente_socket) {
           error_log("server_mem.c@procesar_conexion", "Ocurrió un error al enviar la respuesta de ACCESO_1ER_NIVEL");
       }
 
+      pthread_mutex_unlock(&sem_procesar_conexion);
       return true;
       break;
   }
@@ -168,6 +178,8 @@ bool procesar_conexion(int cliente_socket) {
       uint32_t nro_entrada_2do_nivel;
       recv(cliente_socket, &nro_entrada_2do_nivel, sizeof(uint32_t), false);
 
+      pthread_mutex_lock(&sem_procesar_conexion);
+
       format_warning_log("server_mem.c@procesar_conexion", "(OPCODE_ACCESO_2DO_NIVEL) Recibi PID: %i nro_tabla_2do_nivel: %i nro_entrada_2do_nivel: %i", pid, nro_tabla_2do_nivel, nro_entrada_2do_nivel);
 
       uint32_t marco = obtener_marco_de_tabla_2do_nivel(pid, nro_tabla_2do_nivel, nro_entrada_2do_nivel);
@@ -177,6 +189,7 @@ bool procesar_conexion(int cliente_socket) {
       if(res != 1){
           error_log("server_mem.c@procesar_conexion", "Ocurrió un error al enviar la respuesta de ACCESO_2DO_NIVEL");
       }
+      pthread_mutex_unlock(&sem_procesar_conexion);
 
       return true;
       break;
@@ -211,6 +224,9 @@ bool procesar_conexion(int cliente_socket) {
       uint32_t contenido; // igual sabemos que siempre es un uint32_t
       recv(cliente_socket, &contenido, sizeof(uint32_t), false);
 
+      pthread_mutex_lock(&sem_procesar_conexion);
+
+
       escribir(direccion_fisica, contenido);
 
       // todo Actualizar bit de modificado. calcular marco con DF. Direccion fisica / tamaño de pagina
@@ -219,6 +235,8 @@ bool procesar_conexion(int cliente_socket) {
       array_marcos[marco].pagina->bit_modificado = 1;
 
       send_ack(cliente_socket, OPCODE_ACK_OK);
+
+      pthread_mutex_unlock(&sem_procesar_conexion);
 
       return true;
       break;
@@ -243,15 +261,18 @@ bool procesar_conexion(int cliente_socket) {
   case OPCODE_SUSPENDER_PROCESO: {
     uint32_t pid;
     recv(cliente_socket, &pid, sizeof(uint32_t), false);
+
+    pthread_mutex_lock(&sem_procesar_conexion);
+
     bool response = suspender_proceso(pid);
-   
     if (response) {
       send_ack(cliente_socket, OPCODE_ACK_OK);
       return true;
       break; 
     }
-
     send_ack(cliente_socket, OPCODE_ACK_ERROR);
+
+    pthread_mutex_unlock(&sem_procesar_conexion);
     return true;
     break; 
   }
@@ -259,15 +280,18 @@ bool procesar_conexion(int cliente_socket) {
   case OPCODE_EXIT:{
     uint32_t pid;
     recv(cliente_socket, &pid, sizeof(uint32_t), false);
+
+    pthread_mutex_lock(&sem_procesar_conexion);
+
     bool response = cerrar_proceso(pid);
-   
     if (response) {
       send_ack(cliente_socket, OPCODE_ACK_OK);
       return true;
       break; 
     }
-
     send_ack(cliente_socket, OPCODE_ACK_ERROR);
+
+    pthread_mutex_unlock(&sem_procesar_conexion);
     return true;
     break; 
   }

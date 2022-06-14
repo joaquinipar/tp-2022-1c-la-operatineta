@@ -225,7 +225,7 @@ void bajar_paginas_swap(uint32_t pid) {
         array_marcos[marco].estado = 0; 
         array_marcos[marco].pid = -1; 
         free(contenido_marco);
-        format_debug_log("memoria_suspender_proceso.c@bajar_paginas_swap", "Pagina: %d - Viajo a swap", array_marcos[marco].pagina->nro_pagina);
+        format_debug_log("memoria_suspender_proceso.c@bajar_paginas_swap", "Nro. entrada 2do nivel: %d - Viajo a swap", array_marcos[marco].pagina->nro_pagina);
       }
       else {
           // TODO Debería retornar en caso de error??
