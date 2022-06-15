@@ -7,6 +7,13 @@ void iniciar_swap() {
 }
 
 void destruir_list_swap(){
+
+    void _eliminar_ficheros(archivo_pid_t* proceso_swap){
+    	eliminar_archivo_directorio_swap(proceso_swap->pid);
+    }
+
+	list_iterate(list_archivos_swap,(void*) _eliminar_ficheros);
+
     list_destroy_and_destroy_elements(list_archivos_swap, (void*)free); 
     debug_log("swap.c@iniciar_swap", "Se destruye la lista global de archivos de swap por proceso"); 
 }
@@ -136,4 +143,25 @@ void* leer_pagina_swap(uint32_t pid, uint32_t marco){
     memcpy(contenido, archivo->area_archivo_swap + marco * mem_swap_config->tam_pagina, mem_swap_config->tam_pagina);
 
     return contenido;
+}
+
+
+void eliminar_archivo_directorio_swap(uint32_t pid){
+
+    //Eliminar archivo de directorio swap.
+
+    char *path =  string_from_format ("%s/%d.swap",mem_swap_config->path_swap, pid);
+    format_debug_log("swap.c@eliminar_archivo_directorio_swap", "Se genera el PATH + ARCHIVO a eliminar: %s",path);
+
+    if(remove(path)==0){ // Eliminamos el archivo
+    	format_debug_log("eliminar_archivo_swap.c@eliminar_archivo_swap","[ELIMINACION EXITOSA DE ARCHIVO SWAP] - Proceso: %d", pid);
+    	//return 0;
+
+    }else{
+        format_warning_log("eliminar_archivo_swap.c@eliminar_archivo_swap","[ELIMINACION FALLIDA DE ARCHIVO SWAP] - Proceso: %d", pid);
+    	//return -1;
+    }
+
+
+
 }

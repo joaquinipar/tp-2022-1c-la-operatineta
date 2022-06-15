@@ -4,8 +4,6 @@
 #include <stdbool.h>
 #include <utils/logger.h>
 #include <utils/structs.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include "configuracion_mem_swap.h"
 #include "struct_mem.h"
 #include "swap/swap.h"
