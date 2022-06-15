@@ -242,7 +242,7 @@ void ordenar_cola_listos() {
 
   //list_iterate(cola_listos, (void*) actualizar_estimacion_anterior);
 
-  info_log("monitor_colas_procesos.c@ordenar_cola_listos", "Cola listos ordenada: ");
+  format_debug_log("monitor_colas_procesos.c@ordenar_cola_listos", "Cola listos ordenada: ");
   //list_iterate(cola_listos, (void*) iterator);
 
   pthread_mutex_unlock(&procesos_listos_mutex);
@@ -1120,7 +1120,7 @@ void encolar_proceso_en_listos(pcb_t *proceso) {
 void replanificar_srt(pcb_t *proceso){
   if( (kernel_config -> algoritmo_planificacion == SRT) && !lista_de_ejecucion_vacia() ){
 
-    format_debug_log("monitor_colas_procesos.c@replanificar_srt", "Replanificando SRT");
+    format_info_log("monitor_colas_procesos.c@replanificar_srt", "Replanificando SRT");
     ordenar_cola_listos();
     pcb_t *proceso_en_listo = copiar_primer_proceso_listo(); 
     pcb_t *proceso_en_cpu = copiar_proceso_en_ejecucion(); 
@@ -1137,16 +1137,16 @@ void proceso_comparacion_srt(pcb_t *proceso_en_listo, pcb_t *proceso_en_cpu){
 
   format_debug_log("monitor_colas_procesos.c@proceso_comparacion_srt", "Comparando el proceso en ready con pid: %d con el proceso en cpu pid: %d", proceso_en_listo->pid, proceso_en_cpu->pid);
   int estimacion_proceso_listo = proceso_en_listo->estimacion;
-  format_debug_log("monitor_colas_procesos.c@proceso_comparacion_srt", "Estimacion restante proceso listo pid: %d es: %d", proceso_en_listo->pid, estimacion_proceso_listo);
+  format_info_log("monitor_colas_procesos.c@proceso_comparacion_srt", "Estimacion restante proceso listo pid: %d es: %d", proceso_en_listo->pid, estimacion_proceso_listo);
   int estimacion_proceso_cpu = proceso_estimar_rafaga_restante(proceso_en_cpu);
-  format_debug_log("monitor_colas_procesos.c@proceso_comparacion_srt", "Estimacion restante proceso cpu pid: %d es: %d", proceso_en_cpu->pid, estimacion_proceso_cpu);
+  format_info_log("monitor_colas_procesos.c@proceso_comparacion_srt", "Estimacion restante proceso cpu pid: %d es: %d", proceso_en_cpu->pid, estimacion_proceso_cpu);
 
   if(estimacion_proceso_listo < estimacion_proceso_cpu || estimacion_proceso_cpu < 0 ){
-    format_debug_log("monitor_colas_procesos.c@proceso_comparacion_srt", "requiere desalojo del proceso en cpu pid: %d", proceso_en_cpu->pid);
+    format_info_log("monitor_colas_procesos.c@proceso_comparacion_srt", "requiere desalojo del proceso en cpu pid: %d", proceso_en_cpu->pid);
     enviar_mensaje_desalojar_proceso(proceso_en_cpu);
 
   }else{
-    format_debug_log("monitor_colas_procesos.c@proceso_comparacion_srt", "No se requiere desalojo del proceso en cpu pid: %d", proceso_en_cpu->pid);
+    format_info_log("monitor_colas_procesos.c@proceso_comparacion_srt", "No se requiere desalojo del proceso en cpu pid: %d", proceso_en_cpu->pid);
   }
   //sem_post(&sem_proceso_listo); // lamo al de corto plazo
 
