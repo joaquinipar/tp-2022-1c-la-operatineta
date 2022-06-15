@@ -148,20 +148,17 @@ void* leer_pagina_swap(uint32_t pid, uint32_t marco){
 
 void eliminar_archivo_directorio_swap(uint32_t pid){
 
-    //Eliminar archivo de directorio swap.
 
-    char *path =  string_from_format ("%s/%d.swap",mem_swap_config->path_swap, pid);
+    char* path = string_from_format ("%s/%d.swap",mem_swap_config->path_swap, pid);
     format_debug_log("swap.c@eliminar_archivo_directorio_swap", "Se genera el PATH + ARCHIVO a eliminar: %s",path);
 
-    if(remove(path)==0){ // Eliminamos el archivo
+    if(remove(path)==0){ // Eliminamos el archivo. Retorna 0 en caso de exito
     	format_debug_log("eliminar_archivo_swap.c@eliminar_archivo_swap","[ELIMINACION EXITOSA DE ARCHIVO SWAP] - Proceso: %d", pid);
-    	//return 0;
 
     }else{
         format_warning_log("eliminar_archivo_swap.c@eliminar_archivo_swap","[ELIMINACION FALLIDA DE ARCHIVO SWAP] - Proceso: %d", pid);
-    	//return -1;
     }
 
-
+	free(path);
 
 }
