@@ -621,7 +621,7 @@ void encolar_proceso_en_terminados(pcb_t *proceso) {
 
   pthread_mutex_unlock(&procesos_terminados_mutex);
 
-  debug_log("monitor_colas_procesos.c@encolar_proceso_nuevo", "Proceso terminado encolado");
+  info_log("monitor_colas_procesos.c@encolar_proceso_nuevo", "Proceso terminado encolado");
 }
 
 /*  --------------------------- Otras funciones ---------------------------  */
@@ -644,6 +644,8 @@ void mover_proceso_nuevo_a_listo(pcb_t *proceso) {
 }
 
 void mover_proceso_a_listo(){
+
+  sem_wait(&sem_grado_multiprogramacion_disponible);
 
   if(!grado_multiprogramacion_completo() && !lista_de_suspendidos_listos_vacia()){
     info_log("monitor_colas_procesos.c@mover_proceso_a_listo", "El grado de multiprogramacion NO esta completo, se mueve un proceso suspendido-listo a listos");
