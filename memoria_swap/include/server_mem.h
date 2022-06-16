@@ -14,6 +14,9 @@ int socket_server_mem;
 pthread_t hilo_cpu;
 pthread_t hilo_kernel;
 
+// Semaforo server
+pthread_mutex_t sem_procesar_conexion;
+
 void iniciar_server_mem_swap(char *ip, char *puerto);
 int escuchar_conexiones_nuevas(int server_socket);
 bool procesar_conexion(int cliente_socket);
