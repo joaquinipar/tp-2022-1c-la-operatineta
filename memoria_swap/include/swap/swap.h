@@ -2,7 +2,9 @@
 #define MEMORIA_SWAP_SWAP_H
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <unistd.h>
+#include <sys/stat.h>
 #include <sys/types.h>
 #include <commons/collections/list.h>
 #include "../configuracion_mem_swap.h"
@@ -37,5 +39,6 @@ int eliminar_proceso_en_lista_global_swap(uint32_t pid);
  */
 int escribir_pagina_swap(uint32_t pid, uint32_t marco);
 void* leer_pagina_swap(uint32_t pid, uint32_t marco);
+void eliminar_archivo_directorio_swap(uint32_t);
 
 #endif //MEMORIA_SWAP_SWAP_H

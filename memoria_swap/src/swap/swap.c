@@ -3,12 +3,30 @@
 void iniciar_swap() {
     debug_log("swap.c@iniciar_swap", "Comienza el inicio de la lista global de archivos de swap por proceso"); 
     list_archivos_swap = list_create();
+
+    //Valida la existencia del directorio. Si errno = 2 (ENOENT), crea el directorio.
+    if (0 != access(mem_swap_config->path_swap, F_OK)) {
+    	if (ENOENT == errno) {
+         // does not exist
+    		if(mkdir(mem_swap_config->path_swap,0777) == 0 )
+    			debug_log("swap.c@iniciar_swap", "Se crea directorio swap");
+    		else
+    			warning_log("swap.c@iniciar_swap", "No se pudo crear el directorio swap");
+    	}
+        errno = 0;
+    }
     //debug_log("swap.c@iniciar_swap", "Finaliza el inicio de la lista global de archivos de swap por proceso"); 
 }
 
 void destruir_list_swap(){
+
+    void _eliminar_ficheros(archivo_pid_t* proceso_swap){
+    	eliminar_archivo_directorio_swap(proceso_swap->pid);
+    }
+
+	list_iterate(list_archivos_swap,(void*) _eliminar_ficheros);
     list_destroy_and_destroy_elements(list_archivos_swap, (void*)free); 
-    debug_log("swap.c@iniciar_swap", "Se destruye la lista global de archivos de swap por proceso"); 
+    debug_log("swap.c@destruir_list_swap", "Se destruye la lista global de archivos de swap por proceso");
 }
 
 archivo_pid_t* crear_archivo_pid(int pid, uint32_t tam_proceso){
@@ -136,4 +154,22 @@ void* leer_pagina_swap(uint32_t pid, uint32_t marco){
     memcpy(contenido, archivo->area_archivo_swap + marco * mem_swap_config->tam_pagina, mem_swap_config->tam_pagina);
 
     return contenido;
+}
+
+
+void eliminar_archivo_directorio_swap(uint32_t pid){
+
+
+    char* path = string_from_format ("%s/%d.swap",mem_swap_config->path_swap, pid);
+    format_debug_log("swap.c@eliminar_archivo_directorio_swap", "Se genera el PATH + ARCHIVO a eliminar: %s",path);
+
+    if(remove(path)==0){ // Eliminamos el archivo. Retorna 0 en caso de exito
+    	format_debug_log("eliminar_archivo_swap.c@eliminar_archivo_swap","[ELIMINACION EXITOSA DE ARCHIVO SWAP] - Proceso: %d", pid);
+
+    }else{
+        format_warning_log("eliminar_archivo_swap.c@eliminar_archivo_swap","[ELIMINACION FALLIDA DE ARCHIVO SWAP] - Proceso: %d", pid);
+    }
+
+	free(path);
+
 }
