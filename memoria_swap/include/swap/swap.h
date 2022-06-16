@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <sys/stat.h>
 #include <sys/types.h>
 #include <commons/collections/list.h>
 #include "../configuracion_mem_swap.h"
