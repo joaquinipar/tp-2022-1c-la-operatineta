@@ -214,3 +214,13 @@ format_error_log("tlb.c@se_encuentra_en_tlb", "Pagina: %d NO se encuentra en TLB
 return -1; 
 
 }
+
+void imprimir_estado_array_TLB() {
+
+    int entrada = 0;
+    for (entrada = 0; entrada < cpu_config->entradas_tlb;
+         entrada++) {
+
+        format_warning_log("tlb.c@imprimir_estado_array_TLB", "Entrada: %d  Estado: %d Carpincho: %d Pagina: %d Marco: %d\n", entrada, array_tlb[entrada].estado, array_tlb[entrada].id_proceso, array_tlb[entrada].nro_pagina, array_tlb[entrada].marco);
+    }
+}

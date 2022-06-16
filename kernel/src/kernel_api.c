@@ -43,7 +43,7 @@ bool finalizar_proceso(pcb_t *proceso_actualizado) {
 
   encolar_proceso_en_terminados(proceso);
 
-  // TODO: enviar mensaje a memoria para eliminar proceso de memoria
+  enviar_mensaje_exit(proceso_actualizado);
 
   // TODO: revisar posible condicion de carrera, si no se ejecuta el plani de largo plazo a tiempo (y hay suspended-ready), puede agarrar uno de menor prioridad de ready (porque no llego a ready un suspended-ready a tiempo)
   //sem_post(&sem_proceso_listo); //libero un grado de multiprogramacion, hay que mover alguno a ready

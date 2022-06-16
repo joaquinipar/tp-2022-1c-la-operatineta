@@ -60,7 +60,7 @@ void cargar_archivo_config_mem_swap(t_config *una_config_mem_swap){
  mem_swap_config->tam_pagina =obtener_int_arch_config(una_config_mem_swap, "TAM_PAGINA");
  mem_swap_config->retardo_memoria =obtener_int_arch_config(una_config_mem_swap, "RETARDO_MEMORIA");
  mem_swap_config->marcos_por_proceso =obtener_int_arch_config(una_config_mem_swap, "MARCOS_POR_PROCESO");
- mem_swap_config->retardo_memoria =obtener_int_arch_config(una_config_mem_swap, "RETARDO_SWAP");
+ mem_swap_config->retardo_swap =obtener_int_arch_config(una_config_mem_swap, "RETARDO_SWAP");
  
  mem_swap_config->path_swap =obtener_string_arch_config(una_config_mem_swap, "PATH_SWAP");
  

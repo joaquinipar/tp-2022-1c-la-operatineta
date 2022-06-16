@@ -185,6 +185,11 @@ bool procesar_conexion(int cliente_socket) {
       uint32_t marco = obtener_marco_de_tabla_2do_nivel(pid, nro_tabla_2do_nivel, nro_entrada_2do_nivel);
       format_warning_log("server_mem.c@procesar_conexion", "(OPCODE_ACCESO_2DO_NIVEL) PID: %i Envio respuesta MARCO: ", pid, marco);
 
+      if(obtener_puntero_clock(pid) == -1){ // Si es la primera vez que escribe, le seteo el puntero clock al marco.
+          setear_marco_a_puntero_clock(pid, marco);
+      }
+
+
       int res = send_codigo_op_con_numeros(cliente_socket, OPCODE_ACCESO_2DO_NIVEL, pid, marco);
       if(res != 1){
           error_log("server_mem.c@procesar_conexion", "Ocurrió un error al enviar la respuesta de ACCESO_2DO_NIVEL");
@@ -203,6 +208,7 @@ bool procesar_conexion(int cliente_socket) {
 
       uint32_t* lectura = leer(direccion_fisica);
 
+      imprimir_estado_array_MP();
 
       int res = send_codigo_op_con_numeros(cliente_socket, OPCODE_READ, pid, *lectura);
 
@@ -233,6 +239,8 @@ bool procesar_conexion(int cliente_socket) {
       int marco = direccion_fisica / mem_swap_config->tam_pagina;
 
       array_marcos[marco].pagina->bit_modificado = 1;
+
+      imprimir_estado_array_MP();
 
       send_ack(cliente_socket, OPCODE_ACK_OK);
 
@@ -267,6 +275,7 @@ bool procesar_conexion(int cliente_socket) {
     bool response = suspender_proceso(pid);
     if (response) {
       send_ack(cliente_socket, OPCODE_ACK_OK);
+      pthread_mutex_unlock(&sem_procesar_conexion);
       return true;
       break; 
     }
@@ -286,6 +295,7 @@ bool procesar_conexion(int cliente_socket) {
     bool response = cerrar_proceso(pid);
     if (response) {
       send_ack(cliente_socket, OPCODE_ACK_OK);
+      pthread_mutex_unlock(&sem_procesar_conexion);
       return true;
       break; 
     }

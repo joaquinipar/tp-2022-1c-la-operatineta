@@ -99,15 +99,8 @@ uint32_t inicio_proceso(uint32_t pid, uint32_t tamanio){
 
     if(!proceso_presente_en_lista_tabla_1er_nivel(pid)){
 
-        admitir_proceso_en_swap(pid, tamanio); 
-
+        admitir_proceso_en_swap(pid, tamanio);
         uint32_t cant_paginas_a_utilizar = obtener_cant_paginas_a_utilizar(tamanio);
-        int cant_max = mem_swap_config->entradas_por_tabla * mem_swap_config->entradas_por_tabla;
-        if(cant_paginas_a_utilizar > cant_max ){
-            // caso rechazo
-            format_error_log("inicio_proceso@proceso.c","PID:%i Cantidad de paginas (%i) excede la capacidad de direccionamiento (%i)", pid, cant_paginas_a_utilizar, cant_max);
-            return -1;
-        }
 
         //uint32_t cant_entradas_a_usar_1er_nivel = cant_tablas_2do_nivel;
         uint32_t cant_tablas_2do_nivel = get_cantidad_tablas(cant_paginas_a_utilizar);
@@ -117,6 +110,7 @@ uint32_t inicio_proceso(uint32_t pid, uint32_t tamanio){
         entrada_1er_nivel_t* tabla_1er_nivel = iniciar_tabla_1er_nivel(pid); 
         gestionar_tabla_2do_nivel(cant_tablas_2do_nivel,tabla_1er_nivel, pid); 
         int posicion_tabla_1er_nivel_en_lista_global = list_add(lista_tablas_1er_nivel,tabla_1er_nivel);
+        agregar_puntero_nuevo_clock(pid); // Agrego a lista de punteros de clock.
         format_info_log("proceso.c@admitir_proceso", "Proceso: %d  admitido en Memoria- Nro de tabla 1er nivel asignada: %d", pid, posicion_tabla_1er_nivel_en_lista_global);
         return posicion_tabla_1er_nivel_en_lista_global;
 

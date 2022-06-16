@@ -165,6 +165,7 @@ void iniciar_memoria(){
   iniciar_memoria_principal(); 
   iniciar_listas_globales_de_tablas(); 
   iniciar_swap();
+  iniciar_lista_punteros_clock();
 }
 
 
@@ -236,6 +237,16 @@ void bajar_paginas_swap(uint32_t pid) {
   }
 }
 
+void imprimir_estado_array_MP() {
+
+    int marco = 0;
+    for (marco = 0; marco < mem_ppal->cant_marcos; marco++) {
+
+        char *msg = string_from_format("Marco: %d  PID: %d BU: %i BM: %i BP: %i Estado: %d", marco, array_marcos[marco].pid, array_marcos[marco].pagina->bit_uso, array_marcos[marco].pagina->bit_modificado, array_marcos[marco].pagina->bit_presencia , array_marcos[marco].estado);
+        warning_log("memoria_principal.c@imprimir_estado_array_MP", msg);
+        free(msg);
+    }
+}
 
 
 
