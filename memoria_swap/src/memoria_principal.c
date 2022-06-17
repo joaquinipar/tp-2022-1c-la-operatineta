@@ -188,9 +188,10 @@ void* leer_pagina_memoria(uint32_t marco_asignado) {
 
   void *contenido_leido = malloc(sizeof(char) * mem_swap_config->tam_pagina);
   memcpy(contenido_leido, mem_ppal->memoria_principal + (marco_asignado * mem_swap_config->tam_pagina), mem_swap_config->tam_pagina);
-  format_debug_log("memoria_principal.c@leer_pagina_memoria",  "Marco: %d -- Contenido: [ -  %d - ]", marco_asignado, contenido_leido);
+ // format_debug_log("memoria_principal.c@leer_pagina_memoria",  "Marco: %d -- Contenido: [ -  %d - ]", marco_asignado, contenido_leido);
   return contenido_leido;
 }
+
 
 int escribir_contenido_swap(void* contenido_marco, uint32_t pid, uint32_t marco){
 
@@ -207,14 +208,16 @@ int escribir_contenido_swap(void* contenido_marco, uint32_t pid, uint32_t marco)
   }
   format_info_log("memoria_principal.c@escribir_contenido_swap", "EXITO al escribir cambios en SWAP - Proceso: %d", pid);
   return 1; 
-}
+} 
+
+
 void bajar_paginas_swap(uint32_t pid) {
 
   for (int marco = 0; marco < mem_ppal->cant_marcos; marco++) {
 
     if (array_marcos[marco].pid == pid && array_marcos[marco].pagina->bit_modificado == 1 && array_marcos[marco].estado == 1 && array_marcos[marco].pagina->bit_presencia == 1) {     
       void *contenido_marco = leer_pagina_memoria(marco);
-      int resultado = escribir_contenido_swap(contenido_marco, pid, marco); 
+      int resultado = escribir_pagina_swap(pid, array_marcos[marco].pagina->nro_pagina); 
 
       if(resultado){
 

@@ -112,7 +112,7 @@ int eliminar_proceso_en_lista_global_swap(uint32_t pid) {
     return 1;
 }
 
-int escribir_pagina_swap(uint32_t pid, uint32_t marco){
+int escribir_pagina_swap(uint32_t pid, uint32_t pagina){
 
     archivo_pid_t* archivo = get_proceso_swap(pid);
 
@@ -123,15 +123,16 @@ int escribir_pagina_swap(uint32_t pid, uint32_t marco){
     info_log("swap.c@escribir_pagina_swap", "Ejecutando retardo swap...");
     usleep(mem_swap_config->retardo_swap * 1000);
 
-    memcpy(archivo->area_archivo_swap + marco * mem_swap_config->tam_pagina,
-           mem_ppal->memoria_principal + marco * mem_swap_config->tam_pagina,
-           mem_swap_config->tam_pagina);
+    uint32_t marco = obtener_marco_de_pagina_proceso(pid, pagina, archivo); 
 
-    format_info_log("swap.c@escribir_pagina_swap", "PID: %i Marco: %i escrito en SWAP correctamente! DIR: %i",pid,marco, marco * mem_swap_config->tam_pagina);
+    memcpy(archivo->area_archivo_swap + marco * mem_swap_config->tam_pagina, mem_ppal->memoria_principal + marco * mem_swap_config->tam_pagina, mem_swap_config->tam_pagina);
+
+    format_info_log("swap.c@escribir_pagina_swap", "PID: %i - Pagina: %d - Marco: %i escrito en SWAP correctamente! DIR: %i",pid,pagina, marco, marco * mem_swap_config->tam_pagina);
 
 
     if( msync( archivo->area_archivo_swap, archivo->tam_proceso , MS_SYNC) < 0){ // ¿Está bien ese tamaño no?
-        format_error_log("swap.c@escribir_pagina_swap","(VICTIMA)(msync) PID:%i Error al volcar los cambios a SWAP",(int)archivo->pid);
+            format_error_log("swap.c@escribir_pagina_swap", "ERROR al escribir cambios en SWAP - Proceso: %d", pid);
+
     }
 
 
@@ -160,7 +161,7 @@ int obtener_marco_de_pagina_proceso (uint32_t proceso_id, uint32_t pagina, archi
             break; 
 		}
 	}
-    format_debug_log("swap.c@obtener_marco_de_pagina_proceso", "El marco que contiene a la pagina %d del proceso %i es: %i", pagina, proceso_id, marco_asignado; 
+    format_debug_log("swap.c@obtener_marco_de_pagina_proceso", "El marco que contiene a la pagina %d del proceso %i es: %i", pagina, proceso_id, marco_asignado); 
     return marco_asignado; 
 }
 
@@ -182,7 +183,7 @@ void* leer_pagina_swap(uint32_t pid, uint32_t pagina){
 
     if(marco != -1){
         memcpy(contenido, archivo->area_archivo_swap + marco * mem_swap_config->tam_pagina, mem_swap_config->tam_pagina);
-        printf("(swap) Prueba:%d\n", contenido);
+        printf( "Prueba:%s\n", (char*)contenido);
        return contenido;
     }
     
