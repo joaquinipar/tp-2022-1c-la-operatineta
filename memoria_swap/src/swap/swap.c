@@ -138,22 +138,56 @@ int escribir_pagina_swap(uint32_t pid, uint32_t marco){
     return 1;
 }
 
-void* leer_pagina_swap(uint32_t pid, uint32_t marco){
+
+int obtener_marco_de_pagina_proceso (uint32_t proceso_id, uint32_t pagina, archivo_pid_t* archivo){
+
+	int cantidad_marcos =  archivo->tam_proceso/ mem_swap_config->tam_pagina;
+
+    format_debug_log("swap.c@obtener_marco_de_pagina_proceso","Busco el marco que contiene al proceso %i, pagina %i",proceso_id, pagina);
+
+
+	if(archivo == NULL){
+		format_error_log("swap.c@obtener_marco_de_pagina_proceso","No se encontro el archivo del proceso: %d. No se puede leer", proceso_id);
+		return -1;
+	}
+
+    int marco_asignado = -1;
+	for(int marco = 0; marco < cantidad_marcos; marco++){
+
+		if( archivo->array_marcos_virtual_del_proceso[marco].pagina == pagina){
+            //encontro marco que tiene la pagina del proceso a leer
+            marco_asignado = marco;
+            break; 
+		}
+	}
+    format_debug_log("swap.c@obtener_marco_de_pagina_proceso", "El marco que contiene a la pagina %d del proceso %i es: %i", pagina, proceso_id, marco_asignado; 
+    return marco_asignado; 
+}
+
+void* leer_pagina_swap(uint32_t pid, uint32_t pagina){
 
     archivo_pid_t* archivo = get_proceso_swap(pid);
 
     if(archivo == NULL){
-        format_error_log("swap.c@escribir_pagina_swap", "El proceso %i no tiene archivo swap creado.", pid);
+        format_error_log("swap.c@leer_pagina_swap", "El proceso %i no tiene archivo swap creado.", pid);
         return NULL;
     }
 
     usleep(mem_swap_config->retardo_swap * 1000);
+    format_info_log("swap.c@leer_pagina_swap", "Se realiza retardo por acceso a Swap - PID: %d", pid); 
 
-    void* contenido = malloc(mem_swap_config->tam_pagina);
+    uint32_t marco = obtener_marco_de_pagina_proceso(pid, pagina, archivo); 
 
-    memcpy(contenido, archivo->area_archivo_swap + marco * mem_swap_config->tam_pagina, mem_swap_config->tam_pagina);
+    void* contenido = malloc(sizeof(char) * mem_swap_config->tam_pagina);
 
-    return contenido;
+    if(marco != -1){
+        memcpy(contenido, archivo->area_archivo_swap + marco * mem_swap_config->tam_pagina, mem_swap_config->tam_pagina);
+        printf("(swap) Prueba:%d\n", contenido);
+       return contenido;
+    }
+    
+    format_error_log("swap.c@leer_pagina_swap", "PID: %d - No tiene la pagina %d informada", pid, pagina); 
+    return NULL; 
 }
 
 

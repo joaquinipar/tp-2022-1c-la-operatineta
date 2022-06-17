@@ -37,8 +37,9 @@ int eliminar_proceso_en_lista_global_swap(uint32_t pid);
  * @return success => 1
  *         error => -1
  */
-int escribir_pagina_swap(uint32_t pid, uint32_t marco);
-void* leer_pagina_swap(uint32_t pid, uint32_t marco);
+int escribir_pagina_swap(uint32_t pid, uint32_t pagina);
+void* leer_pagina_swap(uint32_t pid, uint32_t pagina);
 void eliminar_archivo_directorio_swap(uint32_t);
+int obtener_marco_de_pagina_proceso (uint32_t proceso_id, uint32_t pagina, archivo_pid_t* archivo); 
 
 #endif //MEMORIA_SWAP_SWAP_H
