@@ -1,5 +1,7 @@
 #include "../include/server_kernel.h"
 
+void escuchar_mensajes_cliente(int *socket_cliente);
+
 pthread_t iniciar_server_kernel()
 {
   pthread_t hilo_server;
@@ -8,11 +10,13 @@ pthread_t iniciar_server_kernel()
 
   debug_log("server_kernel.c@iniciar_server_kernel", "Inicializando el server Kernel");
 
-  int socket_servidor = iniciar_servidor("server_kernel.c@iniciar_server_kernel", "", ip, puerto);
+  int *socket_servidor = malloc(sizeof(int));
+
+  *socket_servidor = iniciar_servidor("server_kernel.c@iniciar_server_kernel", "", ip, puerto);
 
   char *msg_log;
 
-  if (socket_servidor != -1)
+  if (*socket_servidor != -1)
   {
     msg_log = string_from_format(
         "Servidor Kernel escuchando conexiones con exito en ip: %s, puerto: %s", ip, puerto);
@@ -26,12 +30,13 @@ pthread_t iniciar_server_kernel()
 
   free(msg_log);
 
-  pthread_create(&hilo_server, NULL, (void *)escuchar_conexiones_nuevas, (int *)socket_servidor);
+  pthread_create(&hilo_server, NULL, (void *)escuchar_conexiones_nuevas, socket_servidor);
+  //pthread_detach(hilo_server);
 
   return hilo_server;
 }
 
-int escuchar_conexiones_nuevas(int server_socket)
+int escuchar_conexiones_nuevas(int *server_socket)
 {
   bool escuchar = true;
 
@@ -39,8 +44,9 @@ int escuchar_conexiones_nuevas(int server_socket)
   {
     info_log("server_kernel.c@escuchar_conexiones_nuevas", "SIGINT recibida, ejecutando handler para apagar la conexion Kernel");
     escuchar = false;
-    shutdown(server_socket, SHUT_RD);
-    close(server_socket);
+    shutdown(*server_socket, SHUT_RD);
+    close(*server_socket);
+    free(server_socket);
   }
 
   signal(SIGINT, sighandler);
@@ -49,24 +55,19 @@ int escuchar_conexiones_nuevas(int server_socket)
 
   while (escuchar == true)
   {
-    int cliente_socket = esperar_cliente(server_socket, "Kernel", "server_kernel.c@escuchar");
+    pthread_t thread_cliente;
+    int *socket_cliente = malloc(sizeof(int));
+    *socket_cliente = esperar_cliente(*server_socket, "Kernel", "server_kernel.c@escuchar");
 
-    if (cliente_socket != -1)
+    if (*socket_cliente != -1)
     {
-      bool resultado_crear_proceso =
-          recibir_mensaje_proceso_nuevo(cliente_socket);
-      debug_log("server_kernel.c@escuchar_conexiones_nuevas", "Cliente nuevo conectado");
-      if (!resultado_crear_proceso)
-      {
-        error_log("server_kernel.c@escuchar_conexiones_nuevas",
-                  "No se pudo crear el proceso nuevo");
-      }
+      pthread_create(&thread_cliente, NULL, (void *)escuchar_mensajes_cliente, socket_cliente);
+      pthread_detach(thread_cliente);
       continue;
     }
 
     debug_log("server_kernel.c@escuchar_conexiones_nuevas",
-              "Error en nueva conexion o socket servidor cerrado, saliendo del "
-              "thread");
+              "Error en nueva conexion o socket servidor cerrado, saliendo del thread");
 
     return -1;
   }
@@ -74,21 +75,30 @@ int escuchar_conexiones_nuevas(int server_socket)
   return 0;
 }
 
-pcb_t *deserealizar_nuevo_proceso(int socket)
+void escuchar_mensajes_cliente(int *socket_cliente) {
+  bool resultado_crear_proceso = recibir_mensaje_proceso_nuevo(socket_cliente);
+  debug_log("server_kernel.c@escuchar_conexiones_nuevas", "Cliente nuevo conectado");
+  if (!resultado_crear_proceso)
+  {
+    error_log("server_kernel.c@escuchar_conexiones_nuevas", "No se pudo crear el proceso nuevo");
+  }
+}
+
+pcb_t *deserealizar_nuevo_proceso(int *socket)
 {
 
   pcb_t *pcb = malloc(sizeof(pcb_t));
   
  // format_debug_log("server_kernel.c@desearilizar_nuevo_proceso", "Tamaño proceso: %d", pcb->tamanio);
   pcb->pid = obtener_siguiente_pid();
-  pcb->lista_instrucciones = recibir_lista_de_instrucciones(socket);
+  pcb->lista_instrucciones = recibir_lista_de_instrucciones(*socket);
   pcb->program_counter = 0;
   pcb->estado = ESTADO_PROCESO_NEW;
   pcb->tabla_paginas = -1;
   pcb->estimacion_rafaga = kernel_config->estimacion_inicial;
-  recv(socket, &(pcb->tamanio), sizeof(uint32_t), 0);
+  recv(*socket, &(pcb->tamanio), sizeof(uint32_t), 0);
   format_debug_log("server_kernel.c@desearilizar_nuevo_proceso", "Tamaño proceso: %d", pcb->tamanio);
-
+  pcb->socket = *socket;
   //void printear_instrucciones(instruccion_t * una_instruccion)
   //{
   //  format_debug_log("serializacion.c@printear_lista", "Instruccion(numero): %d", una_instruccion->instruccion);
@@ -100,13 +110,13 @@ pcb_t *deserealizar_nuevo_proceso(int socket)
   return pcb;
 }
 
-bool recibir_mensaje_proceso_nuevo(int cliente_socket)
+bool recibir_mensaje_proceso_nuevo(int *cliente_socket)
 {
 
   info_log("server_kernel.c@recibir_mensaje_proceso_nuevo", "Recibiendo nuevo proceso");
   op_code_t codigo_operacion;
 
-  ssize_t recibido = recv(cliente_socket, &codigo_operacion, sizeof(op_code_t), 0);
+  ssize_t recibido = recv(*cliente_socket, &codigo_operacion, sizeof(op_code_t), 0);
 
   format_debug_log("server_kernel.c@recibir_mensaje_proceso_nuevo", "BYTES RECIBIDOS: %d", recibido);
   format_debug_log("server_kernel.c@recibir_mensaje_proceso_nuevo", "codOp: %d", codigo_operacion);
@@ -133,47 +143,4 @@ bool recibir_mensaje_proceso_nuevo(int cliente_socket)
   //list_destroy_and_destroy_elements(nuevo_proceso)
 
   return true;
-}
-
-bool procesar_conexion(int cliente_socket)
-{
-  debug_log("server_kernel.c@procesar_conexion", "Procesando nuevo mensaje");
-  op_code_t codigo_operacion;
-
-  if (recv(cliente_socket, &codigo_operacion, sizeof(op_code_t), 0) !=
-      sizeof(op_code_t))
-  {
-    info_log("server_kernel.c@procesar_conexion",
-             "Se recibio un codigo_operacion invalido!");
-    return false;
-  }
-
-  char *mensaje_recibido_log =
-      string_from_format("CodOp recibido: %d", codigo_operacion);
-  debug_log("server_kernel.c@procesar_conexion", mensaje_recibido_log);
-  free(mensaje_recibido_log);
-
-  switch (codigo_operacion)
-  {
-
-  case OPCODE_PRUEBA:
-  {
-    char *mensaje_log =
-        string_from_format("Recepcion Op Code Nro %d\n", codigo_operacion);
-    info_log("server_kernel.c@procesar_conexion", mensaje_log);
-    free(mensaje_log);
-    send_ack(cliente_socket, OPCODE_ACK_OK);
-    return true;
-    break;
-  }
-
-  // Errores con las conexiones
-  case OPCODE_CLIENTE_DESCONECTADO:
-    error_log("server_kernel.c@procesar_conexion", "Cliente desconectado de Servidor");
-    return false;
-  default:
-
-    return false;
-    break;
-  }
 }

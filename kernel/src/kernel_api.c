@@ -43,12 +43,14 @@ bool finalizar_proceso(pcb_t *proceso_actualizado) {
 
   encolar_proceso_en_terminados(proceso);
 
-  enviar_mensaje_exit(proceso_actualizado);
+  // Mensajes a otros procesos
+  if (kernel_config->is_test != 1) {
+    //mensaje a memoria para indicar finalizacion del proceso
+    enviar_mensaje_exit(proceso);
+    // Enviar confirmacion a la consola de que el proceso termino
+    send_ack(proceso->socket, OPCODE_ACK_OK);
+  }
 
-  // TODO: revisar posible condicion de carrera, si no se ejecuta el plani de largo plazo a tiempo (y hay suspended-ready), puede agarrar uno de menor prioridad de ready (porque no llego a ready un suspended-ready a tiempo)
-  //sem_post(&sem_proceso_listo); //libero un grado de multiprogramacion, hay que mover alguno a ready
-  // no realmente, el semaforo que esta abajo va a dar luz verde para que pase un nuevo proceso si es que hay
-  // hacer este sem_post es obligar a pasar a un nuevo proceso a ready cuando este no existe y boom. 
   sem_post(&sem_grado_multiprogramacion_disponible);
   sem_post(&sem_bin_procesar_listo);
 
