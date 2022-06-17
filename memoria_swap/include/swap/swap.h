@@ -41,5 +41,6 @@ int escribir_pagina_swap(uint32_t pid, uint32_t pagina);
 void* leer_pagina_swap(uint32_t pid, uint32_t pagina);
 void eliminar_archivo_directorio_swap(uint32_t);
 int obtener_marco_de_pagina_proceso (uint32_t proceso_id, uint32_t pagina, archivo_pid_t* archivo); 
+int escribir_contenido_en_swap(uint32_t pid, uint32_t pagina, void* contenido_marco); 
 
 #endif //MEMORIA_SWAP_SWAP_H

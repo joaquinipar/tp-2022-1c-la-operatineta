@@ -217,7 +217,7 @@ void bajar_paginas_swap(uint32_t pid) {
 
     if (array_marcos[marco].pid == pid && array_marcos[marco].pagina->bit_modificado == 1 && array_marcos[marco].estado == 1 && array_marcos[marco].pagina->bit_presencia == 1) {     
       void *contenido_marco = leer_pagina_memoria(marco);
-      int resultado = escribir_pagina_swap(pid, array_marcos[marco].pagina->nro_pagina); 
+      int resultado = escribir_contenido_en_swap(pid, array_marcos[marco].pagina->nro_pagina, contenido_marco); 
 
       if(resultado){
 
