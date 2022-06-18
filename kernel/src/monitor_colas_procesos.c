@@ -658,7 +658,7 @@ void mover_proceso_a_listo(){
 
   }else{
     //info_log("monitor_colas_procesos.c@mover_proceso_a_listo", "El grado de multiprogramacion  esta completo, se espera que se libere el grado de multiprogramacion");
-    mover_proceso_a_listo();
+    //mover_proceso_a_listo();
   }
 
 }
