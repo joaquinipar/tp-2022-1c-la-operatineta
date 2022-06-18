@@ -178,12 +178,16 @@ uint32_t obtener_marco_de_tabla_2do_nivel(uint32_t pid, uint32_t nro_tabla_2do_n
 
             format_info_log("memoria_api.c@obtener_marco_de_tabla_2do_nivel", "PID: %i Marco: %i Encontré marco listo para ser reemplazado", pid, marco_libre);
 
-            void* contenido = leer_pagina_swap(pid, tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].marco);
-
-            // Cargo contenido en memoria principal
-            memcpy(mem_ppal->memoria_principal + marco_libre * mem_swap_config->tam_pagina, contenido, mem_swap_config->tam_pagina);
-
             // Modifico tabla de paginas
+
+            int nro_entrada_1er_nivel = buscar_entrada_1er_nivel(pid, nro_tabla_2do_nivel);
+
+            if(nro_entrada_1er_nivel == -1){
+                error_log("memoria_api.c@obtener_marco_de_tabla_2do_nivel", "Sin numero de tabla de 1er nivel no puedo calcular el numero de pagina");
+                return -1;
+            }
+
+            int numero_pagina = nro_entrada_1er_nivel * mem_swap_config->entradas_por_tabla + nro_entrada_2do_nivel;
 
             format_info_log("memoria_api.c@obtener_marco_de_tabla_2do_nivel", "PID: %i Marco: %i Seteo BP=1 BM=0 BU=1", pid, marco_libre);
 
@@ -191,12 +195,18 @@ uint32_t obtener_marco_de_tabla_2do_nivel(uint32_t pid, uint32_t nro_tabla_2do_n
             tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].bit_presencia = 1;
             tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].bit_modificado = 0;
             tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].bit_uso = 1;
-            tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].nro_pagina = nro_entrada_2do_nivel;
+            tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].nro_pagina = numero_pagina;
 
 
             array_marcos[marco_libre].estado=1;
             array_marcos[marco_libre].pid=pid;
             array_marcos[marco_libre].pagina = &tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel];
+
+            void* contenido = leer_pagina_swap(pid, tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].nro_pagina);
+
+            // Cargo contenido en memoria principal
+            memcpy(mem_ppal->memoria_principal + marco_libre * mem_swap_config->tam_pagina, contenido, mem_swap_config->tam_pagina);
+
 
             return marco_libre;
 
