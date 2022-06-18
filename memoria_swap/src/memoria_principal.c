@@ -224,14 +224,15 @@ void bajar_paginas_swap(uint32_t pid) {
         pagina_swapeada->bit_uso = 0;
         pagina_swapeada->marco = -1;
         array_marcos[marco].estado = 0; 
-        array_marcos[marco].pid = -1; 
-        free(contenido_marco);
+        array_marcos[marco].pid = -1;
         format_debug_log("memoria_suspender_proceso.c@bajar_paginas_swap", "Nro. entrada 2do nivel: %d - Viajo a swap", array_marcos[marco].pagina->nro_pagina);
       }
       else {
           // TODO Debería retornar en caso de error??
           format_debug_log("memoria_suspender_proceso.c@bajar_paginas_swap", "ERROR - No se puede bajar pagina a Swap", array_marcos[marco].pagina->nro_pagina);
       }
+
+      free(contenido_marco);
     }
 
   }

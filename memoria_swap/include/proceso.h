@@ -38,8 +38,8 @@ uint32_t buscar_nro_tabla_2do_nivel (uint32_t pid, uint32_t nro_tabla_1er_nivel,
 int32_t obtener_cant_paginas_a_utilizar(int32_t tamanio_total_size); 
 tabla_2do_nivel_t* crear_entradas_tabla_2do_nivel(uint32_t pid);
 int agregar_entrada_tabla_1er_nivel(entrada_1er_nivel_t* tabla_1er_nivel, uint32_t nro_tabla_2do_nivel); 
-void gestionar_tabla_2do_nivel(uint32_t cant_tablas_2do_nivel, entrada_1er_nivel_t* tabla_1er_nivel, uint32_t pid); 
-
+void gestionar_tabla_2do_nivel(uint32_t cant_tablas_2do_nivel, entrada_1er_nivel_t* tabla_1er_nivel, uint32_t pid);
+int buscar_entrada_1er_nivel(uint32_t pid, uint32_t numero_tabla_2do_nivel);
 /**
  * @name obtener_marco_de_tabla_2do_nivel
  * @desc Ingresa en la entrada (nro_pagina) de la tabla de segundo nivel (nro_tabla_2do_nivel) y devuelve el marco

@@ -224,11 +224,20 @@ uint32_t obtener_marco_de_tabla_2do_nivel(uint32_t pid, uint32_t nro_tabla_2do_n
 
             format_info_log("memoria_api.c@obtener_marco_de_tabla_2do_nivel", "PID: %i Marco: %i Seteo BP=1 BM=0 BU=1", pid, marco_libre);
 
+            int nro_entrada_1er_nivel = buscar_entrada_1er_nivel(pid, nro_tabla_2do_nivel);
+
+            if(nro_entrada_1er_nivel == -1){
+                error_log("memoria_api.c@obtener_marco_de_tabla_2do_nivel", "Sin numero de tabla de 1er nivel no puedo calcular el numero de pagina");
+                return -1;
+            }
+
+            int numero_pagina = nro_entrada_1er_nivel * mem_swap_config->entradas_por_tabla + nro_entrada_2do_nivel;
+
             tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].marco = marco_libre;
             tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].bit_presencia = 1;
             tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].bit_modificado = 0;
             tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].bit_uso = 1;
-            tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].nro_pagina = nro_entrada_2do_nivel;
+            tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].nro_pagina = numero_pagina;
 
             array_marcos[marco_libre].estado=1;
             array_marcos[marco_libre].pid=pid;
@@ -243,6 +252,20 @@ uint32_t obtener_marco_de_tabla_2do_nivel(uint32_t pid, uint32_t nro_tabla_2do_n
 
 
 
+}
+
+int buscar_entrada_1er_nivel(uint32_t pid, uint32_t numero_tabla_2do_nivel){
+
+    entrada_1er_nivel_t* tabla_1er_nivel = buscar_tabla_1er_nivel_de_un_proceso(pid);
+
+    for(int i=0; i < mem_swap_config->entradas_por_tabla; i++){
+        if(tabla_1er_nivel[i].nro_tabla_2do_nivel == numero_tabla_2do_nivel){
+            return i;
+        }
+    }
+
+    format_error_log("proceso.c@buscar_entrada_1er_nivel", "Error crítico! No se encontró la entrada de 1er nivel que tenga el numero de tabla de 2do nivel: %i", numero_tabla_2do_nivel);
+    return -1;
 }
 
 uint32_t buscar_nro_tabla_2do_nivel (uint32_t pid, uint32_t nro_tabla_1er_nivel, uint32_t nro_entrada_1er_nivel) {
