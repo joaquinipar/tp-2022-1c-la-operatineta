@@ -104,7 +104,7 @@ int32_t gestionar_instruccion_read(pcb_t* proceso, int32_t direccion_logica){
 	if(num_tabla_2do_nivel != -1){
 		//2- Enviar mensaje a memoria para que me informe el numero de marco correspondiente a nro tabla 2do nivel entrada 2do nivel  
 		uint32_t marco_recibido = enviar_mensaje_acceso_2do_nivel(proceso->pid, num_tabla_2do_nivel, entrada_2do_nivel); 
-
+        format_debug_log("ciclo_instruccion.c@gestionar_instruccion_read", "MARCO RECIBIDO %i", marco_recibido);
 		   //2.1 Se carga marco en la tlb
 			 uint32_t resultado = escribir_entrada_en_tlb(num_pagina, marco_recibido); 
 				if(!resultado){
@@ -269,7 +269,12 @@ bool hay_interrupcion(pcb_t * proceso){
  void iniciar_ciclo_instruccion(pcb_t* proceso){
 
    //TODO Consultar si puede haber una interrupcion en este momento antes de ejecutar la 1era instruccion
-   //TODO Podria pasar que haya desalojo (i/o - exit ) e interrupcion al mismo tiempo. 
+   //TODO Podria pasar que haya desalojo (i/o - exit ) e interrupcion al mismo tiempo.
+
+   // Seteo pid en la TLB
+   for(int i=0; i < cpu_config->entradas_tlb; i++){
+       array_tlb[i].id_proceso = proceso->pid;
+   }
 
    instruccion_t* instruccion_a_ejecutar; 
 

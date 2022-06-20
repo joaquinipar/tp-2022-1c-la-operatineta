@@ -148,7 +148,10 @@ int algoritmo_reemplazo_TLB()
   {
     info_log("tlb.c@algoritmo_reemplazo_TLB", "Algoritmo TLB asignado es: FIFO");
   }
-  info_log("tlb.c@algoritmo_reemplazo_TLB", "Algoritmo TLB asignado es: LRU");
+  else{
+    info_log("tlb.c@algoritmo_reemplazo_TLB", "Algoritmo TLB asignado es: LRU");
+  }
+
 
   int victim = get_victima_tlb();
 
@@ -163,7 +166,7 @@ int algoritmo_reemplazo_TLB()
 
 int escribir_entrada_en_tlb(uint32_t pagina_a_escribir, uint32_t marco_a_escribir)
 {
-
+/*
   for (int entrada = 0; entrada < cpu_config->entradas_tlb; entrada++)
   {
     if (marco_a_escribir = array_tlb[entrada].marco)
@@ -176,6 +179,7 @@ int escribir_entrada_en_tlb(uint32_t pagina_a_escribir, uint32_t marco_a_escribi
       return 1;
     }
   }
+*/
 
   if (esta_llena_tlb() == 1)
   { // Entra si esta vacío xD!
@@ -189,20 +193,22 @@ int escribir_entrada_en_tlb(uint32_t pagina_a_escribir, uint32_t marco_a_escribi
     long long time_tlb = get_timestamp();
     array_tlb[entrada_a_escribir].time_pagina = time_tlb;
 
-    format_trace_log("tlb.c@escribir_entrada_en_tlb", "[ESCRITURA] Entrada: %d - Pagina: %d - Marco: %d - Time: %lld -Estado: %d", entrada_a_escribir, array_tlb[entrada_a_escribir].nro_pagina, array_tlb[entrada_a_escribir].marco, (long long)array_tlb[entrada_a_escribir].time_pagina, array_tlb[entrada_a_escribir].estado);
+    format_debug_log("tlb.c@escribir_entrada_en_tlb", "[ESCRITURA] Entrada: %d - Pagina: %d - Marco: %d - Time: %lld -Estado: %d", entrada_a_escribir, array_tlb[entrada_a_escribir].nro_pagina, array_tlb[entrada_a_escribir].marco, (long long)array_tlb[entrada_a_escribir].time_pagina, array_tlb[entrada_a_escribir].estado);
     return 1;
   }
   format_warning_log("tlb.c@escribir_entrada_en_tlb", "TLB LLena - Vamos a reemplazar ... ");
   int entrada_victima = algoritmo_reemplazo_TLB();
   format_debug_log("tlb.c@escribir_entrada_en_tlb", "Entrada victima: %d", entrada_victima);
 
+  long long time_tlb = get_timestamp();
   array_tlb[entrada_victima].nro_pagina = pagina_a_escribir;
   array_tlb[entrada_victima].marco = marco_a_escribir;
   array_tlb[entrada_victima].estado = 1;
+  array_tlb[entrada_victima].time_pagina = time_tlb;
 
-  format_debug_log("tlb.c@escribir_entrada_en_tlb", "Escritura OK - Entrada victima: %d - Pagina:%d - Marco: %d", entrada_victima, pagina_a_escribir, marco_a_escribir);
+  format_debug_log("tlb.c@escribir_entrada_en_tlb", "Escritura OK - Entrada victima: %d - Pagina:%d - Marco: %d  - Time: %lld ", entrada_victima, pagina_a_escribir, marco_a_escribir, (long long)array_tlb[entrada_victima].time_pagina);
 
-  return 0;
+  return 1;
 }
 
 void eliminar_entradas_TLB()
@@ -250,6 +256,12 @@ uint32_t se_encuentra_en_tlb(uint32_t pagina_buscada)
   {
     format_info_log("tlb.c@se_encuentra_en_tlb", "Pagina: %d se encuentra en TLB", pagina_buscada);
     uint32_t marco_asignado = get_marco_de_pagina_TLB(pagina_buscada);
+
+    if(cpu_config->reemplazo_tlb == LRU){
+        long long nuevo_tiempo = get_timestamp();
+        array_tlb[marco_asignado].time_pagina = nuevo_tiempo;
+    }
+
     return marco_asignado;
   }
 
