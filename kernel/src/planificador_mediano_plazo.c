@@ -61,9 +61,13 @@ void suspender_proceso_despues_de_tiempo_maximo(pcb_t *proceso) {
   format_debug_log("planificador_mediano_plazo.c@lanzar_thread_suspension_proceso", "Chequeando si tengo que dormir proceso %d (despues del tiempo maximo de espera)", proceso->pid);
   if (proceso->estado == ESTADO_PROCESO_BLOCKED) {
     format_info_log("planificador_mediano_plazo.c@lanzar_thread_suspension_proceso", "Paso el tiempo maximo, el proceso sigue bloqueado lo tengo que dormir, pid: %d", proceso->pid);
+
+    // Este mensaje es bloqueante asi que espera a que memoria responda y luego cambia el estado y hace el signal
+    enviar_mensaje_suspender_proceso(proceso);
+
     proceso->estado = ESTADO_PROCESO_BLOCKED_SUSPENDED;
     sem_post(&sem_grado_multiprogramacion_disponible);
-    enviar_mensaje_suspender_proceso(proceso);
+
   } else {
     format_debug_log("planificador_mediano_plazo.c@lanzar_thread_suspension_proceso", "Paso el tiempo maximo y al proceso: %d no sigue bloqueado, no hace falta dormir", proceso->pid);
   }
