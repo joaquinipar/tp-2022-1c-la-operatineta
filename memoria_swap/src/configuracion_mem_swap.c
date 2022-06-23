@@ -52,6 +52,47 @@ config_mem_t *crear_estructura_mem_swap_config(){
   config_mem_swap->ip_escucha= NULL;
   return config_mem_swap;
 }
+
+char* normalizar_path(char *path);
+
+char* normalizar_path(char *path) {
+  char *path_normalizado = string_new();
+  int tiene_shortcut_a_home = string_starts_with(path, "~");
+
+  if (tiene_shortcut_a_home) {
+    format_debug_log("configuracion_mem_swap.c@normalizar_path", "Hay atajo a home path, se genera el full path correspondiente");
+
+    char* home_path = getenv("HOME");
+
+    if (home_path) {
+      format_debug_log("configuracion_mem_swap.c@normalizar_path", "home path set to: %s", home_path);
+    } else {
+      format_warning_log("configuracion_mem_swap.c@normalizar_path", "No hay variable de entorno home path y se uso ~ en el path!");
+      return string_duplicate(path);
+    }
+
+    char *path_sin_atajo_home = string_substring(path, 1, string_length(path));
+    string_append(&path_normalizado, home_path);
+    string_append(&path_normalizado, path_sin_atajo_home);
+    format_debug_log("configuracion_mem_swap.c@normalizar_path", "El path con home es: %s", path_normalizado);
+
+    /* Por alguna razon esto tira SIGSEV, imagino que esta dentro del espacio compartido
+    if (home_path) {
+      free(home_path);
+    } 
+    */
+
+    free(path_sin_atajo_home);
+
+    return path_normalizado;
+
+  } else {
+    format_debug_log("configuracion_mem_swap.c@normalizar_path", "No hay atajo a home path, se devuelve el mismo path.");
+  }
+
+  return string_duplicate(path);
+}
+
 void cargar_archivo_config_mem_swap(t_config *una_config_mem_swap){
 
  mem_swap_config = crear_estructura_mem_swap_config();
@@ -61,8 +102,11 @@ void cargar_archivo_config_mem_swap(t_config *una_config_mem_swap){
  mem_swap_config->retardo_memoria =obtener_int_arch_config(una_config_mem_swap, "RETARDO_MEMORIA");
  mem_swap_config->marcos_por_proceso =obtener_int_arch_config(una_config_mem_swap, "MARCOS_POR_PROCESO");
  mem_swap_config->retardo_swap =obtener_int_arch_config(una_config_mem_swap, "RETARDO_SWAP");
- 
- mem_swap_config->path_swap =obtener_string_arch_config(una_config_mem_swap, "PATH_SWAP");
+
+ char *path_en_config = obtener_string_arch_config(una_config_mem_swap, "PATH_SWAP");
+ char *path_normalizado = normalizar_path(path_en_config);
+ mem_swap_config->path_swap = path_normalizado;
+ free(path_en_config);
  
 char* algoritmo = obtener_string_arch_config(una_config_mem_swap, "ALGORITMO_REEMPLAZO");
 mem_swap_config->algoritmo_reeemplazo = obtener_algoritmo_enum(algoritmo);

@@ -7,7 +7,8 @@ void iniciar_swap() {
     //Valida la existencia del directorio. Si errno = 2 (ENOENT), crea el directorio.
     if (0 != access(mem_swap_config->path_swap, F_OK)) {
     	if (ENOENT == errno) {
-         // does not exist
+            warning_log("swap.c@iniciar_swap", "No existe el directorio de swap, vamos a tratar de crearlo");
+            // does not exist
     		if(mkdir(mem_swap_config->path_swap,0777) == 0 )
     			debug_log("swap.c@iniciar_swap", "Se crea directorio swap");
     		else
