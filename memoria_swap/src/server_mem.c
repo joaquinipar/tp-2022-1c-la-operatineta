@@ -159,6 +159,9 @@ bool procesar_conexion(int cliente_socket) {
 
       /* Envio | CODOP | PID | numero_tabla_2do_nivel */
 
+      usleep(mem_swap_config->retardo_memoria *1000);
+
+      info_log("server_mem.c@procesando_conexion", "Ejecutando retardo del ACCESO DE 1ER NIVEL");
       int res = send_codigo_op_con_numeros(cliente_socket, OPCODE_ACCESO_1ER_NIVEL, pid, numero_tabla_2do_nivel);
 
       if(res != 1){
@@ -189,6 +192,8 @@ bool procesar_conexion(int cliente_socket) {
           setear_marco_a_puntero_clock(pid, marco);
       }
 
+      info_log("server_mem.c@procesando_conexion", "Ejecutando retardo del ACCESO DE 2DO NIVEL");
+      usleep(mem_swap_config->retardo_memoria *1000);
 
       int res = send_codigo_op_con_numeros(cliente_socket, OPCODE_ACCESO_2DO_NIVEL, pid, marco);
       if(res != 1){
@@ -209,6 +214,9 @@ bool procesar_conexion(int cliente_socket) {
       uint32_t* lectura = leer(direccion_fisica);
 
       imprimir_estado_array_MP();
+
+      info_log("server_mem.c@procesando_conexion", "Ejecutando retardo del READ");
+      usleep(mem_swap_config->retardo_memoria *1000);
 
       int res = send_codigo_op_con_numeros(cliente_socket, OPCODE_READ, pid, *lectura);
 
@@ -241,6 +249,9 @@ bool procesar_conexion(int cliente_socket) {
       array_marcos[marco].pagina->bit_modificado = 1;
 
       imprimir_estado_array_MP();
+
+      info_log("server_mem.c@procesando_conexion", "Ejecutando retardo del WRITE");
+      usleep(mem_swap_config->retardo_memoria *1000);
 
       send_ack(cliente_socket, OPCODE_ACK_OK);
 
