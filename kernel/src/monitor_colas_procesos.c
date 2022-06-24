@@ -242,7 +242,7 @@ void ordenar_cola_listos() {
 
   //list_iterate(cola_listos, (void*) actualizar_estimacion_anterior);
 
-  info_log("monitor_colas_procesos.c@ordenar_cola_listos", "Cola listos ordenada: ");
+  format_debug_log("monitor_colas_procesos.c@ordenar_cola_listos", "Cola listos ordenada: ");
   //list_iterate(cola_listos, (void*) iterator);
 
   pthread_mutex_unlock(&procesos_listos_mutex);
@@ -621,7 +621,7 @@ void encolar_proceso_en_terminados(pcb_t *proceso) {
 
   pthread_mutex_unlock(&procesos_terminados_mutex);
 
-  debug_log("monitor_colas_procesos.c@encolar_proceso_nuevo", "Proceso terminado encolado");
+  info_log("monitor_colas_procesos.c@encolar_proceso_nuevo", "Proceso terminado encolado");
 }
 
 /*  --------------------------- Otras funciones ---------------------------  */
@@ -632,15 +632,35 @@ void mover_proceso_nuevo_a_listo(pcb_t *proceso) {
   proceso->tabla_paginas = value_table; 
   format_debug_log("monitor_colas_procesos.c@mover_proceso_nuevo_a_listo", "PID: %d - Nro de Tabla de pagina asignado: %d", proceso->pid, proceso->tabla_paginas);
 
-  if (grado_multiprogramacion_completo()) {
+  /*if (grado_multiprogramacion_completo()) {
     info_log("monitor_colas_procesos.c@mover_proceso_nuevo_a_listo", "El grado de multiprogramacion esta completo, se suspende el proceso nuevo");
     encolar_proceso_en_suspendidos_listos(proceso);
     return;
+  }*/
+
+
+  //info_log("monitor_colas_procesos.c@mover_proceso_nuevo_a_listo", "El grado de multiprogramacion NO esta completo, se mueve el proceso nuevo a listos");
+  encolar_proceso_en_listos(proceso);
+}
+
+void mover_proceso_a_listo(){
+
+  sem_wait(&sem_grado_multiprogramacion_disponible);
+
+  if(!grado_multiprogramacion_completo() && !lista_de_suspendidos_listos_vacia()){
+    info_log("monitor_colas_procesos.c@mover_proceso_a_listo", "El grado de multiprogramacion NO esta completo, se mueve un proceso suspendido-listo a listos");
+    mover_proceso_suspendido_a_listo();
+
+  }else if (!grado_multiprogramacion_completo()){
+    info_log("monitor_colas_procesos.c@mover_proceso_a_listo", "El grado de multiprogramacion NO esta completo, se mueve un proceso nuevo a listos");
+    pcb_t *proceso = desencolar_proceso_nuevo();
+    mover_proceso_nuevo_a_listo(proceso);
+
+  }else{
+    //info_log("monitor_colas_procesos.c@mover_proceso_a_listo", "El grado de multiprogramacion  esta completo, se espera que se libere el grado de multiprogramacion");
+    //mover_proceso_a_listo();
   }
 
-
-  info_log("monitor_colas_procesos.c@mover_proceso_nuevo_a_listo", "El grado de multiprogramacion NO esta completo, se mueve el proceso nuevo a listos");
-  encolar_proceso_en_listos(proceso);
 }
 
 void mover_proceso_nuevo_a_suspendido_listo() {
@@ -1078,9 +1098,9 @@ void encolar_proceso_en_listos(pcb_t *proceso) {
 
   format_debug_log("monitor_colas_procesos.c@encolar_proceso_en_listos", "Encolando el proceso con pid: %d en estado: %d en la cola de listos", proceso->pid, proceso->estado);
 
-  if(!(proceso->estado == ESTADO_PROCESO_BLOCKED || proceso->estado == ESTADO_PROCESO_EXEC)){
+  /*if(!(proceso->estado == ESTADO_PROCESO_BLOCKED || proceso->estado == ESTADO_PROCESO_EXEC)){
     sem_wait(&sem_grado_multiprogramacion_disponible);
-  }
+  }*/
   format_debug_log("monitor_colas_procesos.c@encolar_proceso_en_listos", "El proceso con pid: %d sera movido a cola de listos", proceso->pid);
   
   pthread_mutex_lock(&procesos_listos_mutex);
@@ -1100,7 +1120,7 @@ void encolar_proceso_en_listos(pcb_t *proceso) {
 void replanificar_srt(pcb_t *proceso){
   if( (kernel_config -> algoritmo_planificacion == SRT) && !lista_de_ejecucion_vacia() ){
 
-    format_debug_log("monitor_colas_procesos.c@replanificar_srt", "Replanificando SRT");
+    format_info_log("monitor_colas_procesos.c@replanificar_srt", "Replanificando SRT");
     ordenar_cola_listos();
     pcb_t *proceso_en_listo = copiar_primer_proceso_listo(); 
     pcb_t *proceso_en_cpu = copiar_proceso_en_ejecucion(); 
@@ -1117,16 +1137,16 @@ void proceso_comparacion_srt(pcb_t *proceso_en_listo, pcb_t *proceso_en_cpu){
 
   format_debug_log("monitor_colas_procesos.c@proceso_comparacion_srt", "Comparando el proceso en ready con pid: %d con el proceso en cpu pid: %d", proceso_en_listo->pid, proceso_en_cpu->pid);
   int estimacion_proceso_listo = proceso_en_listo->estimacion;
-  format_debug_log("monitor_colas_procesos.c@proceso_comparacion_srt", "Estimacion restante proceso listo pid: %d es: %d", proceso_en_listo->pid, estimacion_proceso_listo);
+  format_info_log("monitor_colas_procesos.c@proceso_comparacion_srt", "Estimacion restante proceso listo pid: %d es: %d", proceso_en_listo->pid, estimacion_proceso_listo);
   int estimacion_proceso_cpu = proceso_estimar_rafaga_restante(proceso_en_cpu);
-  format_debug_log("monitor_colas_procesos.c@proceso_comparacion_srt", "Estimacion restante proceso cpu pid: %d es: %d", proceso_en_cpu->pid, estimacion_proceso_cpu);
+  format_info_log("monitor_colas_procesos.c@proceso_comparacion_srt", "Estimacion restante proceso cpu pid: %d es: %d", proceso_en_cpu->pid, estimacion_proceso_cpu);
 
   if(estimacion_proceso_listo < estimacion_proceso_cpu || estimacion_proceso_cpu < 0 ){
-    format_debug_log("monitor_colas_procesos.c@proceso_comparacion_srt", "requiere desalojo del proceso en cpu pid: %d", proceso_en_cpu->pid);
+    format_info_log("monitor_colas_procesos.c@proceso_comparacion_srt", "requiere desalojo del proceso en cpu pid: %d", proceso_en_cpu->pid);
     enviar_mensaje_desalojar_proceso(proceso_en_cpu);
 
   }else{
-    format_debug_log("monitor_colas_procesos.c@proceso_comparacion_srt", "No se requiere desalojo del proceso en cpu pid: %d", proceso_en_cpu->pid);
+    format_info_log("monitor_colas_procesos.c@proceso_comparacion_srt", "No se requiere desalojo del proceso en cpu pid: %d", proceso_en_cpu->pid);
   }
   //sem_post(&sem_proceso_listo); // lamo al de corto plazo
 
