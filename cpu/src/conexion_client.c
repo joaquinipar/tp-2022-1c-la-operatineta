@@ -24,8 +24,9 @@ uint32_t enviar_mensaje_acceso_1er_nivel(uint32_t pid, uint32_t entrada_1er_nive
 
     memcpy(stream, &op_code, sizeof(op_code_t));
     memcpy(stream + sizeof(op_code_t), &pid, sizeof(uint32_t));
-    memcpy(stream + sizeof(op_code_t) + sizeof(uint32_t), &entrada_1er_nivel, sizeof(uint32_t));
-    memcpy(stream + sizeof(op_code_t) + sizeof(uint32_t )+ sizeof(uint32_t), &nro_tabla_1er_nivel, sizeof(uint32_t));
+    memcpy(stream + sizeof(op_code_t) + sizeof(uint32_t), &nro_tabla_1er_nivel, sizeof(uint32_t));
+    memcpy(stream + sizeof(op_code_t) + sizeof(uint32_t) + sizeof(uint32_t), &entrada_1er_nivel, sizeof(uint32_t));
+
 
     int send_result = send(socket_cliente_cpu, stream, stream_size, false);
     free(stream); 
@@ -179,13 +180,15 @@ bool enviar_mensaje_inicial_configuracion(){
       if (send_result != -1) {
       debug_log("conexion_client.c@enviar_mensaje_read", "Comienza recepcion de mensaje - OPCODE_PING_PONG_MEMORIA");
       uint32_t codigo_operacion;
-      mensaje_configuracion_t* datos_traduccion = malloc(sizeof(mensaje_configuracion_t));
+      datos_traduccion = malloc(sizeof(mensaje_configuracion_t));
 
         if (recv(socket_cliente_cpu, &codigo_operacion, sizeof(op_code_t), 0) != sizeof(op_code_t)) {
         format_debug_log("conexion_client.c@enviar_mensaje_inicial_configuracion", "Codigo de operacion: %d", codigo_operacion);
         info_log("conexion_client.c@enviar_mensaje_inicial_configuracion", "El codOp no corresponde al protocolo de Comunicacion!");
         return false;
         }
+
+
         recv(socket_cliente_cpu, &datos_traduccion->cantidad_entradas_tabla, sizeof(uint32_t), false);
         format_debug_log("conexion_client.c@enviar_mensaje_inicial_configuracion","Cantidad de entradas de tabla:%d", datos_traduccion->cantidad_entradas_tabla); 
         recv(socket_cliente_cpu, &datos_traduccion->tamanio_pagina, sizeof(uint32_t), false);

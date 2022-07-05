@@ -63,6 +63,7 @@ void encolar_proceso_en_terminados(pcb_t *proceso);
 
 // Otras funciones
 void mover_proceso_nuevo_a_listo();
+void mover_proceso_a_listo();
 pcb_t *mover_proceso_listo_a_ejecucion();
 void mover_ultimo_proceso_bloqueado_a_suspendido();
 void mover_proceso_ejecutando_a_terminados();

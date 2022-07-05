@@ -165,6 +165,7 @@ void iniciar_memoria(){
   iniciar_memoria_principal(); 
   iniciar_listas_globales_de_tablas(); 
   iniciar_swap();
+  iniciar_lista_punteros_clock();
 }
 
 
@@ -187,9 +188,10 @@ void* leer_pagina_memoria(uint32_t marco_asignado) {
 
   void *contenido_leido = malloc(sizeof(char) * mem_swap_config->tam_pagina);
   memcpy(contenido_leido, mem_ppal->memoria_principal + (marco_asignado * mem_swap_config->tam_pagina), mem_swap_config->tam_pagina);
-  format_debug_log("memoria_principal.c@leer_pagina_memoria",  "Marco: %d -- Contenido: [ -  %d - ]", marco_asignado, contenido_leido);
+ // format_debug_log("memoria_principal.c@leer_pagina_memoria",  "Marco: %d -- Contenido: [ -  %d - ]", marco_asignado, contenido_leido);
   return contenido_leido;
 }
+
 
 int escribir_contenido_swap(void* contenido_marco, uint32_t pid, uint32_t marco){
 
@@ -206,33 +208,49 @@ int escribir_contenido_swap(void* contenido_marco, uint32_t pid, uint32_t marco)
   }
   format_info_log("memoria_principal.c@escribir_contenido_swap", "EXITO al escribir cambios en SWAP - Proceso: %d", pid);
   return 1; 
-}
-void bajar_paginas_swamp(uint32_t pid) {
+} 
+
+
+void bajar_paginas_swap(uint32_t pid) {
 
   for (int marco = 0; marco < mem_ppal->cant_marcos; marco++) {
 
     if (array_marcos[marco].pid == pid && array_marcos[marco].pagina->bit_modificado == 1 && array_marcos[marco].estado == 1 && array_marcos[marco].pagina->bit_presencia == 1) {     
       void *contenido_marco = leer_pagina_memoria(marco);
-      int resultado = escribir_contenido_swap(contenido_marco, pid, marco); 
+      int resultado = escribir_contenido_en_swap(pid, array_marcos[marco].pagina->nro_pagina, contenido_marco); 
 
       if(resultado){
 
-        pagina_2do_nivel_t *pagina_swampeada = array_marcos[marco].pagina;
-        pagina_swampeada->bit_modificado = 0;
-        pagina_swampeada->bit_presencia = 0;
-        pagina_swampeada->bit_uso = 0;
-        pagina_swampeada->marco = -1;
+        pagina_2do_nivel_t *pagina_swapeada = array_marcos[marco].pagina;
+        pagina_swapeada->bit_modificado = 0;
+        pagina_swapeada->bit_presencia = 0;
+        pagina_swapeada->bit_uso = 0;
+        pagina_swapeada->marco = -1;
         array_marcos[marco].estado = 0; 
-        array_marcos[marco].pid = -1; 
-        free(contenido_marco);
-        format_debug_log("memoria_suspender_proceso.c@bajar_paginas_swamp", "Pagina: %d - Viajo a Swamp", array_marcos[marco].pagina->nro_pagina);
-      } 
-      format_debug_log("memoria_suspender_proceso.c@bajar_paginas_swamp", "ERROR - No se puede bajar pagina a Swap", array_marcos[marco].pagina->nro_pagina);
+        array_marcos[marco].pid = -1;
+        format_debug_log("memoria_suspender_proceso.c@bajar_paginas_swap", "Nro. entrada 2do nivel: %d - Viajo a swap", array_marcos[marco].pagina->nro_pagina);
+      }
+      else {
+          // TODO Debería retornar en caso de error??
+          format_debug_log("memoria_suspender_proceso.c@bajar_paginas_swap", "ERROR - No se puede bajar pagina a Swap", array_marcos[marco].pagina->nro_pagina);
+      }
+
+      free(contenido_marco);
     }
 
   }
 }
 
+void imprimir_estado_array_MP() {
+
+    int marco = 0;
+    for (marco = 0; marco < mem_ppal->cant_marcos; marco++) {
+
+        char *msg = string_from_format("Marco: %d  PID: %d BU: %i BM: %i BP: %i Pag: %i Estado: %d", marco, array_marcos[marco].pid, array_marcos[marco].pagina->bit_uso, array_marcos[marco].pagina->bit_modificado, array_marcos[marco].pagina->bit_presencia, array_marcos[marco].pagina->nro_pagina , array_marcos[marco].estado);
+        warning_log("memoria_principal.c@imprimir_estado_array_MP", msg);
+        free(msg);
+    }
+}
 
 
 

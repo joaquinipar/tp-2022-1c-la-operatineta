@@ -8,7 +8,9 @@ uint32_t admitir_proceso(uint32_t pid, uint32_t tamanio){
     if(posicion_tabla_1er_nivel_en_lista_global==-1){
         format_error_log("proceso.c@admitir_proceso", "[ERROR] - Proceso %d ya admitido en Memoria");
     }
-    
+
+
+
     return posicion_tabla_1er_nivel_en_lista_global; 
 } 
 

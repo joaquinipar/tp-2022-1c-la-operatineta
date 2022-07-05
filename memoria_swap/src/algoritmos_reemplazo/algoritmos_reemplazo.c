@@ -35,13 +35,11 @@ uint32_t manejar_clock(uint32_t pid) {
 
     while (1) {
 
-        puts("itero match clk\n");
 
         for (i = 0; i < mem_ppal->cant_marcos; i++) {
 
             i_marco = (i + puntero_clk) % mem_ppal->cant_marcos;
 
-            puts("itero punt i_marco\n");
 
             if (array_marcos[i_marco].pagina->nro_pagina != -1 && array_marcos[i_marco].pid == pid) {
 
@@ -94,13 +92,10 @@ uint32_t manejar_clock_modificado(uint32_t pid) {
 
     while (1) {
 
-        puts("itero match\n");
 
         for (i = 0; i < mem_ppal->cant_marcos; i++) {
 
             i_marco = (i + puntero_clk_mod) % mem_ppal->cant_marcos;
-
-            puts("itero punt i_marco\n");
 
             if (array_marcos[i_marco].pagina->nro_pagina != -1 && array_marcos[i_marco].pid == pid) {
 
@@ -277,14 +272,12 @@ uint32_t get_proximo_marco_del_proceso(uint32_t pid, uint32_t marco_actual){
 
     int i_marco = marco_actual;
 
-    puts("itero match\n");
 
 
     for (int i = 0; i < mem_ppal->cant_marcos; i++) {
 
         i_marco = (i + puntero->marco_apuntado) % mem_ppal->cant_marcos;
 
-        puts("itero punt i_marco\n");
 
         if (array_marcos[i_marco].pagina->nro_pagina != -1 && array_marcos[i_marco].estado == 1 &&
             array_marcos[i_marco].pid == pid && array_marcos[i_marco].pagina->bit_presencia == 1 &&
@@ -353,6 +346,11 @@ int _struct_esta_corrupto(uint32_t bit_uso, uint32_t bit_modificado){
 int buscar_y_reemplazar(uint32_t pid){
 
     uint32_t marco_victima = correr_algoritmo_reemplazo(pid);
+    ///
+    uint32_t pagina_actual = array_marcos[marco_victima].pagina->nro_pagina;
+    format_info_log("algoritmos_reemplazo.c@buscar_y_reemplazar", "Victima seleccionada marco: %i pagina: %i", marco_victima, pagina_actual);
+    format_info_log("algoritmos_reemplazo.c@buscar_y_reemplazar", "Se mueve el puntero clock del pid: %i a la posición: %i", pid, obtener_puntero_clock(pid));
+    ///
 
     if (array_marcos[marco_victima].pagina->bit_modificado == 1){
         // Si tiene el bit de modificado en 1 y nuestra intención es liberar el marco victima, debemos bajarlo a swap
@@ -363,6 +361,12 @@ int buscar_y_reemplazar(uint32_t pid){
             return -1;
         }
     }
+
+    // Voy a la pagina (de la tabla) y le pongo los bits en 0 y le saco el marco.
+    array_marcos[marco_victima].pagina->bit_presencia = 0;
+    array_marcos[marco_victima].pagina->bit_uso = 0;
+    array_marcos[marco_victima].pagina->marco = -1;
+
 
     return marco_victima;
 }

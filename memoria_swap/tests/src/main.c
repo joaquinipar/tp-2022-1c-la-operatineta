@@ -32,6 +32,12 @@ int main(void)
 
     CU_add_test(test_suite_mensajes, "Test E2E mensaje probar_VALUE_TAB_PAG_y_OPCODE_ACCESO_1ER_NIVEL_con_varios_procesos_y_OPCODE_ACCESO_2DO_NIVEL_y_VARIOS_OPCODE_WRITE_y_VARIOS_OPCODE_READ", probar_VALUE_TAB_PAG_y_OPCODE_ACCESO_1ER_NIVEL_con_varios_procesos_y_OPCODE_ACCESO_2DO_NIVEL_y_VARIOS_OPCODE_WRITE_y_VARIOS_OPCODE_READ);
 
+
+    CU_add_test(test_suite_mensajes,
+                "Test E2E mensaje probar_VALUE_TAB_PAG_y_OPCODE_ACCESO_1ER_NIVEL_con_varios_procesos_y_"
+                "OPCODE_ACCESO_2DO_NIVEL_y_OPCODE_WRITE_y_OPCODE_READ",
+                probar_VALUE_TAB_PAG_y_OPCODE_ACCESO_1ER_NIVEL_con_varios_procesos_y_OPCODE_ACCESO_2DO_NIVEL_y_OPCODE_WRITE_y_OPCODE_SUSPEND_y_OPCODE_READ);
+
     // Test algoritmos reemplazo
 
 

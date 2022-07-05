@@ -9,6 +9,7 @@
 #include "swap/swap.h"
 #include "memoria_principal.h"
 
+
 bool memoria_cerrar_proceso(uint32_t pid); 
 
 

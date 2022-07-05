@@ -99,15 +99,8 @@ uint32_t inicio_proceso(uint32_t pid, uint32_t tamanio){
 
     if(!proceso_presente_en_lista_tabla_1er_nivel(pid)){
 
-        admitir_proceso_en_swap(pid, tamanio); 
-
+        admitir_proceso_en_swap(pid, tamanio);
         uint32_t cant_paginas_a_utilizar = obtener_cant_paginas_a_utilizar(tamanio);
-        int cant_max = mem_swap_config->entradas_por_tabla * mem_swap_config->entradas_por_tabla;
-        if(cant_paginas_a_utilizar > cant_max ){
-            // caso rechazo
-            format_error_log("inicio_proceso@proceso.c","PID:%i Cantidad de paginas (%i) excede la capacidad de direccionamiento (%i)", pid, cant_paginas_a_utilizar, cant_max);
-            return -1;
-        }
 
         //uint32_t cant_entradas_a_usar_1er_nivel = cant_tablas_2do_nivel;
         uint32_t cant_tablas_2do_nivel = get_cantidad_tablas(cant_paginas_a_utilizar);
@@ -117,6 +110,7 @@ uint32_t inicio_proceso(uint32_t pid, uint32_t tamanio){
         entrada_1er_nivel_t* tabla_1er_nivel = iniciar_tabla_1er_nivel(pid); 
         gestionar_tabla_2do_nivel(cant_tablas_2do_nivel,tabla_1er_nivel, pid); 
         int posicion_tabla_1er_nivel_en_lista_global = list_add(lista_tablas_1er_nivel,tabla_1er_nivel);
+        agregar_puntero_nuevo_clock(pid); // Agrego a lista de punteros de clock.
         format_info_log("proceso.c@admitir_proceso", "Proceso: %d  admitido en Memoria- Nro de tabla 1er nivel asignada: %d", pid, posicion_tabla_1er_nivel_en_lista_global);
         return posicion_tabla_1er_nivel_en_lista_global;
 
@@ -184,12 +178,16 @@ uint32_t obtener_marco_de_tabla_2do_nivel(uint32_t pid, uint32_t nro_tabla_2do_n
 
             format_info_log("memoria_api.c@obtener_marco_de_tabla_2do_nivel", "PID: %i Marco: %i Encontré marco listo para ser reemplazado", pid, marco_libre);
 
-            void* contenido = leer_pagina_swap(pid, tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].marco);
-
-            // Cargo contenido en memoria principal
-            memcpy(mem_ppal->memoria_principal + marco_libre * mem_swap_config->tam_pagina, contenido, mem_swap_config->tam_pagina);
-
             // Modifico tabla de paginas
+
+            int nro_entrada_1er_nivel = buscar_entrada_1er_nivel(pid, nro_tabla_2do_nivel);
+
+            if(nro_entrada_1er_nivel == -1){
+                error_log("memoria_api.c@obtener_marco_de_tabla_2do_nivel", "Sin numero de tabla de 1er nivel no puedo calcular el numero de pagina");
+                return -1;
+            }
+
+            int numero_pagina = nro_entrada_1er_nivel * mem_swap_config->entradas_por_tabla + nro_entrada_2do_nivel;
 
             format_info_log("memoria_api.c@obtener_marco_de_tabla_2do_nivel", "PID: %i Marco: %i Seteo BP=1 BM=0 BU=1", pid, marco_libre);
 
@@ -197,12 +195,18 @@ uint32_t obtener_marco_de_tabla_2do_nivel(uint32_t pid, uint32_t nro_tabla_2do_n
             tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].bit_presencia = 1;
             tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].bit_modificado = 0;
             tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].bit_uso = 1;
-            tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].nro_pagina = nro_entrada_2do_nivel;
+            tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].nro_pagina = numero_pagina;
 
 
             array_marcos[marco_libre].estado=1;
             array_marcos[marco_libre].pid=pid;
             array_marcos[marco_libre].pagina = &tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel];
+
+            void* contenido = leer_pagina_swap(pid, tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].nro_pagina);
+
+            // Cargo contenido en memoria principal
+            memcpy(mem_ppal->memoria_principal + marco_libre * mem_swap_config->tam_pagina, contenido, mem_swap_config->tam_pagina);
+
 
             return marco_libre;
 
@@ -230,11 +234,20 @@ uint32_t obtener_marco_de_tabla_2do_nivel(uint32_t pid, uint32_t nro_tabla_2do_n
 
             format_info_log("memoria_api.c@obtener_marco_de_tabla_2do_nivel", "PID: %i Marco: %i Seteo BP=1 BM=0 BU=1", pid, marco_libre);
 
+            int nro_entrada_1er_nivel = buscar_entrada_1er_nivel(pid, nro_tabla_2do_nivel);
+
+            if(nro_entrada_1er_nivel == -1){
+                error_log("memoria_api.c@obtener_marco_de_tabla_2do_nivel", "Sin numero de tabla de 1er nivel no puedo calcular el numero de pagina");
+                return -1;
+            }
+
+            int numero_pagina = nro_entrada_1er_nivel * mem_swap_config->entradas_por_tabla + nro_entrada_2do_nivel;
+
             tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].marco = marco_libre;
             tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].bit_presencia = 1;
             tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].bit_modificado = 0;
             tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].bit_uso = 1;
-            tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].nro_pagina = nro_entrada_2do_nivel;
+            tabla_2do_nivel->contenido_tabla_2do_nivel[nro_entrada_2do_nivel].nro_pagina = numero_pagina;
 
             array_marcos[marco_libre].estado=1;
             array_marcos[marco_libre].pid=pid;
@@ -249,6 +262,20 @@ uint32_t obtener_marco_de_tabla_2do_nivel(uint32_t pid, uint32_t nro_tabla_2do_n
 
 
 
+}
+
+int buscar_entrada_1er_nivel(uint32_t pid, uint32_t numero_tabla_2do_nivel){
+
+    entrada_1er_nivel_t* tabla_1er_nivel = buscar_tabla_1er_nivel_de_un_proceso(pid);
+
+    for(int i=0; i < mem_swap_config->entradas_por_tabla; i++){
+        if(tabla_1er_nivel[i].nro_tabla_2do_nivel == numero_tabla_2do_nivel){
+            return i;
+        }
+    }
+
+    format_error_log("proceso.c@buscar_entrada_1er_nivel", "Error crítico! No se encontró la entrada de 1er nivel que tenga el numero de tabla de 2do nivel: %i", numero_tabla_2do_nivel);
+    return -1;
 }
 
 uint32_t buscar_nro_tabla_2do_nivel (uint32_t pid, uint32_t nro_tabla_1er_nivel, uint32_t nro_entrada_1er_nivel) {
