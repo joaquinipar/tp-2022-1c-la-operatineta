@@ -2,7 +2,7 @@
 
 void iniciar_tlb()
 {
-  info_log("tlb.c@iniciar_tlb", "Se inicializa TLB vacia");
+  info_log("tlb.c@iniciar_tlb", "Se inicializa la estructura administrativa TLB");
   array_tlb = NULL;
 
   array_tlb = (tlb_t *)malloc(cpu_config->entradas_tlb * sizeof(tlb_t));
@@ -49,7 +49,7 @@ int pagina_presente_TLB(uint32_t pagina_buscada)
       return 1;
     }
   }
-  format_error_log("tlb.c@pagina_presente_TLB", "[ERROR] - NO se encuentra Pagina: %d en la TLB", pagina_buscada);
+  format_debug_log("tlb.c@pagina_presente_TLB", "[ERROR] - NO se encuentra Pagina: %d en la TLB", pagina_buscada);
   return 0;
 }
 
@@ -265,7 +265,7 @@ uint32_t se_encuentra_en_tlb(uint32_t pagina_buscada)
     return marco_asignado;
   }
 
-  format_error_log("tlb.c@se_encuentra_en_tlb", "Pagina: %d NO se encuentra en TLB", pagina_buscada);
+  format_info_log("tlb.c@se_encuentra_en_tlb", "[ERROR] - Pagina: %d NO se encuentra en TLB", pagina_buscada);
   return -1;
 }
 

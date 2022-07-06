@@ -9,21 +9,35 @@ void print_instruccion(instruccion_t* una_instruccion){
 	switch(una_instruccion->instruccion){
 		case 0:
 			inst_name = "NO_OP";
+			//format_info_log("-", "Instruccion: %s", inst_name );
+			//format_info_log("-", "Retardo: %d", una_instruccion->argumentos[0]);
 			break;
 		case 1:
 			inst_name = "I/O";
+			//format_info_log("-", "Instruccion: %s", inst_name );
+			//format_info_log("-", "Tiempo de bloqueo: %d", una_instruccion->argumentos[0]);
 			break;
 		case 2:
 			inst_name = "READ";
+			//format_info_log("-", "Instruccion: %s", inst_name );
+		//	format_info_log("-", "Direccion Logica: %d", una_instruccion->argumentos[0]);
+			
 			break;
 		case 3:
 			inst_name = "WRITE";
+			//format_info_log("-", "Instruccion: %s", inst_name );
+			//format_info_log("-", "Direccion Logica: %d", una_instruccion->argumentos[0]);
+			//format_info_log("-", "Valor a escribir: %d", una_instruccion->argumentos[1]);
 			break;
 		case 4:
 			inst_name = "COPY";
+			//format_info_log("-", "Instruccion: %s", inst_name );
+			//format_info_log("-", "Direccion Logica Destino: %d", una_instruccion->argumentos[0]);
+			//format_info_log("-", "Direccion Logica Origen: %d", una_instruccion->argumentos[1]);
 			break;
 		case 5:
 			inst_name = "EXIT";
+			//format_info_log("-", "Instruccion: %s", inst_name );
 			break;
 	}
 
@@ -132,11 +146,11 @@ void gestionar_instruccion_write(pcb_t* proceso, int32_t direccion_logica, int32
 	uint32_t entrada_2do_nivel = obtener_entrada_tabla_2do_nivel(num_pagina); 
 	uint32_t dezplazamiento = obtener_desplazamiento(direccion_logica, num_pagina); 
 
-	format_debug_log("ciclo_instruccion.c@gestionar_instruccion_write", "Numero de Pagina: %d", num_pagina);
-	format_debug_log("ciclo_instruccion.c@gestionar_instruccion_write", "Entrada 1er Nivel: %d", entrada_1er_nivel);
-	format_debug_log("ciclo_instruccion.c@gestionar_instruccion_write", "Entrada 2do Nivel: %d", entrada_2do_nivel);
-	format_debug_log("ciclo_instruccion.c@gestionar_instruccion_write", "Dezplazamiento: %d", dezplazamiento);
-	format_debug_log("ciclo_instruccion.c@gestionar_instruccion_write", "Valor a copiar: %d", valor_a_copiar); 
+	format_info_log("ciclo_instruccion.c@gestionar_instruccion_write", "PID: %d - Numero de Pagina: %d", proceso->pid, num_pagina);
+	format_info_log("ciclo_instruccion.c@gestionar_instruccion_write", "PID: %d - Entrada 1er Nivel: %d", proceso->pid, entrada_1er_nivel);
+	format_info_log("ciclo_instruccion.c@gestionar_instruccion_write", "PID: %d - Entrada 2do Nivel: %d", proceso->pid, entrada_2do_nivel);
+	format_info_log("ciclo_instruccion.c@gestionar_instruccion_write", "PID: %d - Dezplazamiento: %d", proceso->pid, dezplazamiento);
+	format_info_log("ciclo_instruccion.c@gestionar_instruccion_write", "PID: %d - Valor a copiar: %d", proceso->pid, valor_a_copiar); 
 
 
 	//Chequeo si num de pagina se encuentra en la tlb. -1 no se encuentra sino devuelve el marco asignado al num de pagina
@@ -204,21 +218,21 @@ pcb_t* execute_instruction(instruccion_t* instruccion_a_ejecutar, pcb_t* proceso
 			return proceso;
 			break;
 		case 2: //INSTRUCCION READ
-			format_info_log("ciclo_instruccion.c@execute_instruction",  "READ - PID: %d - DL:%d ",proceso->pid, instruccion_a_ejecutar->argumentos[0]);
+			format_info_log("ciclo_instruccion.c@execute_instruction",  "READ - PID: %d - Direccion Logica:%d ",proceso->pid, instruccion_a_ejecutar->argumentos[0]);
 			gestionar_instruccion_read(proceso, instruccion_a_ejecutar->argumentos[0]); 
 			proceso->program_counter++;
             imprimir_estado_array_TLB();
 			return proceso;
 			break;
 		case 3://INSTRUCCION WRITE
-			format_info_log("ciclo_instruccion.c@execute_instruction",  "WRITE - PID: %d - DL:%d - Valor: %d ",proceso->pid, instruccion_a_ejecutar->argumentos[0], instruccion_a_ejecutar->argumentos[1]);
+			format_info_log("ciclo_instruccion.c@execute_instruction",  "WRITE - PID: %d - Direccion Logica:%d - Valor a escribir: %d ",proceso->pid, instruccion_a_ejecutar->argumentos[0], instruccion_a_ejecutar->argumentos[1]);
 			gestionar_instruccion_write(proceso, instruccion_a_ejecutar->argumentos[0], instruccion_a_ejecutar->argumentos[1]); 
 			proceso->program_counter++;
             imprimir_estado_array_TLB();
 			return proceso;
 			break;
 		case 4://INSTRUCCION COPY
-			format_info_log("ciclo_instruccion.c@execute_instruction",  "COPY - PID: %d - Destino / DL:%d - Origen / DL: %d ",proceso->pid, instruccion_a_ejecutar->argumentos[0], instruccion_a_ejecutar->argumentos[1]);			
+			format_info_log("ciclo_instruccion.c@execute_instruction",  "COPY - PID: %d - Direccion Logica Destino :%d - Direccion Logica Origen / DL: %d ",proceso->pid, instruccion_a_ejecutar->argumentos[0], instruccion_a_ejecutar->argumentos[1]);			
 			gestionar_instruccion_copy(proceso, instruccion_a_ejecutar); 
 			proceso->program_counter++;
             imprimir_estado_array_TLB();

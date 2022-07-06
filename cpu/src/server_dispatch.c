@@ -57,13 +57,13 @@ int escuchar_conexiones_nuevas_dispatch(int server_socket)
 
   while (escuchar == true)
   {
-    info_log("server_dispatch.c@escuchar_conexiones_nuevas_dispatch", "Escuchando conexiones nuevas en server Dispatch");
+    //nfo_log("server_dispatch.c@escuchar_conexiones_nuevas_dispatch", "Escuchando conexiones nuevas en server Dispatch");
 
     cliente_socket = esperar_cliente(server_socket, "Dispatch", "server.c@esperar_cliente");
 
     if (cliente_socket != -1)
     {
-      info_log("server_dispatch.c@escuchar_conexiones_nuevas_dispatch", "Cliente nuevo conectado");
+      info_log("server_dispatch.c@escuchar_conexiones_nuevas_dispatch", "Cliente Kernel conectado");
       while (procesar_conexion_dispatch(cliente_socket))
         ;
       continue;
@@ -106,9 +106,10 @@ bool procesar_conexion_dispatch(int cliente_socket)
   case OPCODE_EJECUTAR:
   {
     format_debug_log("server_dispatch.c@procesar_conexion", "CodOP recibido %d", codigo_operacion);
-    debug_log("server_dispatch.c@procesar_conexion", "Comienza opcode EJECUTAR");
+    //info_log("server_dispatch.c@procesar_conexion", "Comienza opcode EJECUTAR");
     pcb_t *proceso_recibido = deserializar_proceso(cliente_socket);
     send_ack(cliente_socket, OPCODE_ACK_OK);
+    format_info_log("server_dispatch.c@procesar_conexion", "Comienza opcode EJECUTAR -- Pid: %d --");
 
     iniciar_modulo(proceso_recibido);
 

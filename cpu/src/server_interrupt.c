@@ -52,13 +52,13 @@ int escuchar_conexiones_nuevas_interrupt(int server_socket) {
 
 
   while (escuchar == true) {
-    info_log("server_interrupt.c@escuchar_conexiones_nuevas_interrupt","Escuchando conexiones nuevas en server Interrupt");    
+ //   info_log("server_interrupt.c@escuchar_conexiones_nuevas_interrupt","Escuchando conexiones nuevas en server Interrupt");    
 
     int cliente_socket = esperar_cliente(server_socket, "Interrupt", "server.c@esperar_cliente");
     
 
     if (cliente_socket != -1) {
-      info_log("server_interrupt.c@escuchar_conexiones_nuevas_interrupt","Cliente nuevo conectado");
+      info_log("server_interrupt.c@escuchar_conexiones_nuevas_interrupt","Cliente Kernel conectado");
       while (procesar_conexion_interrupt(cliente_socket))
         ;
       continue;
