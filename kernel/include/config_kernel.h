@@ -35,6 +35,7 @@ config_kernel_t *kernel_config;
 void iniciar_config(int argc, char* argv[]);
 config_kernel_t *crear_estructura_kernel_config();
 int obtener_int_arch_config(t_config *configuracion, char *clave);
+int obtener_is_test(t_config *configuracion, char *clave);
 double obtener_double_arch_config(t_config *configuracion, char *clave);
 void cargar_archivo_config_kernel(t_config *una_config_kernel);
 void procesar_archivo_config_kernel(t_config *una_config_kernel);
