@@ -17,7 +17,7 @@ void planificar_procesos() {
 
     sem_wait(&sem_proceso_listo); // (contador) proceso nuevo a ready
     sem_wait(&sem_bin_procesar_listo); // (binario) indica si se puede ejecutar un proceso
-    info_log("planificador_corto_plazo@planificar_procesos", "Moviendo proceso listo a ejecucion");
+    debug_log("planificador_corto_plazo@planificar_procesos", "Moviendo proceso listo a ejecucion");
     
     pcb_t *proceso = mover_proceso_listo_a_ejecucion();
     format_info_log("planificador_corto_plazo@planificar_procesos", "Proceso con pid: %d movido a ejecucion", proceso->pid);

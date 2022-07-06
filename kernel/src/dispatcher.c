@@ -64,17 +64,12 @@ void escucha_proceso_desalojado()
         case OPCODE_PROCESO_DESALOJADO_IO: {
 
             format_debug_log("dispatcher.c@escucha_proceso_desalojado", "CodOP recibido %d", codigo_operacion);
+
             uint32_t tiempo_bloqueo;
             int bytes_recibidos = recv(socket_cliente_cpu_dispatch, &tiempo_bloqueo, sizeof(uint32_t), 0); 
             format_debug_log("dispatcher.c@escucha_proceso_desalojado", "Tiempo bloqueado %d", tiempo_bloqueo);
-            
-            /* TODO: codigo viejo, borrar si no se usa
-            pcb_t* proceso_recibido = malloc(sizeof(pcb_t));
-            int bytes_recibidos1 = recv(socket_cliente_cpu_dispatch, &(proceso_recibido->pid), sizeof(uint32_t), 0);
-            format_debug_log("serializacion@deserializar_proceso", "Proceso: %d", proceso_recibido->pid);
-            format_debug_log("serializacion@deserializar_proceso", "Bytes: %d", bytes_recibidos1);
-            */
 
+            // TODO: creo que no hay ningun free para este proceso_actualizado, hacer despues de llamar a la funcion que corresponde
             pcb_t* proceso_actualizado = deserializar_proceso(socket_cliente_cpu_dispatch);
             
             if (bytes_recibidos !=-1) {
@@ -95,6 +90,8 @@ void escucha_proceso_desalojado()
         case OPCODE_PROCESO_DESALOJADO_INTERRUPT: {
 
             format_debug_log("dispatcher.c@escucha_proceso_desalojado", "CodOP recibido %d", codigo_operacion);
+
+            // TODO: creo que no hay ningun free para este proceso_actualizado, hacer despues de llamar a la funcion que corresponde
             pcb_t* proceso_actualizado = deserializar_proceso(socket_cliente_cpu_dispatch); 
 
             if(proceso_actualizado != NULL){
@@ -137,10 +134,5 @@ void escucha_proceso_desalojado()
         default:
             break;
 
-    }
-
-    // TODO: informar qué proceso volvió de la CPU
-    info_log("dispatcher.c@escucha_proceso_desalojado", "CPU nos mando un proceso de regreso");
-
-    
+    }    
 }

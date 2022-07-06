@@ -29,8 +29,8 @@ int iniciar_conexion_cpu_interrupt()
 uint32_t enviar_mensaje_valor_tabla_1er_nivel(uint32_t pid, uint32_t tamanio)
 {
 
-  info_log("conexion_client.c@enviar_mensaje_valor_tabla_1er_nivel", "-----------------------------------------------------------");
-  info_log("conexion_client.c@enviar_mensaje_valor_tabla_1er_nivel", "Serializando y enviando mensaje VALUE_TAB_PAG");
+  debug_log("conexion_client.c@enviar_mensaje_valor_tabla_1er_nivel", "-----------------------------------------------------------");
+  debug_log("conexion_client.c@enviar_mensaje_valor_tabla_1er_nivel", "Serializando y enviando mensaje VALUE_TAB_PAG");
   //CODOP + PID + TAMANIO
   int stream_size = sizeof(op_code_t) + sizeof(uint32_t) + sizeof(uint32_t);
   void *stream = malloc(stream_size);
@@ -47,34 +47,34 @@ uint32_t enviar_mensaje_valor_tabla_1er_nivel(uint32_t pid, uint32_t tamanio)
   if (send_result != -1)
   {
 
-    info_log("conexion_client.c@enviar_mensaje_valor_tabla_1er_nivel", "Comienza recepcion de mensaje - VALUE_TAB_PAG");
+    debug_log("conexion_client.c@enviar_mensaje_valor_tabla_1er_nivel", "Comienza recepcion de mensaje - VALUE_TAB_PAG");
     uint32_t codigo_operacion;
     uint32_t valor_tabla_1er_nivel;
 
     if (recv(socket_cliente_kernel, &codigo_operacion, sizeof(op_code_t), 0) != sizeof(op_code_t))
     {
       format_debug_log(".c@enviar_mensaje_valor_tabla_1er_nivel", "Codigo de operacion: %d", codigo_operacion);
-      info_log("conexion_client.c@enviar_mensaje_valor_tabla_1er_nivel", "El codOp no corresponde al protocolo de Comunicacion!");
-      info_log("conexion_client.c@enviar_mensaje_valor_tabla_1er_nivel", "-----------------------------------------------------------");
+      debug_log("conexion_client.c@enviar_mensaje_valor_tabla_1er_nivel", "El codOp no corresponde al protocolo de Comunicacion!");
+      debug_log("conexion_client.c@enviar_mensaje_valor_tabla_1er_nivel", "-----------------------------------------------------------");
       return -1;
     }
     recv(socket_cliente_kernel, &valor_tabla_1er_nivel, sizeof(uint32_t), false);
     format_debug_log(".c@enviar_mensaje_valor_tabla_1er_nivel", "Pid: %d - Valor de tabla de 1er Nivel :%d", pid, valor_tabla_1er_nivel);
-    info_log("conexion_client.c@enviar_mensaje_valor_tabla_1er_nivel", "Termina mensaje - VALUE_TAB_PAG");
-    info_log("conexion_client.c@enviar_mensaje_valor_tabla_1er_nivel", "-----------------------------------------------------------");
+    debug_log("conexion_client.c@enviar_mensaje_valor_tabla_1er_nivel", "Termina mensaje - VALUE_TAB_PAG");
+    debug_log("conexion_client.c@enviar_mensaje_valor_tabla_1er_nivel", "-----------------------------------------------------------");
     return valor_tabla_1er_nivel;
   }
 
   error_log("conexion_client.c@enviar_mensaje_valor_tabla_1er_nivel", "[ERROR] Envio mensaje VALUE_TAB_PAG");
-  info_log("conexion_client.c@enviar_mensaje_valor_tabla_1er_nivel", "Termina mensaje VALUE_TAB_PAG");
-  info_log("conexion_client.c@enviar_mensaje_valor_tabla_1er_nivel", "-----------------------------------------------------------");
+  debug_log("conexion_client.c@enviar_mensaje_valor_tabla_1er_nivel", "Termina mensaje VALUE_TAB_PAG");
+  debug_log("conexion_client.c@enviar_mensaje_valor_tabla_1er_nivel", "-----------------------------------------------------------");
   return -1;
 }
 
 bool enviar_mensaje_exit(pcb_t *proceso)
 {
-  info_log("conexion_client.c@enviar_mensaje_exit", "-----------------------------------------------------------");
-  info_log("conexion_client.c@enviar_mensaje_exit", "Comienza envio de mensaje - OPCODE_EXIT");
+  debug_log("conexion_client.c@enviar_mensaje_exit", "-----------------------------------------------------------");
+  debug_log("conexion_client.c@enviar_mensaje_exit", "Comienza envio de mensaje - OPCODE_EXIT");
   //CODOP + PID
   int stream_size = sizeof(op_code_t) + sizeof(uint32_t);
   void *stream = malloc(stream_size);
@@ -93,33 +93,33 @@ bool enviar_mensaje_exit(pcb_t *proceso)
 
     if (response)
     {
-      info_log("conexion_client.c@enviar_mensaje_exit", "Recepcion mensaje ACK OK - OPCODE_EXIT");
-      info_log("conexion_client.c@enviar_mensaje_exit", "Termina mensaje OPCODE_EXIT");
-      info_log("conexion_client.c@enviar_mensaje_exit", "-----------------------------------------------------------");
+      debug_log("conexion_client.c@enviar_mensaje_exit", "Recepcion mensaje ACK OK - OPCODE_EXIT");
+      debug_log("conexion_client.c@enviar_mensaje_exit", "Termina mensaje OPCODE_EXIT");
+      debug_log("conexion_client.c@enviar_mensaje_exit", "-----------------------------------------------------------");
       return response;
     }
-    info_log("conexion_client.c@enviar_mensaje_exit", "Recepcion mensaje ACK ERROR -OPCODE_EXIT");
-    info_log("conexion_client.c@enviar_mensaje_exit", "Termina mensaje OPCODE_EXIT");
-    info_log("conexion_client.c@enviar_mensaje_exit", "-----------------------------------------------------------");
+    debug_log("conexion_client.c@enviar_mensaje_exit", "Recepcion mensaje ACK ERROR -OPCODE_EXIT");
+    debug_log("conexion_client.c@enviar_mensaje_exit", "Termina mensaje OPCODE_EXIT");
+    debug_log("conexion_client.c@enviar_mensaje_exit", "-----------------------------------------------------------");
     return response;
   }
 
   error_log("conexion_client.c@enviar_mensaje_exit", "[Error] al enviar mensaje OPCODE_EXIT");
-  info_log("conexion_client.c@enviar_mensaje_exit", "Termina mensaje OPCODE_EXIT");
-  info_log("conexion_client.c@enviar_mensaje_exit", "-----------------------------------------------------------");
+  debug_log("conexion_client.c@enviar_mensaje_exit", "Termina mensaje OPCODE_EXIT");
+  debug_log("conexion_client.c@enviar_mensaje_exit", "-----------------------------------------------------------");
   return false;
 }
 
 bool enviar_mensaje_ejecutar(pcb_t *proceso)
 {
 
-  info_log("conexion_client.c@enviar_mensaje_ejecutar", "-----------------------------------------------------------");
-  info_log("conexion_client.c@enviar_mensaje_ejecutar", "Comienza envio de mensaje - EJECUTAR");
+  debug_log("conexion_client.c@enviar_mensaje_ejecutar", "-----------------------------------------------------------");
+  debug_log("conexion_client.c@enviar_mensaje_ejecutar", "Comienza envio de mensaje - EJECUTAR");
   void *stream;
   uint32_t stream_size = serializar_proceso(proceso, OPCODE_EJECUTAR, &stream);
 
   int send_result = send(socket_cliente_cpu_dispatch, stream, stream_size, false);
-  format_info_log("conexion_clien.c@enviar_mensaje_ejecutar", "Socket %d", socket);
+  format_debug_log("conexion_clien.c@enviar_mensaje_ejecutar", "Socket %d", socket);
 
   format_debug_log("conexion_clien.c@enviar_mensaje_ejecutar", "Send Result %d", send_result);
   if (send_result != -1)
@@ -128,28 +128,28 @@ bool enviar_mensaje_ejecutar(pcb_t *proceso)
 
     if (response)
     {
-      info_log("conexion_client.c@enviar_mensaje_ejecutar", "Recepcion mensaje ACK OK - EJECUTAR");
-      info_log("conexion_client.c@enviar_mensaje_ejecutar", "Termina mensaje EJECUTAR");
-      info_log("conexion_client.c@enviar_mensaje_ejecutar", "-----------------------------------------------------------");
+      debug_log("conexion_client.c@enviar_mensaje_ejecutar", "Recepcion mensaje ACK OK - EJECUTAR");
+      debug_log("conexion_client.c@enviar_mensaje_ejecutar", "Termina mensaje EJECUTAR");
+      debug_log("conexion_client.c@enviar_mensaje_ejecutar", "-----------------------------------------------------------");
       return response;
     }
-    info_log("conexion_client.c@enviar_mensaje_ejecutar", "Recepcion mensaje ACK ERROR -EJECUTAR");
-    info_log("conexion_client.c@enviar_mensaje_ejecutar", "Termina mensaje EJECUTAR");
-    info_log("conexion_client.c@enviar_mensaje_ejecutar", "-----------------------------------------------------------");
+    debug_log("conexion_client.c@enviar_mensaje_ejecutar", "Recepcion mensaje ACK ERROR -EJECUTAR");
+    debug_log("conexion_client.c@enviar_mensaje_ejecutar", "Termina mensaje EJECUTAR");
+    debug_log("conexion_client.c@enviar_mensaje_ejecutar", "-----------------------------------------------------------");
     return response;
   }
 
   error_log("conexion_client.c@enviar_mensaje_ejecutar", "Error al enviar mensaje EJECUTAR");
-  info_log("conexion_client.c@enviar_mensaje_ejecutar", "Termina mensaje EJECUTAR");
-  info_log("conexion_client.c@enviar_mensaje_ejecutar", "-----------------------------------------------------------");
+  debug_log("conexion_client.c@enviar_mensaje_ejecutar", "Termina mensaje EJECUTAR");
+  debug_log("conexion_client.c@enviar_mensaje_ejecutar", "-----------------------------------------------------------");
   return false;
 }
 
 /*Mensaje de desalojo de un proceso por la conexion interrupt - Se envia el pid solo para corroborar que sea el pid que esta en cpu */
 bool enviar_mensaje_desalojar_proceso(pcb_t *proceso)
 {
-  info_log("conexion_client.c@enviar_mensaje_desalojar_proceso", "-----------------------------------------------------------");
-  info_log("conexion_client.c@enviar_mensaje_desalojar_proceso", "Comienza envio de mensaje - OPCODE_DESALOJAR_PROCESO");
+  debug_log("conexion_client.c@enviar_mensaje_desalojar_proceso", "-----------------------------------------------------------");
+  debug_log("conexion_client.c@enviar_mensaje_desalojar_proceso", "Comienza envio de mensaje - OPCODE_DESALOJAR_PROCESO");
   int stream_size = sizeof(op_code_t) + sizeof(uint32_t);
   void *stream = malloc(stream_size);
   op_code_t op_code = OPCODE_DESALOJAR_PROCESO;
@@ -166,28 +166,28 @@ bool enviar_mensaje_desalojar_proceso(pcb_t *proceso)
 
     if (response)
     {
-      info_log("conexion_client.c@enviar_mensaje_desalojar_proceso", "Recepcion mensaje ACK OK - OPCODE_DESALOJAR_PROCESO");
-      info_log("conexion_client.c@enviar_mensaje_desalojar_proceso", "Termina mensaje OPCODE_DESALOJAR_PROCESO");
-      info_log("conexion_client.c@enviar_mensaje_desalojar_proceso", "-----------------------------------------------------------");
+      debug_log("conexion_client.c@enviar_mensaje_desalojar_proceso", "Recepcion mensaje ACK OK - OPCODE_DESALOJAR_PROCESO");
+      debug_log("conexion_client.c@enviar_mensaje_desalojar_proceso", "Termina mensaje OPCODE_DESALOJAR_PROCESO");
+      debug_log("conexion_client.c@enviar_mensaje_desalojar_proceso", "-----------------------------------------------------------");
       return response;
     }
-    info_log("conexion_client.c@enviar_mensaje_desalojar_proceso", "Recepcion mensaje ACK ERROR -OPCODE_DESALOJAR_PROCESO");
-    info_log("conexion_client.c@enviar_mensaje_desalojar_proceso", "Termina mensaje OPCODE_DESALOJAR_PROCESO");
-    info_log("conexion_client.c@enviar_mensaje_desalojar_proceso", "-----------------------------------------------------------");
+    debug_log("conexion_client.c@enviar_mensaje_desalojar_proceso", "Recepcion mensaje ACK ERROR -OPCODE_DESALOJAR_PROCESO");
+    debug_log("conexion_client.c@enviar_mensaje_desalojar_proceso", "Termina mensaje OPCODE_DESALOJAR_PROCESO");
+    debug_log("conexion_client.c@enviar_mensaje_desalojar_proceso", "-----------------------------------------------------------");
     return response;
   }
 
   error_log("conexion_client.c@enviar_mensaje_desalojar_proceso", "Error al enviar mensaje OPCODE_DESALOJAR_PROCESO");
-  info_log("conexion_client.c@enviar_mensaje_desalojar_proceso", "Termina mensaje OPCODE_DESALOJAR_PROCESO");
-  info_log("conexion_client.c@enviar_mensaje_desalojar_proceso", "-----------------------------------------------------------");
+  debug_log("conexion_client.c@enviar_mensaje_desalojar_proceso", "Termina mensaje OPCODE_DESALOJAR_PROCESO");
+  debug_log("conexion_client.c@enviar_mensaje_desalojar_proceso", "-----------------------------------------------------------");
   return false;
 }
 
 //OPCODE_SUSPENDER_PROCESO
 bool enviar_mensaje_suspender_proceso(pcb_t *proceso)
 {
-  info_log("conexion_client.c@enviar_mensaje_suspender_proceso", "-----------------------------------------------------------");
-  info_log("conexion_client.c@enviar_mensaje_suspender_proceso", "Comienza envio de mensaje - OPCODE_SUSPENDER_PROCESO");
+  debug_log("conexion_client.c@enviar_mensaje_suspender_proceso", "-----------------------------------------------------------");
+  debug_log("conexion_client.c@enviar_mensaje_suspender_proceso", "Comienza envio de mensaje - OPCODE_SUSPENDER_PROCESO");
   int stream_size = sizeof(op_code_t) + sizeof(uint32_t);
   void *stream = malloc(stream_size);
   op_code_t op_code = OPCODE_SUSPENDER_PROCESO;
@@ -204,19 +204,19 @@ bool enviar_mensaje_suspender_proceso(pcb_t *proceso)
 
     if (response)
     {
-      info_log("conexion_client.c@enviar_mensaje_suspender_proceso", "Recepcion mensaje ACK OK - OPCODE_SUSPENDER_PROCESO");
-      info_log("conexion_client.c@enviar_mensaje_suspender_proceso", "Termina mensaje OPCODE_SUSPENDER_PROCESO");
-      info_log("conexion_client.c@enviar_mensaje_suspender_proceso", "-----------------------------------------------------------");
+      debug_log("conexion_client.c@enviar_mensaje_suspender_proceso", "Recepcion mensaje ACK OK - OPCODE_SUSPENDER_PROCESO");
+      debug_log("conexion_client.c@enviar_mensaje_suspender_proceso", "Termina mensaje OPCODE_SUSPENDER_PROCESO");
+      debug_log("conexion_client.c@enviar_mensaje_suspender_proceso", "-----------------------------------------------------------");
       return response;
     }
-    info_log("conexion_client.c@enviar_mensaje_suspender_proceso", "Recepcion mensaje ACK ERROR -OPCODE_SUSPENDER_PROCESO");
-    info_log("conexion_client.c@enviar_mensaje_suspender_proceso", "Termina mensaje OPCODE_SUSPENDER_PROCESO");
-    info_log("conexion_client.c@enviar_mensaje_suspender_proceso", "-----------------------------------------------------------");
+    debug_log("conexion_client.c@enviar_mensaje_suspender_proceso", "Recepcion mensaje ACK ERROR -OPCODE_SUSPENDER_PROCESO");
+    debug_log("conexion_client.c@enviar_mensaje_suspender_proceso", "Termina mensaje OPCODE_SUSPENDER_PROCESO");
+    debug_log("conexion_client.c@enviar_mensaje_suspender_proceso", "-----------------------------------------------------------");
     return response;
   }
 
   error_log("conexion_client.c@enviar_mensaje_suspender_proceso", "Error al enviar mensaje OPCODE_SUSPENDER_PROCESO");
-  info_log("conexion_client.c@enviar_mensaje_suspender_proceso", "Termina mensaje OPCODE_SUSPENDER_PROCESO");
-  info_log("conexion_client.c@enviar_mensaje_suspender_proceso", "-----------------------------------------------------------");
+  debug_log("conexion_client.c@enviar_mensaje_suspender_proceso", "Termina mensaje OPCODE_SUSPENDER_PROCESO");
+  debug_log("conexion_client.c@enviar_mensaje_suspender_proceso", "-----------------------------------------------------------");
   return false;
 }

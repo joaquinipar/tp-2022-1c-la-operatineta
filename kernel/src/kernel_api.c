@@ -65,6 +65,7 @@ bool bloquear_proceso(pcb_t *proceso_actualizado, int tiempo_bloqueo) {
   encolar_proceso_en_bloqueados(proceso, tiempo_bloqueo); // mover proceso a lista de bloqueados, guardar el tiempo de IO
   lanzar_thread_suspension_proceso(proceso); // despues del tiempo maximo de bloqueo lo suspende si sigue bloqueado y manda el mensaje a memoria
   incrementar_cantidad_procesos_bloqueados();
+  format_info_log("kernel_api.c@bloquear_proceso", "El proceso con pid: %d ha sido movido a bloqueados", proceso->pid);
   //sem_post(&sem_grado_multiprogramacion_disponible);
   sem_post(&sem_bin_procesar_listo); // como se libera la cpu se puede ejecutar otro proceso, si es que hay.
   return true;
@@ -78,7 +79,7 @@ bool desalojar_proceso_interrupt(pcb_t *proceso_actualizado) {
   proceso_actualizar_rafaga_por_desalojo(proceso_desencolado_ejecucion);   // actualizar estimacion por desalojo 
   proceso_desencolado_ejecucion->program_counter = proceso_actualizado->program_counter; // buscar proceso => actualizar pcb
   encolar_proceso_en_listos(proceso_desencolado_ejecucion); // mover a ready
-
+  format_info_log("kernel_api.c@desalojar_proceso_interrupt", "El proceso con pid: %d ha sido desalojado por interrupt", proceso_actualizado->pid);
   sem_post(&sem_bin_procesar_listo);  // llamara a planificar corto plazo
 
   return true;

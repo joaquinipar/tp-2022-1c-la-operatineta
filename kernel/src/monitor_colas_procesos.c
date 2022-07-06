@@ -115,7 +115,7 @@ bool encolar_proceso_en_nuevos(pcb_t *proceso) {
   proceso->estimacion = kernel_config->estimacion_inicial; // agregado
   pthread_mutex_unlock(&procesos_nuevos_mutex);
 
-  format_debug_log("monitor_cols_procesos@encolar_proceso_en_nuevos", "Proceso pid: %d encolado en nuevos", proceso->pid);
+  format_info_log("monitor_cols_procesos@encolar_proceso_en_nuevos", "Proceso pid: %d encolado en nuevos", proceso->pid);
 
   sem_post(&sem_proceso_nuevo);
 
@@ -305,7 +305,7 @@ void encolar_proceso_en_ejecucion(pcb_t *proceso) {
 
   pthread_mutex_unlock(&procesos_ejecutando_mutex);
 
-  format_info_log("monitor_colas_procesos.c@encolar_proceso_en_ejecucion", "Proceso pid: %d encolado en ejecucion", proceso->pid);
+  format_debug_log("monitor_colas_procesos.c@encolar_proceso_en_ejecucion", "Proceso pid: %d encolado en ejecucion", proceso->pid);
 
 }
 
@@ -638,8 +638,6 @@ void mover_proceso_nuevo_a_listo(pcb_t *proceso) {
     return;
   }*/
 
-
-  //info_log("monitor_colas_procesos.c@mover_proceso_nuevo_a_listo", "El grado de multiprogramacion NO esta completo, se mueve el proceso nuevo a listos");
   encolar_proceso_en_listos(proceso);
 }
 
@@ -648,11 +646,11 @@ void mover_proceso_a_listo(){
   sem_wait(&sem_grado_multiprogramacion_disponible);
 
   if(!grado_multiprogramacion_completo() && !lista_de_suspendidos_listos_vacia()){
-    info_log("monitor_colas_procesos.c@mover_proceso_a_listo", "El grado de multiprogramacion NO esta completo, se mueve un proceso suspendido-listo a listos");
+    debug_log("monitor_colas_procesos.c@mover_proceso_a_listo", "El grado de multiprogramacion NO esta completo, se mueve un proceso suspendido-listo a listos");
     mover_proceso_suspendido_a_listo();
 
   }else if (!grado_multiprogramacion_completo()){
-    info_log("monitor_colas_procesos.c@mover_proceso_a_listo", "El grado de multiprogramacion NO esta completo, se mueve un proceso nuevo a listos");
+    debug_log("monitor_colas_procesos.c@mover_proceso_a_listo", "El grado de multiprogramacion NO esta completo, se mueve un proceso nuevo a listos");
     pcb_t *proceso = desencolar_proceso_nuevo();
     mover_proceso_nuevo_a_listo(proceso);
 
@@ -1122,7 +1120,7 @@ void replanificar_srt(pcb_t *proceso){
 
     format_info_log("monitor_colas_procesos.c@replanificar_srt", "Replanificando SRT");
     ordenar_cola_listos();
-    pcb_t *proceso_en_listo = copiar_primer_proceso_listo(); 
+    pcb_t *proceso_en_listo = copiar_ultimo_proceso_listo(); // TODO: revisar, tengo entendido que tiene que comparar contra todos los procesos, no solo el ultimo
     pcb_t *proceso_en_cpu = copiar_proceso_en_ejecucion(); 
     proceso_comparacion_srt(proceso_en_listo, proceso_en_cpu);
   }
@@ -1162,11 +1160,12 @@ int proceso_estimar_rafaga_restante(pcb_t *proceso) {
 
 /* esto quedaria aca */
 
-pcb_t *copiar_primer_proceso_listo() {
+pcb_t *copiar_ultimo_proceso_listo() {
 
   pthread_mutex_lock(&procesos_listos_mutex);
 
-  pcb_t *proceso = list_get(cola_listos, 0);
+  int posicion_ultimo_proceso_en_listos = list_size(cola_listos) - 1;
+  pcb_t *proceso = list_get(cola_listos, posicion_ultimo_proceso_en_listos);
 
   pthread_mutex_unlock(&procesos_listos_mutex);
 
