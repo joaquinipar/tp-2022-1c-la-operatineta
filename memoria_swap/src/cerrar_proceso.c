@@ -11,8 +11,11 @@ bool memoria_cerrar_proceso(uint32_t pid) {
       
         array_marcos[marco].pid = -1; 
         array_marcos[marco].estado = 0; 
-        array_marcos[marco].pagina = NULL; 
-        
+        array_marcos[marco].pagina->marco = -1;
+        array_marcos[marco].pagina->bit_uso = -1;
+        array_marcos[marco].pagina->bit_presencia = -1;
+        array_marcos[marco].pagina->nro_pagina = -1;
+        array_marcos[marco].pagina->bit_modificado = -1;
       } 
     }
     format_debug_log("cerrar_proceso.c@memoria_cerrar_proceso", "Se elimina PID %d de la memoria", pid); 

@@ -23,7 +23,7 @@ void iniciar_config_mem_swap(char *direccion){
   t_config* una_config_mem_swap = config_create(direccion);
 
   if(una_config_mem_swap == NULL) {
-    error_log("configuracion_mem_swap.c@iniciar_config_mem_swap", "Ocurrio un error al intentar abrir el Archivo de Configuracion de CPU");
+    error_log("configuracion_mem_swap.c@iniciar_config_mem_swap", "Ocurrio un error al intentar abrir el Archivo de Configuracion de Memoria");
   }
 
   procesar_archivo_config_mem_swap(una_config_mem_swap);

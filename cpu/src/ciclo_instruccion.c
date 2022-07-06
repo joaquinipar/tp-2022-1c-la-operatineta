@@ -160,7 +160,8 @@ void gestionar_instruccion_write(pcb_t* proceso, int32_t direccion_logica, int32
 		uint32_t direccion_fisica = obtener_direccion_fisica(marco_asignado, dezplazamiento); 
 		format_info_log("ciclo_instruccion.c@gestionar_instruccion_write", "Direccion Fisica: %d", direccion_fisica);
 		format_debug_log("ciclo_instruccion.c@gestionar_instruccion_write", "Valor a copiar en Memoria: %d", valor_a_copiar);
-		enviar_mensaje_write(proceso->pid, direccion_fisica, valor_a_copiar); 
+		enviar_mensaje_write(proceso->pid, direccion_fisica, valor_a_copiar);
+        return;
 	}
 
 	//CASO QUE EL MARCO DE LA PAGINA NO SE ENCUENTRA EN LA TLB
