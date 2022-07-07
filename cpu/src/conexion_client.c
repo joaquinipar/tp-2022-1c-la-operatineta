@@ -45,7 +45,7 @@ uint32_t enviar_mensaje_acceso_1er_nivel(uint32_t pid, uint32_t entrada_1er_nive
         recv(socket_cliente_cpu, &pid, sizeof(uint32_t), false);
        // format_debug_log("conexion_client.c@enviar_mensaje_acceso_1er_nivel","Pid:%d", pid); 
         recv(socket_cliente_cpu, &nro_tabla_2do_nivel, sizeof(uint32_t), false);
-        format_info_log("conexion_client.c@enviar_mensaje_acceso_1er_nivel","PID: %d - Nro de tabla de 2do nivel:%d", pid, nro_tabla_2do_nivel); 
+        format_info_log("conexion_client.c@enviar_mensaje_acceso_1er_nivel","PID: %d - Nro de tabla de 2do nivel: %d", pid, nro_tabla_2do_nivel); 
         info_log("conexion_client.c@enviar_mensaje_acceso_1er_nivel", "Termina mensaje ok - OPCODE_ACCESO_1ER_NIVEL");
         info_log("conexion_client.c@enviar_mensaje_acceso_1er_nivel", "-----------------------------------------------------------");
         return nro_tabla_2do_nivel; 
@@ -88,14 +88,14 @@ uint32_t enviar_mensaje_acceso_2do_nivel(uint32_t pid, uint32_t nro_tabla_2do_ni
         recv(socket_cliente_cpu, &pid, sizeof(uint32_t), false);
         format_debug_log("conexion_client.c@enviar_mensaje_acceso_2do_nivel","Pid:%d", pid); 
         recv(socket_cliente_cpu, &nro_marco, sizeof(uint32_t), false);
-        format_info_log("conexion_client.c@enviar_mensaje_acceso_2do_nivel","PID: %d - Nro de marco:%d", pid, nro_marco); 
+        format_info_log("conexion_client.c@enviar_mensaje_acceso_2do_nivel","PID: %d - Nro de marco: %d", pid, nro_marco); 
         info_log(".c@enviar_mensaje_acceso_2do_nivel", "Termina mensaje ok - OPCODE_ACCESO_2DO_NIVEL");
         info_log("conexion_client.c@enviar_mensaje_acceso_2do_nivel", "-----------------------------------------------------------");
         return nro_marco; 
     }    
     
     error_log("conexion_client.c@enviar_mensaje_acceso_2do_nivel", "[ERROR] Envio mensaje OPCODE_ACCESO_2DO_NIVEL");
-    info_log(".c@enviar_mensaje_acceso_2do_nivel", "Termina mensaje con error - OPCODE_ACCESO_2DO_NIVEL");
+    info_log("conexion_client.c@enviar_mensaje_acceso_2do_nivel", "Termina mensaje con error - OPCODE_ACCESO_2DO_NIVEL");
     info_log("conexion_client.c@enviar_mensaje_acceso_2do_nivel", "-----------------------------------------------------------");
   return -1;
 }

@@ -1,7 +1,7 @@
 #include "../../include/swap/swap.h"
 
 void iniciar_swap() {
-    debug_log("swap.c@iniciar_swap", "Comienza el inicio de la lista global de archivos de swap por proceso"); 
+    info_log("swap.c@iniciar_swap", "Se inicializa estructuras de Swap"); 
     list_archivos_swap = list_create();
 
     //Valida la existencia del directorio. Si errno = 2 (ENOENT), crea el directorio.
@@ -66,8 +66,8 @@ uint32_t get_cantidad_marcos(uint32_t tam_proceso) {
 
 
 void admitir_proceso_en_swap(uint32_t pid, uint32_t tamanio){
-    format_info_log("swap.c@admitir_proceso_en_swap", "Admision en Swap - Proceso: %d  -- Tamaño %d", pid, tamanio); 
-    archivo_pid_t* un_arch_swap = crear_archivo_pid(pid, tamanio);
+    format_info_log("swap.c@admitir_proceso_en_swap", "Admision en Swap - PID: %d  -- Tamaño %d", pid, tamanio); 
+    archivo_pid_t* un_arch_swap = crear_archivo_pid(pid, tamanio); 
     list_add(list_archivos_swap, un_arch_swap); 
 }
 

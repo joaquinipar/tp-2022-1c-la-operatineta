@@ -135,13 +135,13 @@ bool procesar_conexion(int cliente_socket) {
     recv(cliente_socket, &tamanio, sizeof(uint32_t), false);
 
     pthread_mutex_lock(&sem_procesar_conexion);
-    info_log("server_mem.c@procesar_conexion", "------------------------------------------");
+    info_log("server_mem.c@procesar_conexion", "---------------------------------------------------------------------------");
 
     uint32_t valor_tabla_1er_nivel = admitir_proceso(pid, tamanio);
     // Voy a enviar | CODOP | VALOR_TABLA_1ER_NIVEL |
     format_info_log("server_mem.c@procesar_conexion", "PID: %i Envio valor tabla 1er nivel: %i", pid, valor_tabla_1er_nivel);
     send_codigo_op_con_numero(cliente_socket, OPCODE_VALUE_TAB_PAG, valor_tabla_1er_nivel);
-    info_log("server_mem.c@procesar_conexion", "------------------------------------------");
+    info_log("server_mem.c@procesar_conexion", "---------------------------------------------------------------------------");
 
     pthread_mutex_unlock(&sem_procesar_conexion);
     return true;
@@ -269,8 +269,7 @@ bool procesar_conexion(int cliente_socket) {
       break;
   }
   case OPCODE_PING_PONG_MEMORIA: {
-    format_debug_log("server_mem.c@procesar_conexion", "Entradas por tabla: %d - Tamaño de pagina: %d", mem_swap_config->entradas_por_tabla,mem_swap_config->tam_pagina); 
-
+    format_info_log("server_mem.c@procesar_conexion", "Se envia mensaje a CPU -- Entradas por tabla: %d - Tamaño de pagina: %d", mem_swap_config->entradas_por_tabla,mem_swap_config->tam_pagina); 
     send_codigo_op_con_numeros(cliente_socket,OPCODE_PING_PONG_MEMORIA, mem_swap_config->entradas_por_tabla, mem_swap_config->tam_pagina);
     return true;
     break;

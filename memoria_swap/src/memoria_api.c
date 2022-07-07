@@ -2,7 +2,7 @@
 
 uint32_t admitir_proceso(uint32_t pid, uint32_t tamanio){
 
-    format_info_log("memoria_api.c@admitir_proceso", "Comienza admision del proceso en Memoria - Pid: %d -- Tamaño: %d", pid, tamanio); 
+    format_info_log("memoria_api.c@admitir_proceso", "Comienza admision del proceso en Memoria - PID: %d -- Tamaño: %d", pid, tamanio); 
     uint32_t posicion_tabla_1er_nivel_en_lista_global = inicio_proceso(pid, tamanio); 
 
     if(posicion_tabla_1er_nivel_en_lista_global==-1){
