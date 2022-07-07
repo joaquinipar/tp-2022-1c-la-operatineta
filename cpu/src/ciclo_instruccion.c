@@ -92,10 +92,10 @@ int32_t gestionar_instruccion_read(pcb_t* proceso, int32_t direccion_logica){
 	uint32_t entrada_2do_nivel = obtener_entrada_tabla_2do_nivel(num_pagina); 
 	uint32_t dezplazamiento = obtener_desplazamiento(direccion_logica, num_pagina); 
 
-	format_debug_log("ciclo_instruccion.c@gestionar_instruccion_read", "Numero de Pagina: %d", num_pagina);
-	format_debug_log("ciclo_instruccion.c@gestionar_instruccion_read", "Entrada 1er Nivel: %d", entrada_1er_nivel);
-	format_debug_log("ciclo_instruccion.c@gestionar_instruccion_read", "Entrada 2do Nivel: %d", entrada_2do_nivel);
-	format_debug_log("ciclo_instruccion.c@gestionar_instruccion_read", "Dezplazamiento: %d", dezplazamiento);
+	format_info_log("ciclo_instruccion.c@gestionar_instruccion_read", "PID: %d - Numero de Pagina: %d", proceso->pid, num_pagina);
+	format_info_log("ciclo_instruccion.c@gestionar_instruccion_read", "PID: %d - Entrada 1er Nivel: %d", proceso->pid, entrada_1er_nivel);
+	format_info_log("ciclo_instruccion.c@gestionar_instruccion_read", "PID: %d - Entrada 2do Nivel: %d", proceso->pid, entrada_2do_nivel);
+	format_info_log("ciclo_instruccion.c@gestionar_instruccion_read", "PID: %d - Dezplazamiento: %d", proceso->pid, dezplazamiento);
 
 	uint32_t valor_a_imprimir;
 
@@ -106,7 +106,7 @@ int32_t gestionar_instruccion_read(pcb_t* proceso, int32_t direccion_logica){
 		uint32_t direccion_fisica = obtener_direccion_fisica(marco_asignado, dezplazamiento); 
 		format_info_log("ciclo_instruccion.c@gestionar_instruccion_read", "Direccion Fisica: %d", direccion_fisica);
 		valor_a_imprimir = enviar_mensaje_read(proceso->pid, direccion_fisica); 
-		format_info_log("ciclo_instruccion.c@gestionar_instruccion_read", "Valor obtenido de Memoria: %i", valor_a_imprimir);
+		format_info_log("ciclo_instruccion.c@gestionar_instruccion_read", "[VALOR OBTENIDO DE MEMORIA] - %i", valor_a_imprimir);
 		return valor_a_imprimir; 
 	}
 
@@ -150,7 +150,7 @@ void gestionar_instruccion_write(pcb_t* proceso, int32_t direccion_logica, int32
 	format_info_log("ciclo_instruccion.c@gestionar_instruccion_write", "PID: %d - Entrada 1er Nivel: %d", proceso->pid, entrada_1er_nivel);
 	format_info_log("ciclo_instruccion.c@gestionar_instruccion_write", "PID: %d - Entrada 2do Nivel: %d", proceso->pid, entrada_2do_nivel);
 	format_info_log("ciclo_instruccion.c@gestionar_instruccion_write", "PID: %d - Dezplazamiento: %d", proceso->pid, dezplazamiento);
-	format_info_log("ciclo_instruccion.c@gestionar_instruccion_write", "PID: %d - Valor a copiar: %d", proceso->pid, valor_a_copiar); 
+	//format_info_log("ciclo_instruccion.c@gestionar_instruccion_write", "PID: %d - Valor a copiar: %d", proceso->pid, valor_a_copiar); 
 
 
 	//Chequeo si num de pagina se encuentra en la tlb. -1 no se encuentra sino devuelve el marco asignado al num de pagina
@@ -159,7 +159,7 @@ void gestionar_instruccion_write(pcb_t* proceso, int32_t direccion_logica, int32
 	if(marco_asignado != -1){
 		uint32_t direccion_fisica = obtener_direccion_fisica(marco_asignado, dezplazamiento); 
 		format_info_log("ciclo_instruccion.c@gestionar_instruccion_write", "Direccion Fisica: %d", direccion_fisica);
-		format_debug_log("ciclo_instruccion.c@gestionar_instruccion_write", "Valor a copiar en Memoria: %d", valor_a_copiar);
+		format_info_log("ciclo_instruccion.c@gestionar_instruccion_write", "Valor a copiar en Memoria: %d", valor_a_copiar);
 		enviar_mensaje_write(proceso->pid, direccion_fisica, valor_a_copiar);
         return;
 	}
@@ -219,21 +219,21 @@ pcb_t* execute_instruction(instruccion_t* instruccion_a_ejecutar, pcb_t* proceso
 			return proceso;
 			break;
 		case 2: //INSTRUCCION READ
-			format_info_log("ciclo_instruccion.c@execute_instruction",  "READ - PID: %d - Direccion Logica:%d ",proceso->pid, instruccion_a_ejecutar->argumentos[0]);
+			format_info_log("ciclo_instruccion.c@execute_instruction",  "READ - PID: %d - Direccion Logica: %d ",proceso->pid, instruccion_a_ejecutar->argumentos[0]);
 			gestionar_instruccion_read(proceso, instruccion_a_ejecutar->argumentos[0]); 
 			proceso->program_counter++;
             imprimir_estado_array_TLB();
 			return proceso;
 			break;
 		case 3://INSTRUCCION WRITE
-			format_info_log("ciclo_instruccion.c@execute_instruction",  "WRITE - PID: %d - Direccion Logica:%d - Valor a escribir: %d ",proceso->pid, instruccion_a_ejecutar->argumentos[0], instruccion_a_ejecutar->argumentos[1]);
+			format_info_log("ciclo_instruccion.c@execute_instruction",  "WRITE - PID: %d - Direccion Logica: %d - Valor a escribir: %d ",proceso->pid, instruccion_a_ejecutar->argumentos[0], instruccion_a_ejecutar->argumentos[1]);
 			gestionar_instruccion_write(proceso, instruccion_a_ejecutar->argumentos[0], instruccion_a_ejecutar->argumentos[1]); 
 			proceso->program_counter++;
             imprimir_estado_array_TLB();
 			return proceso;
 			break;
 		case 4://INSTRUCCION COPY
-			format_info_log("ciclo_instruccion.c@execute_instruction",  "COPY - PID: %d - Direccion Logica Destino :%d - Direccion Logica Origen / DL: %d ",proceso->pid, instruccion_a_ejecutar->argumentos[0], instruccion_a_ejecutar->argumentos[1]);			
+			format_info_log("ciclo_instruccion.c@execute_instruction",  "COPY - PID: %d - Direccion Logica Destino: %d - Direccion Logica Origen: %d ",proceso->pid, instruccion_a_ejecutar->argumentos[0], instruccion_a_ejecutar->argumentos[1]);			
 			gestionar_instruccion_copy(proceso, instruccion_a_ejecutar); 
 			proceso->program_counter++;
             imprimir_estado_array_TLB();
@@ -258,10 +258,12 @@ pcb_t* execute_instruction(instruccion_t* instruccion_a_ejecutar, pcb_t* proceso
 bool requiere_desalojo(instruccion_t* instruccion){
 
   if(instruccion->instruccion == IO || instruccion->instruccion == EXIT){
-	  format_info_log("ciclo_instruccion.c@requiere_desalojo", "Requiere desalojo - Instruccion: %d", instruccion->instruccion); 
+	  //format_info_log("ciclo_instruccion.c@requiere_desalojo", "Requiere desalojo - Instruccion: %d", instruccion->instruccion); 
+	  info_log("ciclo_instruccion.c@requiere_desalojo", "Requiere desalojo"); 
 	  return true;
   }
-  format_info_log("ciclo_instruccion.c@requiere_desalojo", "NO - Requiere desalojo - Instruccion: %d", instruccion->instruccion);
+ // format_info_log("ciclo_instruccion.c@requiere_desalojo", "NO - Requiere desalojo - Instruccion: %d", instruccion->instruccion);
+  info_log("ciclo_instruccion.c@requiere_desalojo", "[NO] - Requiere desalojo"); 
   return false; 
 
 }
