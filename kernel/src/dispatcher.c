@@ -14,8 +14,8 @@ int iniciar_conexion_cpu_dispatch()
         debug_log("dispatcher.c@iniciar_conexion_cpu_dispatch", "IS_TEST = 1, simulando");
         return 1;
     }
-
-    socket_cliente_cpu_dispatch = crear_conexion(kernel_config->ip_cpu, kernel_config->puerto_cpu_dispatch, "Kernel", "dispatcher.c@iniciar_conexion_cpu_dispatch");
+    info_log("-","-----------------------------------------------------------------------------------------------------"); 
+    socket_cliente_cpu_dispatch = crear_conexion(kernel_config->ip_cpu, kernel_config->puerto_cpu_dispatch, "Dispatch", "dispatcher.c@iniciar_conexion_cpu_dispatch");
 
     if (socket_cliente_cpu_dispatch == -1)
     {

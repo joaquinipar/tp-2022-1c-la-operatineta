@@ -17,34 +17,34 @@ bool enviar_mensaje_inicial_configuracion(int cliente_socket){
     free(stream); 
 
       if (send_result != -1) {
-      debug_log("conexion_client.c@enviar_mensaje_read", "Comienza envio de mensaje a CPU - PING_PONG_MEMORIA"); 
-      debug_log("conexion_client.c@enviar_mensaje_inicial_configuracion", "Termina PING_PONG_MEMORIA");
+      debug_log("server_mem.c@enviar_mensaje_inicial_configuracion", "Comienza envio de mensaje a CPU - PING_PONG_MEMORIA"); 
+      debug_log("server_mem.c@enviar_mensaje_inicial_configuracion", "Termina PING_PONG_MEMORIA");
       return true; 
     }   
-    error_log("conexion_client.c@enviar_mensaje_read", "[ERROR] Envio mensaje PING_PONG_MEMORIA a CPU ");
-    debug_log("conexion_client.c@enviar_mensaje_read", "Termina mensaje PING_PONG_MEMORIA");
+    error_log("server_mem.c@enviar_mensaje_inicial_configuracion", "[ERROR] Envio mensaje PING_PONG_MEMORIA a CPU ");
+    debug_log("server_mem.c@enviar_mensaje_inicial_configuracion", "Termina mensaje PING_PONG_MEMORIA");
   return false;
 }
 
 
 void iniciar_server_mem_swap(char* ip, char* puerto) {
 
-  debug_log("server_mem_swap.c@iniciar_server_mem_swap", "Inicializando el Servidor Memoria");
+  debug_log("server_mem.c@iniciar_server_mem_swap", "Inicializando el Servidor Memoria");
 
   pthread_mutex_init(&sem_procesar_conexion, NULL);
 
-  socket_server_mem= iniciar_servidor("server_mem_swap.c@iniciar_server_mem_swap","", ip, puerto);
+  socket_server_mem= iniciar_servidor("server_mem.c@iniciar_server_mem_swap","", ip, puerto);
 
   if (socket_server_mem != -1) {
-    info_log("server_mem_swap.c@iniciar_server_mem_swap", "Server Memoria inicializado");
+   // info_log("server_mem.c@iniciar_server_mem_swap", "Server Memoria inicializado");
     char *msg_log = string_from_format("Servidor Memoria escuchando conexiones con exito en ip: %s, puerto: %s", ip,puerto);
-    info_log("server_mem_swap.c@iniciar_server_mem_swap", msg_log);
+    info_log("server_mem.c@iniciar_server_mem_swap", msg_log);
     free(msg_log);
 
   } else {
     char *msg_log1 = string_from_format("No se pudo inicializar el servidor en ip: %s, puerto: %s, revisar que la config sea correcta y esten disponibles.",
                            ip, puerto);
-    error_log("server_mem_swap.c@iniciar_server_mem_swap", msg_log1);
+    error_log("server_mem.c@iniciar_server_mem_swap", msg_log1);
     free(msg_log1);
   }
 
@@ -58,7 +58,7 @@ int escuchar_conexiones_nuevas(int server_socket) {
   bool escuchar = true;
 
   void sighandler(int signal) {
-    info_log("server_mem_swap.c@escuchar_conexiones_nuevas","SIGINT recibida, ejecutando handler para apagar la conexion");
+    info_log("server_mem.c@escuchar_conexiones_nuevas","SIGINT recibida, ejecutando handler para apagar la conexion");
     escuchar = false;
     shutdown(server_socket, SHUT_RD);
     close(server_socket);
@@ -67,12 +67,12 @@ int escuchar_conexiones_nuevas(int server_socket) {
   signal(SIGINT, sighandler);
   
   while (escuchar == true) {
-    info_log("server_mem_swap.c@escuchar_conexiones_nuevas","Escuchando conexiones nuevas en el Servidor de Memoria");    
+   // info_log("server_mem.c@escuchar_conexiones_nuevas","Escuchando conexiones nuevas en el Servidor de Memoria");    
 
     int cliente_socket = esperar_cliente(server_socket, "Memoria", "server.c@escuchar_cliente");
 
     if (cliente_socket != -1) {
-      info_log("server_mem_swap.c@escuchar_conexiones_nuevas","Cliente nuevo conectado");
+      info_log("server_mem.c@escuchar_conexiones_nuevas","Cliente nuevo conectado");
     hilo_cpu = -1;
     hilo_kernel = -1;
 
@@ -86,12 +86,12 @@ int escuchar_conexiones_nuevas(int server_socket) {
      } else if(hilo_kernel== -1){
        pthread_create(&hilo_kernel, NULL, (void*) loopear_procesar_conexion, (void*) cliente_socket);
      } else {
-       error_log("server_mem_swap.c@escuchar_conexiones_nuevas", "ERROR - Ya hay dos clientes conectados"); 
+       error_log("server_mem.c@escuchar_conexiones_nuevas", "ERROR - Ya hay dos clientes conectados"); 
      }
 
       continue;
     }
-    error_log("server_mem_swap.c@escuchar_conexiones_nuevas", "Error en nueva conexion o socket servidor cerrado");
+    error_log("server_mem.c@escuchar_conexiones_nuevas", "Error en nueva conexion o socket servidor cerrado");
     return -1;
   }
 
@@ -101,17 +101,17 @@ int escuchar_conexiones_nuevas(int server_socket) {
 bool procesar_conexion(int cliente_socket) {
   
 
-  debug_log("server_swap.c@procesar_conexion", "Procesando nuevo mensaje");
+  debug_log("server_mem.c@procesar_conexion", "Procesando nuevo mensaje");
   op_code_t codigo_operacion;
 
   if (recv(cliente_socket, &codigo_operacion, sizeof(op_code_t), 0) !=
       sizeof(op_code_t)) {
-    info_log("server_swap.c@procesar_conexion", "Se recibio un codigo_operacion invalido!");
+    info_log("server_mem.c@procesar_conexion", "Se recibio un codigo_operacion invalido!");
     return false;
   }
 
   char *mensaje_recibido_log = string_from_format("OPCODE recibido: %d", codigo_operacion);
-  trace_log("server_swap.c@procesar_conexion", mensaje_recibido_log);
+  trace_log("server_mem.c@procesar_conexion", mensaje_recibido_log);
   free(mensaje_recibido_log);
 
   switch (codigo_operacion) {
@@ -119,7 +119,7 @@ bool procesar_conexion(int cliente_socket) {
   case OPCODE_PRUEBA: {
     char *mensaje_log =
         string_from_format("Recepcion Op Code Nro %d\n", codigo_operacion);
-    info_log("server_swap.c@procesar_conexion", mensaje_log);
+    info_log("server_mem.c@procesar_conexion", mensaje_log);
     free(mensaje_log);
     send_ack(cliente_socket, OPCODE_ACK_OK);
     return true;
@@ -329,6 +329,6 @@ bool procesar_conexion(int cliente_socket) {
 
 
 void cerrar_server_memoria(){
-  liberar_conexion(&socket_server_mem,"server.c@cerrar_server_memoria"); 
+  liberar_conexion(&socket_server_mem,"server_mem.c@cerrar_server_memoria"); 
 }
 

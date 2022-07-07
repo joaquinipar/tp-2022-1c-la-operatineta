@@ -14,10 +14,10 @@ int main(int argc /*cantidad de argumentos*/, char* argv[]/*path instruccion +ta
 
     setup_logger();
 
-    hello_world();
+   // hello_world();
 
     iniciar_config_consola(argv[3]);
-    print_config();
+   // print_config();
 
 	char* path_instruction = argv[1];
 	int tamanio_proceso = atoi(argv[2]);
@@ -27,7 +27,7 @@ int main(int argc /*cantidad de argumentos*/, char* argv[]/*path instruccion +ta
     format_info_log("main.c@main", "Tamaño del proceso: %d", tamanio_proceso);
     format_info_log("main.c@main", "Path del archivo de configuración: %s", path_arch_config);
 
-	debug_log("main.c@main", "Parseando lista de instrucciones");
+	info_log("main.c@main", "Parseando lista de instrucciones");
     t_list* lista_de_instrucciones = config_create_parser(path_instruction);
 
 	debug_log("main.c@main", "Imprimiendo lista de instrucciones");

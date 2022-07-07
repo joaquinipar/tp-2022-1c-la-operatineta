@@ -21,6 +21,7 @@ pthread_t iniciar_server_kernel()
     msg_log = string_from_format(
         "Servidor Kernel escuchando conexiones con exito en ip: %s, puerto: %s", ip, puerto);
     info_log("server_kernel.c@iniciar_server_kernel", msg_log);
+    info_log("-","-----------------------------------------------------------------------------------------------------"); 
   }
   else
   {

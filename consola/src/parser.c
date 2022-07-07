@@ -110,11 +110,11 @@ t_list *config_create_parser(char *path) {
             // Es posible que la instrucción no tenga parametro (que sea null),
             // estaríamos haciendo una invalid read al liberarlo
             if(keyAndValue[1] != NULL) {
-                info_log("parser.c@config_create_parser",keyAndValue[1] );
+               // info_log("parser.c@config_create_parser",keyAndValue[1] );
                 free(keyAndValue[1]);
             }
             if(keyAndValue[2] != NULL){
-                info_log("parser.c@config_create_parser",keyAndValue[2] );
+              //  info_log("parser.c@config_create_parser",keyAndValue[2] );
                 free(keyAndValue[2]);
             }
 

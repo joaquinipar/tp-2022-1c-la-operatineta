@@ -8,7 +8,7 @@ bool enviar_proceso_nuevo(int socket, void* stream, uint32_t tamanio_stream) {
 
   if (send_result != -1) {
     // Esperar a que el kernel responda por la inicializacion (0: ok, -1: error)
-    debug_log("conexion_a_kernel.c@enviar_proceso_nuevo.c", "Esperando respuesta de kernel");
+    info_log("conexion_a_kernel.c@enviar_proceso_nuevo.c", "Esperando respuesta de KERNEL");
     bool response = recv_ack(socket);
     format_debug_log("conexion_a_kernel.c@enviar_proceso_nuevo", "Respuesta de kernel recibida: %d", response);
 
@@ -51,7 +51,7 @@ void enviar_proceso_a_kernel(t_list *lista_de_instrucciones, uint32_t tamanio_pr
 	int socket = conectar_con_servidor();
 
 	if (socket != -1) {
-    info_log("conexion_a_kernel.c@enviar_proceso_a_kernel", "Conexion con kernel establecida, enviando proceso nuevo");
+    info_log("conexion_a_kernel.c@enviar_proceso_a_kernel", "Conexion con KERNEL establecida, enviando proceso nuevo");
 		enviar_proceso_nuevo(socket, stream, tamanio_stream);
 	}
 

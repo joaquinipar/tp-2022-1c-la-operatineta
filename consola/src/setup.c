@@ -10,4 +10,6 @@ void setup_logger(){
 void cerrar_consola(){
     info_log("main.c", "Se comienza a cerrar aplicacion CONSOLA ");
     destruir_estructura_consola_config();
+    info_log("main.c", "Se cierra aplicacion CONSOLA ");
+    
 }

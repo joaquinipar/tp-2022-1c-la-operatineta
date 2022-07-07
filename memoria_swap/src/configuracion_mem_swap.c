@@ -23,7 +23,7 @@ void iniciar_config_mem_swap(char *direccion){
   t_config* una_config_mem_swap = config_create(direccion);
 
   if(una_config_mem_swap == NULL) {
-    error_log("configuracion_mem_swap.c@iniciar_config_mem_swap", "Ocurrio un error al intentar abrir el Archivo de Configuracion de CPU");
+    error_log("configuracion_mem_swap.c@iniciar_config_mem_swap", "Ocurrio un error al intentar abrir el Archivo de Configuracion de MEMORIA");
   }
 
   procesar_archivo_config_mem_swap(una_config_mem_swap);
@@ -32,7 +32,7 @@ void iniciar_config_mem_swap(char *direccion){
 
 }
 void procesar_archivo_config_mem_swap(t_config* una_config_mem_swap){
-  info_log("configuracion_mem_swap.c@procesar_archivo_config_mem_swap", "Se comienza a procesar Archivo de Configuracion de Memoria - Swap ");
+  info_log("configuracion_mem_swap.c@procesar_archivo_config_mem_swap", "Se comienza a procesar Archivo de Configuracion de MEMORIA ");
 
   int configElements = config_keys_amount(una_config_mem_swap);
 
@@ -166,14 +166,14 @@ algoritmo_t obtener_algoritmo_enum(char *algoritmo) {
 
   if (!strcmp(algoritmo, "CLOCK-M")) {
     algoritmo_reemplazo = CLOCKMOD;
-    info_log("configuracion_mem_swap.c@obtener_algoritmo_enum", "Algoritmo de reemplazo: CLOCK-MODIFICADO");
+    info_log("configuracion_mem_swap.c@obtener_algoritmo_enum", "Algoritmo de reemplazo de páginas: CLOCK-MODIFICADO");
     
   } else if (!strcmp(algoritmo, "CLOCK")) {
-   info_log("configuracion_mem_swap.c@obtener_algoritmo_enum", "Algoritmo de reemplazo: CLOCK");
+   info_log("configuracion_mem_swap.c@obtener_algoritmo_enum", "Algoritmo de reemplazo de páginas: CLOCK");
 
     algoritmo_reemplazo = CLOCK;
   } else {
-    info_log("configuracion_mem_swap.c@obtener_algoritmo_enum", "Algoritmo de reemplazo no disponible. Se setea por default CLOCK");
+    info_log("configuracion_mem_swap.c@obtener_algoritmo_enum", "Algoritmo de reemplazo de páginas no disponible. Se setea por default CLOCK");
     algoritmo_reemplazo = CLOCK;
   }
 

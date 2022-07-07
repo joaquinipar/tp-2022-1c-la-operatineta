@@ -5,6 +5,7 @@ int iniciar_conexion_memoria()
     debug_log("conexion_client.c@iniciar_conexion_memoria", "Se inicia conexion con Memoria");
 
     socket_cliente_kernel = crear_conexion(kernel_config->ip_memoria, kernel_config->puerto_memoria, "Memoria", "conexion_client.c@iniciar_conexion_memoria");
+    
 
     if (socket_cliente_kernel == -1)
     {

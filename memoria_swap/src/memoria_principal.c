@@ -4,7 +4,7 @@ mem_principal_t *crear_mem_principal() {
   mem_principal_t *mp = malloc(sizeof(mem_principal_t));
   mp->memoria_principal = NULL;
   mp->cant_marcos = 0;
-  info_log("memoria_principal.c@crear_mem_principal", "Se creo la estructura de Memoria Principal");
+  //info_log("memoria_principal.c@crear_mem_principal", "Se creo la estructura de Memoria Principal");
   return mp;
 }
 
@@ -25,7 +25,7 @@ void iniciar_memoria_principal(){
   }
   memset(mem_ppal->memoria_principal, '\0', mem_swap_config->tam_memoria);
   // Coloco toda la memoria en mem->cant_memoria_ppal_libre = '\0'
-  format_debug_log("memoria_principal.c@iniciar_memoria_principal", "Cantidad de memoria libre es: %d", mem_swap_config->tam_memoria);
+  format_info_log("memoria_principal.c@iniciar_memoria_principal", "Cantidad de memoria libre es: %d", mem_swap_config->tam_memoria);
 
   crear_array_mem(); 
   debug_log("memoria_principal.c@iniciar_memoria_principal", "Finaliza Inicio de Memoria Principal");
