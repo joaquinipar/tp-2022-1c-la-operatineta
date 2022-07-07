@@ -67,6 +67,19 @@ int obtener_int_arch_config(t_config *configuracion, char *clave) {
 }
 
 
+int obtener_is_test(t_config *configuracion, char *clave) {
+    int valor;
+    if (config_has_property(configuracion, clave))
+    {
+        valor = config_get_int_value(configuracion, clave);
+
+    } else{
+        error_log("config_kernel.c@obtener_is_test","Error: No se especifico el valor de IS_TEST (solo para testear, no se preocupen). Se setea por default IS_TEST=0.");
+        valor = 0;
+    }
+    return valor;
+}
+
 double obtener_double_arch_config(t_config *configuracion, char *clave) {  
 
     double valor;
@@ -125,7 +138,7 @@ void cargar_archivo_config_kernel(t_config *una_config_kernel) {
 
     kernel_config->tiempo_maximo_bloqueado = obtener_int_arch_config(una_config_kernel, "TIEMPO_MAXIMO_BLOQUEADO");
 
-    kernel_config->is_test = obtener_int_arch_config(una_config_kernel, "IS_TEST");
+    kernel_config->is_test = obtener_is_test(una_config_kernel, "IS_TEST");
     format_debug_log("config_kernel.c@cargar_archivo_config_kernel", "IS_TEST esta seteado como %d", kernel_config->is_test);
 
 }
