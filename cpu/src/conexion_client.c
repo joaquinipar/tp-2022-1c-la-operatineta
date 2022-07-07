@@ -32,7 +32,7 @@ uint32_t enviar_mensaje_acceso_1er_nivel(uint32_t pid, uint32_t entrada_1er_nive
     free(stream); 
 
     if (send_result != -1) {
-      debug_log("conexion_client.c@enviar_mensaje_acceso_1er_nivel", "Comienza recepcion de mensaje - OPCODE_ACCESO_1ER_NIVEL");
+      info_log("conexion_client.c@enviar_mensaje_acceso_1er_nivel", "Comienza recepcion de mensaje - OPCODE_ACCESO_1ER_NIVEL");
       uint32_t codigo_operacion;
       uint32_t pid;
       uint32_t nro_tabla_2do_nivel; 
@@ -46,13 +46,13 @@ uint32_t enviar_mensaje_acceso_1er_nivel(uint32_t pid, uint32_t entrada_1er_nive
        // format_debug_log("conexion_client.c@enviar_mensaje_acceso_1er_nivel","Pid:%d", pid); 
         recv(socket_cliente_cpu, &nro_tabla_2do_nivel, sizeof(uint32_t), false);
         format_info_log("conexion_client.c@enviar_mensaje_acceso_1er_nivel","PID: %d - Nro de tabla de 2do nivel:%d", pid, nro_tabla_2do_nivel); 
-        debug_log("conexion_client.c@enviar_mensaje_acceso_1er_nivel", "Termina mensaje ok - OPCODE_ACCESO_1ER_NIVEL");
+        info_log("conexion_client.c@enviar_mensaje_acceso_1er_nivel", "Termina mensaje ok - OPCODE_ACCESO_1ER_NIVEL");
         info_log("conexion_client.c@enviar_mensaje_acceso_1er_nivel", "-----------------------------------------------------------");
         return nro_tabla_2do_nivel; 
     }    
 
     error_log("conexion_client.c@enviar_mensaje_acceso_1er_nivel", "[ERROR] Envio mensaje OPCODE_ACCESO_1ER_NIVEL");
-    debug_log("conexion_client.c@enviar_mensaje_acceso_1er_nivel", "Termina mensaje OPCODE_ACCESO_1ER_NIVEL");
+    info_log("conexion_client.c@enviar_mensaje_acceso_1er_nivel", "Termina mensaje con error - OPCODE_ACCESO_1ER_NIVEL");
     info_log("conexion_client.c@enviar_mensaje_acceso_1er_nivel", "-----------------------------------------------------------");
   return -1;
 }
@@ -75,7 +75,7 @@ uint32_t enviar_mensaje_acceso_2do_nivel(uint32_t pid, uint32_t nro_tabla_2do_ni
     free(stream); 
 
     if (send_result != -1) {
-      debug_log("conexion_client.c@enviar_mensaje_acceso_2do_nivel", "Comienza recepcion de mensaje - OPCODE_ACCESO_2DO_NIVEL");
+      info_log("conexion_client.c@enviar_mensaje_acceso_2do_nivel", "Comienza recepcion de mensaje - OPCODE_ACCESO_2DO_NIVEL");
       uint32_t codigo_operacion; 
       uint32_t nro_marco;    
 
@@ -89,12 +89,13 @@ uint32_t enviar_mensaje_acceso_2do_nivel(uint32_t pid, uint32_t nro_tabla_2do_ni
         format_debug_log("conexion_client.c@enviar_mensaje_acceso_2do_nivel","Pid:%d", pid); 
         recv(socket_cliente_cpu, &nro_marco, sizeof(uint32_t), false);
         format_info_log("conexion_client.c@enviar_mensaje_acceso_2do_nivel","PID: %d - Nro de marco:%d", pid, nro_marco); 
-        debug_log(".c@enviar_mensaje_acceso_2do_nivel", "Termina mensaje ok - OPCODE_ACCESO_2DO_NIVEL");
+        info_log(".c@enviar_mensaje_acceso_2do_nivel", "Termina mensaje ok - OPCODE_ACCESO_2DO_NIVEL");
         info_log("conexion_client.c@enviar_mensaje_acceso_2do_nivel", "-----------------------------------------------------------");
         return nro_marco; 
     }    
     
     error_log("conexion_client.c@enviar_mensaje_acceso_2do_nivel", "[ERROR] Envio mensaje OPCODE_ACCESO_2DO_NIVEL");
+    info_log(".c@enviar_mensaje_acceso_2do_nivel", "Termina mensaje con error - OPCODE_ACCESO_2DO_NIVEL");
     info_log("conexion_client.c@enviar_mensaje_acceso_2do_nivel", "-----------------------------------------------------------");
   return -1;
 }
@@ -116,7 +117,7 @@ uint32_t enviar_mensaje_read(uint32_t pid, uint32_t direccion_fisica)
     free(stream); 
 
     if (send_result != -1) {
-      debug_log("conexion_client.c@enviar_mensaje_read", "Comienza recepcion de mensaje - OPCODE_READ");
+      info_log("conexion_client.c@enviar_mensaje_read", "Comienza recepcion de mensaje - OPCODE_READ");
       uint32_t codigo_operacion;
       uint32_t pid;
       uint32_t valor_a_imprimir; 
@@ -137,6 +138,7 @@ uint32_t enviar_mensaje_read(uint32_t pid, uint32_t direccion_fisica)
     }    
     
     error_log("conexion_client.c@enviar_mensaje_read", "[ERROR] Envio mensaje OPCODE_READ");
+    info_log("conexion_client.c@enviar_mensaje_read", "Termina mensaje con error - OPCODE_READ");
     info_log("conexion_client.c@enviar_mensaje_read", "-----------------------------------------------------------");
   return -1;
 }
@@ -174,13 +176,14 @@ uint32_t enviar_mensaje_write(uint32_t pid, uint32_t direccion_fisica, uint32_t 
     }    
     
     error_log("conexion_client.c@enviar_mensaje_write", "[ERROR] Envio mensaje OPCODE_WRITE");
-    info_log("conexion_client.c@enviar_mensaje_inicial_configuracion", "-----------------------------------------------------------");
+    info_log("conexion_client.c@enviar_mensaje_write", "Termina mensaje ack error- OPCODE_WRITE");
+    info_log("conexion_client.c@enviar_mensaje_write", "-----------------------------------------------------------");
     return -1;
   }
 
 bool enviar_mensaje_inicial_configuracion(){
-  info_log("conexion_client.c@enviar_mensaje_inicial_configuracion", "Enviando handshake inicial a Memoria");
-
+    info_log("conexion_client.c@enviar_mensaje_inicial_configuracion", "-----------------------------------------------------------");
+    info_log("conexion_client.c@enviar_mensaje_inicial_configuracion", "Enviando handshake inicial a Memoria");
     int stream_size = sizeof(op_code_t);
     void *stream = malloc(stream_size);
     op_code_t op_code = OPCODE_PING_PONG_MEMORIA;
@@ -190,14 +193,14 @@ bool enviar_mensaje_inicial_configuracion(){
     free(stream); 
 
       if (send_result != -1) {
-      info_log("conexion_client.c@enviar_mensaje_inicial_configuracion", "-----------------------------------------------------------");
+      
       info_log("conexion_client.c@enviar_mensaje_inicial_configuracion", "Comienza recepcion de mensaje - OPCODE_PING_PONG_MEMORIA");
       uint32_t codigo_operacion;
       datos_traduccion = malloc(sizeof(mensaje_configuracion_t));
 
         if (recv(socket_cliente_cpu, &codigo_operacion, sizeof(op_code_t), 0) != sizeof(op_code_t)) {
         format_debug_log("conexion_client.c@enviar_mensaje_inicial_configuracion", "Codigo de operacion: %d", codigo_operacion);
-        debug_log("conexion_client.c@enviar_mensaje_inicial_configuracion", "El codOp no corresponde al protocolo de Comunicacion!");
+        info_log("conexion_client.c@enviar_mensaje_inicial_configuracion", "El codOp no corresponde al protocolo de Comunicacion!");
         info_log("conexion_client.c@enviar_mensaje_inicial_configuracion", "-----------------------------------------------------------");
         return false;
         }
@@ -212,7 +215,7 @@ bool enviar_mensaje_inicial_configuracion(){
         return true; 
     }   
     error_log("conexion_client.c@enviar_mensaje_inicial_configuracion", "[ERROR] Envio mensaje OPCODE_PING_PONG_MEMORIA");
-    //info_log("conexion_client.c@enviar_mensaje_inicial_configuracion", "Termina mensaje OPCODE_PING_PONG_MEMORIA");
+    info_log("conexion_client.c@enviar_mensaje_inicial_configuracion", "Termina mensaje con error - OPCODE_PING_PONG_MEMORIA");
     info_log("conexion_client.c@enviar_mensaje_inicial_configuracion", "-----------------------------------------------------------");
   return false;
 }
@@ -338,7 +341,7 @@ bool enviar_mensaje_proceso_desalojado_interrupt(pcb_t* proceso_actualizado, int
   }
 
   error_log("conexion_client.c@enviar_mensaje_proceso_desalojado_interrupt", "Error al enviar mensaje OPCODE_PROCESO_DESALOJADO_INTERRUPT");
-  debug_log("conexion_client.c@enviar_mensaje_proceso_desalojado_interrupt", "Termina mensaje OPCODE_PROCESO_DESALOJADO_INTERRUPT");
+  info_log("conexion_client.c@enviar_mensaje_proceso_desalojado_interrupt", "Termina mensaje OPCODE_PROCESO_DESALOJADO_INTERRUPT");
   info_log("conexion_client.c@enviar_mensaje_proceso_desalojado_interrupt", "-----------------------------------------------------------");
   return false;
 

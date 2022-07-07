@@ -109,7 +109,7 @@ bool procesar_conexion_dispatch(int cliente_socket)
     //info_log("server_dispatch.c@procesar_conexion", "Comienza opcode EJECUTAR");
     pcb_t *proceso_recibido = deserializar_proceso(cliente_socket);
     send_ack(cliente_socket, OPCODE_ACK_OK);
-    format_info_log("server_dispatch.c@procesar_conexion", "Comienza opcode EJECUTAR -- Pid: %d --");
+    format_info_log("server_dispatch.c@procesar_conexion", "Comienza opcode EJECUTAR -- Pid: %d --", proceso_recibido->pid);
 
     iniciar_modulo(proceso_recibido);
 
