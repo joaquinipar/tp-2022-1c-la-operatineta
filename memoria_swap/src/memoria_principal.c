@@ -242,7 +242,7 @@ void bajar_paginas_swap(uint32_t pid) {
 }
 
 void imprimir_estado_array_MP() {
-
+    warning_log("memoria_principal.c@imprimir_estado_array_MP", "Imprimiendo estado de array de marcos");
     int marco = 0;
     for (marco = 0; marco < mem_ppal->cant_marcos; marco++) {
 

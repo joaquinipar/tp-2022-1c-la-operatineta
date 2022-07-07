@@ -213,7 +213,6 @@ void* leer_pagina_swap(uint32_t pid, uint32_t pagina){
 
     if(marco != -1){
         memcpy(contenido, archivo->area_archivo_swap + marco * mem_swap_config->tam_pagina, mem_swap_config->tam_pagina);
-        printf( "Prueba:%s\n", (char*)contenido);
        return contenido;
     }
     

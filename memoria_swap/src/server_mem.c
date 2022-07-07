@@ -188,10 +188,10 @@ bool procesar_conexion(int cliente_socket) {
 
       pthread_mutex_lock(&sem_procesar_conexion);
 
-      format_warning_log("server_mem.c@procesar_conexion", "(OPCODE_ACCESO_2DO_NIVEL) Recibi PID: %i nro_tabla_2do_nivel: %i nro_entrada_2do_nivel: %i", pid, nro_tabla_2do_nivel, nro_entrada_2do_nivel);
+      format_info_log("server_mem.c@procesar_conexion", "(OPCODE_ACCESO_2DO_NIVEL) Recibi PID: %i nro_tabla_2do_nivel: %i nro_entrada_2do_nivel: %i", pid, nro_tabla_2do_nivel, nro_entrada_2do_nivel);
 
       uint32_t marco = obtener_marco_de_tabla_2do_nivel(pid, nro_tabla_2do_nivel, nro_entrada_2do_nivel);
-      format_warning_log("server_mem.c@procesar_conexion", "(OPCODE_ACCESO_2DO_NIVEL) PID: %i Envio respuesta MARCO: ", pid, marco);
+      format_info_log("server_mem.c@procesar_conexion", "(OPCODE_ACCESO_2DO_NIVEL) PID: %i Envio respuesta MARCO: ", pid, marco);
 
       if(obtener_puntero_clock(pid) == -1){ // Si es la primera vez que escribe, le seteo el puntero clock al marco.
           setear_marco_a_puntero_clock(pid, marco);
