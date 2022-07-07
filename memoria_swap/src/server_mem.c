@@ -135,10 +135,13 @@ bool procesar_conexion(int cliente_socket) {
     recv(cliente_socket, &tamanio, sizeof(uint32_t), false);
 
     pthread_mutex_lock(&sem_procesar_conexion);
+    info_log("server_mem.c@procesar_conexion", "------------------------------------------");
 
     uint32_t valor_tabla_1er_nivel = admitir_proceso(pid, tamanio);
     // Voy a enviar | CODOP | VALOR_TABLA_1ER_NIVEL |
+    format_info_log("server_mem.c@procesar_conexion", "PID: %i Envio valor tabla 1er nivel: %i", pid, valor_tabla_1er_nivel);
     send_codigo_op_con_numero(cliente_socket, OPCODE_VALUE_TAB_PAG, valor_tabla_1er_nivel);
+    info_log("server_mem.c@procesar_conexion", "------------------------------------------");
 
     pthread_mutex_unlock(&sem_procesar_conexion);
     return true;
@@ -155,8 +158,10 @@ bool procesar_conexion(int cliente_socket) {
 
       pthread_mutex_lock(&sem_procesar_conexion);
 
+      info_log("server_mem.c@procesar_conexion", "------------------------------------------");
+      format_info_log("server_mem.c@procesar_conexion", "PID: %i Posicion tabla 1er nivel: %i Numero entrada: %i", pid, posicion_tabla_1er_nivel, numero_entrada_1er_nivel);
       uint32_t numero_tabla_2do_nivel =  buscar_nro_tabla_2do_nivel( pid, posicion_tabla_1er_nivel, numero_entrada_1er_nivel);
-
+      format_info_log("server_mem.c@procesar_conexion", "PID: %i Valor tabla 2do nivel: %i", pid, numero_tabla_2do_nivel);
       /* Envio | CODOP | PID | numero_tabla_2do_nivel */
 
       usleep(mem_swap_config->retardo_memoria *1000);
@@ -210,6 +215,8 @@ bool procesar_conexion(int cliente_socket) {
       recv(cliente_socket, &pid, sizeof(uint32_t), false);
       uint32_t direccion_fisica;
       recv(cliente_socket, &direccion_fisica, sizeof(uint32_t), false);
+      info_log("server_mem.c@procesando_conexion","------------------------------------------");
+      format_info_log("server_mem.c@procesando_conexion", "PID: %i READ DF: %i", pid, direccion_fisica);
 
       uint32_t* lectura = leer(direccion_fisica);
 
@@ -220,12 +227,12 @@ bool procesar_conexion(int cliente_socket) {
 
       int res = send_codigo_op_con_numeros(cliente_socket, OPCODE_READ, pid, *lectura);
 
-      debug_log("server_mem.c@procesar_conexion", "Envie el contenido");
+      info_log("server_mem.c@procesar_conexion", "Envie el contenido");
 
       if(res != 1){
           error_log("server_mem.c@procesar_conexion", "Ocurrió un error al enviar la respuesta de READ");
       }
-
+      info_log("server_mem.c@procesando_conexion","------------------------------------------");
       free(lectura);
       return true;
       break;
@@ -239,13 +246,13 @@ bool procesar_conexion(int cliente_socket) {
       recv(cliente_socket, &contenido, sizeof(uint32_t), false);
 
       pthread_mutex_lock(&sem_procesar_conexion);
-
-
+      info_log("server_mem.c@procesando_conexion","------------------------------------------");
+      format_info_log("server_mem.c@procesando_conexion", "PID: %i WRITE DF: %i Contenido: %i", pid, direccion_fisica, contenido);
       escribir(direccion_fisica, contenido);
 
       // todo Actualizar bit de modificado. calcular marco con DF. Direccion fisica / tamaño de pagina
       int marco = direccion_fisica / mem_swap_config->tam_pagina;
-
+      format_info_log("server_mem.c@procesando_conexion", "PID: %i Marco: %i Seteo Bit Modificado en 1", pid, marco);
       array_marcos[marco].pagina->bit_modificado = 1;
 
       imprimir_estado_array_MP();
@@ -254,7 +261,8 @@ bool procesar_conexion(int cliente_socket) {
       usleep(mem_swap_config->retardo_memoria *1000);
 
       send_ack(cliente_socket, OPCODE_ACK_OK);
-
+      format_info_log("server_mem.c@procesando_conexion","PID: %i Envie ACK OK", pid);
+      info_log("server_mem.c@procesando_conexion","------------------------------------------");
       pthread_mutex_unlock(&sem_procesar_conexion);
 
       return true;
@@ -282,16 +290,21 @@ bool procesar_conexion(int cliente_socket) {
     recv(cliente_socket, &pid, sizeof(uint32_t), false);
 
     pthread_mutex_lock(&sem_procesar_conexion);
+    info_log("server_mem.c@procesando_conexion","------------------------------------------");
 
     bool response = suspender_proceso(pid);
     if (response) {
+      format_info_log("server_mem.c@procesando_conexion", "PID: %i Suspension exitosa", pid);
+      format_info_log("server_mem.c@procesando_conexion","PID: %i Envie ACK OK", pid);
       send_ack(cliente_socket, OPCODE_ACK_OK);
       pthread_mutex_unlock(&sem_procesar_conexion);
       return true;
       break; 
     }
+    format_info_log("server_mem.c@procesando_conexion", "PID: %i Suspension fallida", pid);
+    format_info_log("server_mem.c@procesando_conexion","PID: %i Envie ACK ERROR", pid);
     send_ack(cliente_socket, OPCODE_ACK_ERROR);
-
+    info_log("server_mem.c@procesando_conexion","------------------------------------------");
     pthread_mutex_unlock(&sem_procesar_conexion);
     return true;
     break; 
@@ -303,22 +316,32 @@ bool procesar_conexion(int cliente_socket) {
 
     pthread_mutex_lock(&sem_procesar_conexion);
 
+    info_log("server_mem.c@procesando_conexion","------------------------------------------");
+    format_info_log("server_mem.c@procesando_conexion", "PID: %i Comienza la salida del proceso", pid);
+
     bool response = cerrar_proceso(pid);
     if (response) {
+      format_info_log("server_mem.c@procesando_conexion", "PID: %i Salida exitosa del proceso", pid);
+      format_info_log("server_mem.c@procesando_conexion", "PID: %i Envie ACK OK", pid);
       send_ack(cliente_socket, OPCODE_ACK_OK);
       pthread_mutex_unlock(&sem_procesar_conexion);
       return true;
       break; 
     }
+    format_info_log("server_mem.c@procesando_conexion", "PID: %i Salida fallida del proceso", pid);
+    format_info_log("server_mem.c@procesando_conexion", "PID: %i Envie ACK ERROR", pid);
     send_ack(cliente_socket, OPCODE_ACK_ERROR);
 
+    info_log("server_mem.c@procesando_conexion","------------------------------------------");
     pthread_mutex_unlock(&sem_procesar_conexion);
     return true;
     break; 
   }
   // Errores con las conexiones
   case OPCODE_CLIENTE_DESCONECTADO:
+    info_log("server_mem.c@procesar_conexion", "------------------------------------------");
     error_log("server_mem.c@procesar_conexion","Cliente desconectado de Servidor Memoria");
+    info_log("server_mem.c@procesar_conexion", "------------------------------------------");
     return false;
   default:
     error_log("server_mem.cc@procesar_conexion","Algo anduvo mal en el Servidor de Memoria");
