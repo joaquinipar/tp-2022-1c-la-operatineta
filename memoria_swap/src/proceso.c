@@ -33,7 +33,7 @@ entrada_1er_nivel_t*  iniciar_tabla_1er_nivel(uint32_t pid){
 int32_t obtener_cant_paginas_a_utilizar(int32_t tamanio_total_size) {
 
     int32_t cant_total_page = ceil((float)tamanio_total_size / (float)mem_swap_config->tam_pagina);
-    format_debug_log(".c@obtener_cant_paginas_a_utilizar", "La cantidad de paginas a utilizar son: %d", cant_total_page);
+    format_info_log(".c@obtener_cant_paginas_a_utilizar", "La cantidad de paginas a utilizar son: %d", cant_total_page);
     return cant_total_page;
 }
 
@@ -105,7 +105,7 @@ uint32_t inicio_proceso(uint32_t pid, uint32_t tamanio){
         //uint32_t cant_entradas_a_usar_1er_nivel = cant_tablas_2do_nivel;
         uint32_t cant_tablas_2do_nivel = get_cantidad_tablas(cant_paginas_a_utilizar);
 
-        format_debug_log("proceso.c@admitir_proceso", "Proceso: %d  -- Cantidad de tablas de 2do niveles necesarias: %d", pid, cant_tablas_2do_nivel); 
+        format_info_log("proceso.c@admitir_proceso", "Proceso: %d  -- Cantidad de tablas de 2do niveles necesarias: %d", pid, cant_tablas_2do_nivel);
         
         entrada_1er_nivel_t* tabla_1er_nivel = iniciar_tabla_1er_nivel(pid); 
         gestionar_tabla_2do_nivel(cant_tablas_2do_nivel,tabla_1er_nivel, pid); 
