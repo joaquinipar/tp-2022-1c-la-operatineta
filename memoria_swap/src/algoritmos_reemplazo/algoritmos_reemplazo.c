@@ -4,12 +4,12 @@ uint32_t correr_algoritmo_reemplazo(uint32_t pid) {
 
     switch(mem_swap_config->algoritmo_reeemplazo){
         case(CLOCK): {
-            format_debug_log("algoritmos_reemplazo.c@correr_algoritmo_reemplazo","Corriendo algoritmo CLOCK para el proceso PID: %i", pid);
+            format_info_log("algoritmos_reemplazo.c@correr_algoritmo_reemplazo","Corriendo algoritmo CLOCK para el proceso PID: %i", pid);
             return manejar_clock(pid);
             break;
         }
         case(CLOCKMOD):{
-            format_debug_log("algoritmos_reemplazo.c@correr_algoritmo_reemplazo","Corriendo algoritmo CLOCK-M para el proceso PID: %i", pid);
+            format_info_log("algoritmos_reemplazo.c@correr_algoritmo_reemplazo","Corriendo algoritmo CLOCK-M para el proceso PID: %i", pid);
             return manejar_clock_modificado(pid);
             break;
         }
@@ -281,8 +281,8 @@ uint32_t get_proximo_marco_del_proceso(uint32_t pid, uint32_t marco_actual){
 
         if (array_marcos[i_marco].pagina->nro_pagina != -1 && array_marcos[i_marco].estado == 1 &&
             array_marcos[i_marco].pid == pid && array_marcos[i_marco].pagina->bit_presencia == 1 &&
-            i_marco != marco_actual
-            ) {
+            i_marco != puntero->marco_apuntado && i_marco != marco_actual
+                ) {
 
             return i_marco;
         }

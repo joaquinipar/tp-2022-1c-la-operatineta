@@ -139,7 +139,7 @@ bool procesar_conexion(int cliente_socket) {
 
     uint32_t valor_tabla_1er_nivel = admitir_proceso(pid, tamanio);
     // Voy a enviar | CODOP | VALOR_TABLA_1ER_NIVEL |
-    format_info_log("server_mem.c@procesar_conexion", "PID: %i Envio valor tabla 1er nivel: %i", pid, valor_tabla_1er_nivel);
+    format_info_log("server_mem.c@procesar_conexion", "PID: %i Envio a Kernel valor tabla 1er nivel: %i", pid, valor_tabla_1er_nivel);
     send_codigo_op_con_numero(cliente_socket, OPCODE_VALUE_TAB_PAG, valor_tabla_1er_nivel);
     info_log("server_mem.c@procesar_conexion", "---------------------------------------------------------------------------");
 
@@ -164,7 +164,7 @@ bool procesar_conexion(int cliente_socket) {
       uint32_t numero_tabla_2do_nivel =  buscar_nro_tabla_2do_nivel( pid, posicion_tabla_1er_nivel, numero_entrada_1er_nivel);
       format_info_log("server_mem.c@procesar_conexion", "PID: %i Valor tabla 2do nivel: %i", pid, numero_tabla_2do_nivel);
 
-      info_log("server_mem.c@procesando_conexion", "Ejecutando retardo del ACCESO DE 1ER NIVEL");
+      info_log("server_mem.c@procesando_conexion", "Ejecutando retardo de memoria (ACCESO DE 1ER NIVEL)");
       usleep(mem_swap_config->retardo_memoria *1000);
 
       /* Envio | CODOP | PID | numero_tabla_2do_nivel */
@@ -193,13 +193,17 @@ bool procesar_conexion(int cliente_socket) {
       format_info_log("server_mem.c@procesar_conexion", "PID: %i Recibo ACCESO_2DO_NIVEL", pid);
       format_info_log("server_mem.c@procesar_conexion", "(OPCODE_ACCESO_2DO_NIVEL) Recibi PID: %i nro_tabla_2do_nivel: %i nro_entrada_2do_nivel: %i", pid, nro_tabla_2do_nivel, nro_entrada_2do_nivel);
 
+      int pagina = nro_tabla_2do_nivel * mem_swap_config->entradas_por_tabla + nro_entrada_2do_nivel;
+      format_info_log("server_mem.c@procesar_conexion", "PID: %i Numero de pagina: %i", pid, pagina);
+
+
       uint32_t marco = obtener_marco_de_tabla_2do_nivel(pid, nro_tabla_2do_nivel, nro_entrada_2do_nivel);
 
       if(obtener_puntero_clock(pid) == -1){ // Si es la primera vez que escribe, le seteo el puntero clock al marco.
           setear_marco_a_puntero_clock(pid, marco);
       }
 
-      info_log("server_mem.c@procesando_conexion", "Ejecutando retardo del ACCESO DE 2DO NIVEL");
+      info_log("server_mem.c@procesando_conexion", "Ejecutando retardo de Memoria (ACCESO DE 2DO NIVEL)");
       usleep(mem_swap_config->retardo_memoria *1000);
 
       format_info_log("server_mem.c@procesar_conexion", "(OPCODE_ACCESO_2DO_NIVEL) PID: %i Envio respuesta MARCO: %i", pid, marco);
@@ -233,9 +237,9 @@ bool procesar_conexion(int cliente_socket) {
           array_marcos[marco].pagina->bit_uso = 1;
       }
 
-      imprimir_estado_array_MP();
+      imprimir_estado_array_MP_con_ptr(pid);
 
-      info_log("server_mem.c@procesando_conexion", "Ejecutando retardo del READ");
+      info_log("server_mem.c@procesando_conexion", "Ejecutando retardo de Memoria (READ)");
       usleep(mem_swap_config->retardo_memoria *1000);
 
       int res = send_codigo_op_con_numeros(cliente_socket, OPCODE_READ, pid, *lectura);
@@ -260,12 +264,15 @@ bool procesar_conexion(int cliente_socket) {
 
       pthread_mutex_lock(&sem_procesar_conexion);
       info_log("server_mem.c@procesando_conexion","------------------------------------------");
+
+      int marco = direccion_fisica / mem_swap_config->tam_pagina;
+
       format_info_log("server_mem.c@procesar_conexion", "PID: %i Recibo WRITE", pid);
-      format_info_log("server_mem.c@procesando_conexion", "PID: %i WRITE DF: %i Contenido: %i", pid, direccion_fisica, contenido);
+      format_info_log("server_mem.c@procesando_conexion", "PID: %i WRITE DF: %i Pag: %i Contenido: %i", pid, direccion_fisica, array_marcos[marco].pagina->nro_pagina , contenido);
       escribir(direccion_fisica, contenido);
 
       // todo Actualizar bit de modificado. calcular marco con DF. Direccion fisica / tamaño de pagina
-      int marco = direccion_fisica / mem_swap_config->tam_pagina;
+
       format_info_log("server_mem.c@procesando_conexion", "PID: %i Marco: %i Seteo Bit Modificado en 1", pid, marco);
       array_marcos[marco].pagina->bit_modificado = 1;
 
@@ -275,9 +282,9 @@ bool procesar_conexion(int cliente_socket) {
           array_marcos[marco].pagina->bit_uso = 1;
       }
 
-      imprimir_estado_array_MP();
+      imprimir_estado_array_MP_con_ptr(pid);
 
-      info_log("server_mem.c@procesando_conexion", "Ejecutando retardo del WRITE");
+      info_log("server_mem.c@procesando_conexion", "Ejecutando retardo de Memoria (WRITE)");
       usleep(mem_swap_config->retardo_memoria *1000);
 
       send_ack(cliente_socket, OPCODE_ACK_OK);

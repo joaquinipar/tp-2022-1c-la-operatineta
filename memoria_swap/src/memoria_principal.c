@@ -252,6 +252,23 @@ void imprimir_estado_array_MP() {
     }
 }
 
+void imprimir_estado_array_MP_con_ptr(uint32_t pid) {
+
+    int marco_apuntado = obtener_puntero_clock(pid);
+
+    warning_log("memoria_principal.c@imprimir_estado_array_MP", "Imprimiendo estado de array de marcos");
+
+    int marco = 0;
+    for (marco = 0; marco < mem_ppal->cant_marcos; marco++) {
+        if(marco == marco_apuntado){
+            format_warning_log("memoria_principal.c@imprimir_estado_array_MP" , "--> Marco: %d  PID: %d BU: %i BM: %i BP: %i Pag: %i Estado: %d", marco, array_marcos[marco].pid, array_marcos[marco].pagina->bit_uso, array_marcos[marco].pagina->bit_modificado, array_marcos[marco].pagina->bit_presencia, array_marcos[marco].pagina->nro_pagina , array_marcos[marco].estado);
+        }
+        else{
+            format_warning_log("memoria_principal.c@imprimir_estado_array_MP" , "Marco: %d  PID: %d BU: %i BM: %i BP: %i Pag: %i Estado: %d", marco, array_marcos[marco].pid, array_marcos[marco].pagina->bit_uso, array_marcos[marco].pagina->bit_modificado, array_marcos[marco].pagina->bit_presencia, array_marcos[marco].pagina->nro_pagina , array_marcos[marco].estado);
+        }
+    }
+}
+
 
 
 
