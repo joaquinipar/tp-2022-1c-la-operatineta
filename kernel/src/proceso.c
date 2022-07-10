@@ -38,7 +38,6 @@ pcb_t* proceso_obtener_tabla_paginas(pcb_t *proceso) {
 }
 
 void proceso_finalizar_rafaga(pcb_t *proceso) {
-  //TODO: implementar
   gettimeofday(&(proceso->rafaga_actual).fin, NULL);
   proceso->duracion_ultima_rafaga = timedifference_msec((proceso->rafaga_actual).inicio, (proceso->rafaga_actual).fin);
   format_debug_log("proceso.c@proceso_finalizar_rafaga", "Proceso: %d tiempo total ultima rafaga", proceso->duracion_ultima_rafaga);
@@ -69,10 +68,4 @@ void proceso_finalizar_espera(pcb_t *proceso) {
 float timedifference_msec(struct timeval t0, struct timeval t1) {
   return (t1.tv_sec - t0.tv_sec) * 1000.0f +
          (t1.tv_usec - t0.tv_usec) / 1000.0f;
-}
-
-void proceso_suspender (pcb_t *proceso) {
-  proceso->estado = ESTADO_PROCESO_SUSPENDED_READY;
-
-  // TODO: llamar a suspender proceso en memoria
 }

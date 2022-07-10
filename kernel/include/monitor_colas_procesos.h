@@ -71,7 +71,6 @@ int cantidad_procesos_en_multiprogramacion();
 bool mayor_prioridad(pcb_t *, pcb_t *);
 int proxima_rafaga_estimada(pcb_t *);
 int response_ratio(pcb_t *);
-void actualizar_espera_listos();
 pcb_t *buscar_y_sacar_proceso_de_cualquier_cola(uint32_t);
 bool mover_proceso_en_ejecucion_a_bloqueado(int proceso);
 bool grado_multiprogramacion_completo();

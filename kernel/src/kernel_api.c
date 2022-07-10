@@ -2,8 +2,6 @@
 
 pid_t pid_count = 0;
 pthread_mutex_t pid_mutex;
-//TODO : creo que esto no es thread safe, no sé si es necesario que lo sea
-//pthread_mutex_t mutex_pid;
 
 void inicializar_kernel_api () {
   pthread_mutex_init(&pid_mutex, NULL);
@@ -72,7 +70,6 @@ bool bloquear_proceso(pcb_t *proceso_actualizado, int tiempo_bloqueo) {
 
 }
 
-// TODO: implementar
 bool desalojar_proceso_interrupt(pcb_t *proceso_actualizado) {
 
   pcb_t *proceso_desencolado_ejecucion = desencolar_proceso_en_ejecucion(); // sacar proceso de lista de ejecucion

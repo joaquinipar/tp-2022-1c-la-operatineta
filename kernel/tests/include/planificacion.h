@@ -3,7 +3,7 @@
 
 #include <CUnit/CUnit.h>
 #include <utils/logger.h>
-#include "../../kernel/include/main.h" // TODO: esto deberia ser relativo, lo pusimos asi para probar porque no andaba
+#include "../../kernel/include/main.h"
 #include "../../include/structs.h"
 #include "../../include/kernel_api.h"
 #include "../../include/monitor_colas_procesos.h"
