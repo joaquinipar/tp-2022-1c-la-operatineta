@@ -1120,7 +1120,8 @@ void replanificar_srt(pcb_t *proceso){
 
     format_info_log("monitor_colas_procesos.c@replanificar_srt", "Replanificando SRT");
     ordenar_cola_listos();
-    pcb_t *proceso_en_listo = copiar_ultimo_proceso_listo(); // TODO: revisar, tengo entendido que tiene que comparar contra todos los procesos, no solo el ultimo
+    // Se saca el primero porque la cola se ordena por estimacion de menor a mayor (se compara el de menor estimacion con el que esta corriendo)
+    pcb_t *proceso_en_listo = copiar_primer_proceso_listo();
     pcb_t *proceso_en_cpu = copiar_proceso_en_ejecucion(); 
     proceso_comparacion_srt(proceso_en_listo, proceso_en_cpu);
   }
@@ -1160,12 +1161,11 @@ int proceso_estimar_rafaga_restante(pcb_t *proceso) {
 
 /* esto quedaria aca */
 
-pcb_t *copiar_ultimo_proceso_listo() {
+pcb_t *copiar_primer_proceso_listo() {
 
   pthread_mutex_lock(&procesos_listos_mutex);
 
-  int posicion_ultimo_proceso_en_listos = list_size(cola_listos) - 1;
-  pcb_t *proceso = list_get(cola_listos, posicion_ultimo_proceso_en_listos);
+  pcb_t *proceso = list_get(cola_listos, 0);
 
   pthread_mutex_unlock(&procesos_listos_mutex);
 
