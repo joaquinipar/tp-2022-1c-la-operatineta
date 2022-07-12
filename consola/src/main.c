@@ -33,6 +33,7 @@ int main(int argc /*cantidad de argumentos*/, char* argv[]/*path instruccion +ta
 	debug_log("main.c@main", "Imprimiendo lista de instrucciones");
     list_iterate(lista_de_instrucciones, (void*) &printear_instruccion);
 
+    format_info_log("main.c@main", "Cantidad de instrucciones: %i", list_size(lista_de_instrucciones));
     
 	debug_log("main.c@main", "Enviando lista de instrucciones a kernel");
     enviar_proceso_a_kernel(lista_de_instrucciones, tamanio_proceso);

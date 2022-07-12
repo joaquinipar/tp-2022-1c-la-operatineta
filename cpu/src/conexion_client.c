@@ -17,6 +17,7 @@ uint32_t enviar_mensaje_acceso_1er_nivel(uint32_t pid, uint32_t entrada_1er_nive
 {
     info_log("conexion_client.c@enviar_mensaje_acceso_1er_nivel", "-----------------------------------------------------------");
     info_log("conexion_client.c@enviar_mensaje_acceso_1er_nivel", "Serializando y enviando mensaje OPCODE_ACCESO_1ER_NIVEL");
+    format_info_log("conexion_client.c@enviar_mensaje_acceso_1er_nivel","Envio PID: %i Entrada_1er_nivel: %i Nro_tabla_1er_nivel: %i", pid, entrada_1er_nivel, nro_tabla_1er_nivel);
     //CODOP + PID + ENTRADA 1ER NIVEL + NRO TABLA 1ER NIVEL
     int stream_size = sizeof(op_code_t) + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t);
     void *stream = malloc(stream_size);

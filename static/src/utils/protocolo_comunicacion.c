@@ -37,7 +37,9 @@ bool send_codigo_op_con_numero(int socket, op_code_t cop, uint32_t numero) {
     memcpy(serializacion, &codop_uint, sizeof (uint32_t));
     memcpy(serializacion + sizeof (uint32_t), &numero , sizeof (numero));
 
-    return send(socket, serializacion, size, 0) != -1;
+    int res = send(socket, serializacion, size, 0);
+    free(serializacion);
+    return res != -1;
 }
 
 bool send_codigo_op_con_numeros(int socket, op_code_t cop, uint32_t numero1, uint32_t numero2) {
@@ -47,8 +49,9 @@ bool send_codigo_op_con_numeros(int socket, op_code_t cop, uint32_t numero1, uin
     memcpy(serializacion, &codop_uint, sizeof (uint32_t));
     memcpy(serializacion + sizeof (uint32_t), &numero1 , sizeof (uint32_t));
     memcpy(serializacion + sizeof (uint32_t) + sizeof (uint32_t), &numero2 , sizeof (uint32_t));
-
-    return send(socket, serializacion, size, 0) != -1;
+    int res = send(socket, serializacion, size, 0);
+    free(serializacion);
+    return  res != -1;
 }
 
 bool send_codigo_op_con_3_numeros(int socket, op_code_t cop, uint32_t numero1, uint32_t numero2, uint32_t numero3) {
@@ -61,8 +64,9 @@ bool send_codigo_op_con_3_numeros(int socket, op_code_t cop, uint32_t numero1, u
     memcpy(serializacion + sizeof (uint32_t) + sizeof (uint32_t), &numero2 , sizeof (uint32_t));
     memcpy(serializacion + sizeof (uint32_t) + sizeof (uint32_t) + sizeof (uint32_t), &numero3 , sizeof (uint32_t));
 
-    return send(socket, serializacion, size, 0) != -1;
-
+    int res = send(socket, serializacion, size, 0);
+    free(serializacion);
+    return res != -1;
 }
 
 bool send_codigo_op_con_contenido(int socket, op_code_t cop, uint32_t contenido) {
@@ -72,5 +76,7 @@ bool send_codigo_op_con_contenido(int socket, op_code_t cop, uint32_t contenido)
     memcpy(serializacion, &codop_uint, sizeof (uint32_t));
     memcpy(serializacion + sizeof (uint32_t), &contenido , sizeof (uint32_t));
 
-    return send(socket, serializacion, size, 0) != -1;
+    int res = send(socket, serializacion, size, 0);
+    free(serializacion);
+    return res != -1;
 }

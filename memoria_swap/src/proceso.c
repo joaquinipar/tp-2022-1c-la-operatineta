@@ -207,6 +207,7 @@ uint32_t obtener_marco_de_tabla_2do_nivel(uint32_t pid, uint32_t nro_tabla_2do_n
             // Cargo contenido en memoria principal
             memcpy(mem_ppal->memoria_principal + marco_libre * mem_swap_config->tam_pagina, contenido, mem_swap_config->tam_pagina);
 
+            free(contenido);
 
             return marco_libre;
 
@@ -229,6 +230,7 @@ uint32_t obtener_marco_de_tabla_2do_nivel(uint32_t pid, uint32_t nro_tabla_2do_n
 
             memcpy(mem_ppal->memoria_principal + desplazamiento, contenido, mem_swap_config->tam_pagina);
 
+            free(contenido);
 
             // Modifico tabla de paginas
 

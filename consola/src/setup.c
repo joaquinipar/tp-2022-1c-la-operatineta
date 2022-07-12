@@ -3,7 +3,7 @@
 void setup_logger(){
     // Se hace una sola vez a nivel aplicacion
     logger_set_module("CONSOLA");
-    logger_set_loglevel(LOG_LEVEL_DEBUG);
+    logger_set_loglevel(LOG_LEVEL_INFO);
     info_log("main.c", "Bienvenido a CONSOLA!!!");
 }
 

@@ -124,7 +124,7 @@ void destruir_estructura_mem_swap_config(){
     info_log("configuracion_mem_swap.c@destruir_estructura_mem_swap_config", "Se destruye la estructura de configuracion MEMORIA - SWAP");
     free(mem_swap_config->path_swap);
     free(mem_swap_config->puerto_escucha);
-   free(mem_swap_config->ip_escucha);
+    free(mem_swap_config->ip_escucha);
     free(mem_swap_config);
 }
 

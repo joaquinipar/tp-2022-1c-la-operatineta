@@ -55,7 +55,7 @@ void crear_array_mem() {
 
 void destruir_array_mem() {
   for (int i = 0; i < mem_ppal->cant_marcos; i++) {
-    free((array_marcos[i].pagina));
+    free(array_marcos[i].pagina);
   }
   free(array_marcos);
   debug_log("memoria_principal.c@destruir_array_mem", "Se destruyo la estructura Array Marcos");
@@ -156,8 +156,21 @@ void iniciar_listas_globales_de_tablas() {
 
 void destruir_listas_globales_de_tablas(){
    debug_log("memoria_principal.c@destruir_listas_globales_de_tablas", "Se destruye la lista global de tablas de 1er nivel y la lista global de tablas de 2do nivel");
-   list_destroy(lista_tablas_1er_nivel); 
-   list_destroy_and_destroy_elements(lista_tablas_2do_nivel, (void*)free);
+
+    void destruir_2do_nivel(tabla_2do_nivel_t* tabla){
+        free(tabla->contenido_tabla_2do_nivel);
+        free(tabla);
+    }
+
+    list_destroy_and_destroy_elements(lista_tablas_2do_nivel, (void*)destruir_2do_nivel);
+
+   void destruir_1er_nivel(entrada_1er_nivel_t* tabla){
+       free(tabla);
+   }
+    list_destroy_and_destroy_elements(lista_tablas_1er_nivel, (void*)destruir_1er_nivel);
+   //list_destroy(lista_tablas_1er_nivel);
+
+
 }
 
 
