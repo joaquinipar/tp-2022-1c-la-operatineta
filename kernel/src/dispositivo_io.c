@@ -37,8 +37,14 @@ int escuchar_peticiones_dispositivo() {
     format_debug_log("dispositivos_io.c@escuchar_peticiones_dispositivo", "El proceso: %d ya cumplio sus %d ms, mover a suspended-ready o ready dependiendo su estado", proceso->pid, retardo);
 
     io_dispositivo_finalizada(proceso_bloqueado->proceso);
+    free(proceso_bloqueado);
 
   }
 
   return 0;
+}
+
+void finalizar_dispositivo_io(){
+  pthread_cancel(thread_dispositivo_io);
+  sem_destroy(&sem_cont_procesos_bloqueados);
 }

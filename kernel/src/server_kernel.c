@@ -1,5 +1,7 @@
 #include "../include/server_kernel.h"
 
+int *socket_servidor;
+bool escuchar = true;
 void escuchar_mensajes_cliente(int *socket_cliente);
 
 pthread_t iniciar_server_kernel()
@@ -10,7 +12,7 @@ pthread_t iniciar_server_kernel()
 
   debug_log("server_kernel.c@iniciar_server_kernel", "Inicializando el server Kernel");
 
-  int *socket_servidor = malloc(sizeof(int));
+  socket_servidor = malloc(sizeof(int));
 
   *socket_servidor = iniciar_servidor("server_kernel.c@iniciar_server_kernel", "", ip, puerto);
 
@@ -37,20 +39,17 @@ pthread_t iniciar_server_kernel()
   return hilo_server;
 }
 
+void cerrar_server_kernel(int signal){
+  info_log("server_kernel.c@escuchar_conexiones_nuevas", "SIGINT recibida, ejecutando handler para apagar la conexion Kernel");
+  escuchar = false;
+  shutdown(*socket_servidor, SHUT_RD);
+  close(*socket_servidor);
+  free(socket_servidor);
+}
+
 int escuchar_conexiones_nuevas(int *server_socket)
 {
-  bool escuchar = true;
-
-  void sighandler(int signal)
-  {
-    info_log("server_kernel.c@escuchar_conexiones_nuevas", "SIGINT recibida, ejecutando handler para apagar la conexion Kernel");
-    escuchar = false;
-    shutdown(*server_socket, SHUT_RD);
-    close(*server_socket);
-    free(server_socket);
-  }
-
-  signal(SIGINT, sighandler);
+  
 
   debug_log("server_kernel.c@escuchar_conexiones_nuevas", "Escuchando conexiones nuevas");
 
@@ -64,13 +63,13 @@ int escuchar_conexiones_nuevas(int *server_socket)
     {
       pthread_create(&thread_cliente, NULL, (void *)escuchar_mensajes_cliente, socket_cliente);
       pthread_detach(thread_cliente);
+      free(socket_cliente);
       continue;
     }
 
     debug_log("server_kernel.c@escuchar_conexiones_nuevas",
               "Error en nueva conexion o socket servidor cerrado, saliendo del thread");
-
-    free(socket_cliente); //TODO Consultar, esta correctamente posicionado el free? por el continue..
+    free(socket_cliente);
     return -1;
   }
 
