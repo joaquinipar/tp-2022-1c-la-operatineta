@@ -45,6 +45,7 @@ void crear_array_mem() {
     array_marcos[i].estado = 0;   /* Estado 0-> LIBRE - Estado 1 -> Ocupado */
     array_marcos[i].pid = -1;
     (array_marcos[i].pagina) = (pagina_2do_nivel_t *)malloc(sizeof(pagina_2do_nivel_t));
+
     (array_marcos[i].pagina)->nro_pagina = -1;
     array_marcos[i].pagina->bit_presencia = -1;
     array_marcos[i].pagina->bit_modificado = -1;
@@ -54,9 +55,12 @@ void crear_array_mem() {
 }
 
 void destruir_array_mem() {
-  for (int i = 0; i < mem_ppal->cant_marcos; i++) {
+
+
+    for (int i = 0; i < mem_ppal->cant_marcos; i++) {
     free(array_marcos[i].pagina);
   }
+
   free(array_marcos);
   debug_log("memoria_principal.c@destruir_array_mem", "Se destruyo la estructura Array Marcos");
 }
