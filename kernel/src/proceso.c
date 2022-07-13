@@ -9,7 +9,7 @@ void inicializar_monitor_procesos() {
 void proceso_destruir(pcb_t *proceso) {
   debug_log("proceso.c@proceso_destruir", "Destruyendo un pcb_t");
 
-  list_destroy(proceso->lista_instrucciones); // TODO: destruir elementos dentro de la lista si es necesario
+  list_destroy_and_destroy_elements(proceso->lista_instrucciones, free); // TODO: destruir elementos dentro de la lista si es necesario
 
   free(proceso);
 

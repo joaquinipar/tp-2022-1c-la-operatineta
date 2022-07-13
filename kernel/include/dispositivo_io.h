@@ -11,5 +11,6 @@
 void iniciar_dispositivo_io();
 void destruir_dispositivo_io();
 void incrementar_cantidad_procesos_bloqueados();
+void finalizar_dispositivo_io();
 
 #endif

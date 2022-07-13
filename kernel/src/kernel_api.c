@@ -34,6 +34,7 @@ bool finalizar_proceso(pcb_t *proceso_actualizado) {
   proceso->estado = EXIT;
 
   pcb_t *proceso_desencolado = desencolar_proceso_en_ejecucion();
+  proceso_destruir(proceso_actualizado);
 
   if (proceso_desencolado->pid != proceso->pid) {
     warning_log("kernel_api.c@finalizar_proceso", "CUIDADO, MANQUEADA EN PROCESO TERMINADO (el id del proceso en ejecucion no coincide con el proceso que llego por dispatch)");
@@ -60,6 +61,7 @@ bool bloquear_proceso(pcb_t *proceso_actualizado, int tiempo_bloqueo) {
   pcb_t *proceso = desencolar_proceso_en_ejecucion();   // sacar proceso de lista de ejecucion
   proceso_finalizar_rafaga(proceso);  // actualizar estimacion
   proceso->program_counter = proceso_actualizado->program_counter;  // buscar proceso => actualizar pcb
+  proceso_destruir(proceso_actualizado);
   encolar_proceso_en_bloqueados(proceso, tiempo_bloqueo); // mover proceso a lista de bloqueados, guardar el tiempo de IO
   lanzar_thread_suspension_proceso(proceso); // despues del tiempo maximo de bloqueo lo suspende si sigue bloqueado y manda el mensaje a memoria
   incrementar_cantidad_procesos_bloqueados();
@@ -78,7 +80,7 @@ bool desalojar_proceso_interrupt(pcb_t *proceso_actualizado) {
   encolar_proceso_en_listos(proceso_desencolado_ejecucion); // mover a ready
   format_info_log("kernel_api.c@desalojar_proceso_interrupt", "El proceso con pid: %d ha sido desalojado por interrupt", proceso_actualizado->pid);
   sem_post(&sem_bin_procesar_listo);  // llamara a planificar corto plazo
-
+  proceso_destruir(proceso_actualizado);
   return true;
   
 }
