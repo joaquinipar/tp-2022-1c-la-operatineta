@@ -34,6 +34,7 @@ bool finalizar_proceso(pcb_t *proceso_actualizado) {
   proceso->estado = EXIT;
 
   pcb_t *proceso_desencolado = desencolar_proceso_en_ejecucion();
+  proceso_destruir(proceso_actualizado);
 
   if (proceso_desencolado->pid != proceso->pid) {
     warning_log("kernel_api.c@finalizar_proceso", "CUIDADO, MANQUEADA EN PROCESO TERMINADO (el id del proceso en ejecucion no coincide con el proceso que llego por dispatch)");
@@ -66,7 +67,7 @@ bool bloquear_proceso(pcb_t *proceso_actualizado, int tiempo_bloqueo) {
   format_info_log("kernel_api.c@bloquear_proceso", "El proceso con pid: %d ha sido movido a bloqueados", proceso->pid);
   //sem_post(&sem_grado_multiprogramacion_disponible);
   sem_post(&sem_bin_procesar_listo); // como se libera la cpu se puede ejecutar otro proceso, si es que hay.
-  free(proceso_actualizado);
+  proceso_destruir(proceso_actualizado);
   return true;
 
 }
@@ -79,7 +80,7 @@ bool desalojar_proceso_interrupt(pcb_t *proceso_actualizado) {
   encolar_proceso_en_listos(proceso_desencolado_ejecucion); // mover a ready
   format_info_log("kernel_api.c@desalojar_proceso_interrupt", "El proceso con pid: %d ha sido desalojado por interrupt", proceso_actualizado->pid);
   sem_post(&sem_bin_procesar_listo);  // llamara a planificar corto plazo
-
+  proceso_destruir(proceso_actualizado);
   return true;
   
 }
