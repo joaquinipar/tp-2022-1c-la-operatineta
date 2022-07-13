@@ -10,6 +10,7 @@
 #include <utils/serializacion.h>
 #include "config_kernel.h"
 #include "kernel_api.h"
+#include "proceso.h"
 
 
 pthread_t iniciar_server_kernel(); 

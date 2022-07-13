@@ -70,6 +70,7 @@ int escuchar_conexiones_nuevas(int *server_socket)
     debug_log("server_kernel.c@escuchar_conexiones_nuevas",
               "Error en nueva conexion o socket servidor cerrado, saliendo del thread");
 
+    //free(socket_cliente);
     return -1;
   }
 
@@ -141,7 +142,7 @@ bool recibir_mensaje_proceso_nuevo(int *cliente_socket)
   //send_ack(cliente_socket, OPCODE_ACK_OK);
 
   //TODO : limpiar *nuevo_proceso y sus propiedades
-  //list_destroy_and_destroy_elements(nuevo_proceso)
+  //proceso_destruir(nuevo_proceso);
 
   return true;
 }

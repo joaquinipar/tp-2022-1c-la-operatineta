@@ -87,6 +87,8 @@ bool enviar_mensaje_exit(pcb_t *proceso)
 
   format_debug_log("conexion_clien.c@enviar_mensaje_exit", "Send Result %d", send_result);
 
+  free(stream);
+
   if (send_result != -1)
   {
     bool response = recv_ack(socket_cliente_kernel);

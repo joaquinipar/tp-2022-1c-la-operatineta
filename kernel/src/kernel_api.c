@@ -66,6 +66,7 @@ bool bloquear_proceso(pcb_t *proceso_actualizado, int tiempo_bloqueo) {
   format_info_log("kernel_api.c@bloquear_proceso", "El proceso con pid: %d ha sido movido a bloqueados", proceso->pid);
   //sem_post(&sem_grado_multiprogramacion_disponible);
   sem_post(&sem_bin_procesar_listo); // como se libera la cpu se puede ejecutar otro proceso, si es que hay.
+  free(proceso_actualizado);
   return true;
 
 }
