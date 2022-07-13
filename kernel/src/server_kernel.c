@@ -70,7 +70,7 @@ int escuchar_conexiones_nuevas(int *server_socket)
     debug_log("server_kernel.c@escuchar_conexiones_nuevas",
               "Error en nueva conexion o socket servidor cerrado, saliendo del thread");
 
-    //free(socket_cliente);
+    free(socket_cliente); //TODO Consultar, esta correctamente posicionado el free? por el continue..
     return -1;
   }
 
