@@ -87,8 +87,6 @@ bool enviar_mensaje_exit(pcb_t *proceso)
 
   format_debug_log("conexion_clien.c@enviar_mensaje_exit", "Send Result %d", send_result);
 
-  free(stream);
-
   if (send_result != -1)
   {
     bool response = recv_ack(socket_cliente_kernel);
@@ -122,7 +120,6 @@ bool enviar_mensaje_ejecutar(pcb_t *proceso)
 
   int send_result = send(socket_cliente_cpu_dispatch, stream, stream_size, false);
   format_debug_log("conexion_clien.c@enviar_mensaje_ejecutar", "Socket %d", socket);
-  free(stream);
 
   format_debug_log("conexion_clien.c@enviar_mensaje_ejecutar", "Send Result %d", send_result);
   if (send_result != -1)

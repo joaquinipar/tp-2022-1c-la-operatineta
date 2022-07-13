@@ -13,9 +13,7 @@
 #include "monitor_colas_procesos.h"
 #include "planificador_largo_plazo.h"
 #include "planificador_corto_plazo.h"
-#include "planificador_mediano_plazo.h"
 #include "dispatcher.h"
 #include "inicializacion.h"
-#include "dispositivo_io.h"
 
 #endif //KERNEL_MAIN_H
