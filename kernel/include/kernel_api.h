@@ -14,7 +14,6 @@
 #include "planificador_mediano_plazo.h"
 #include <conexion_client.h>
 #include "dispositivo_io.h"
-#include "proceso.h"
 
 void inicializar_kernel_api();
 bool ejecutar_proceso_nuevo(pcb_t *proceso);
