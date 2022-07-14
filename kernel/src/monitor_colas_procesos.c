@@ -66,6 +66,7 @@ void destruir_monitor_colas_procesos() {
   list_destroy_and_destroy_elements(cola_suspendidos_listos,
                                     (void *)proceso_destruir);
   list_destroy_and_destroy_elements(cola_terminados, (void *)proceso_destruir);
+  list_destroy(procesos);
 
   pthread_mutex_destroy(&procesos_mutex);
   pthread_mutex_destroy(&procesos_nuevos_mutex);

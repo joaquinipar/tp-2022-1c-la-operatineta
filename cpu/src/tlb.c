@@ -268,10 +268,6 @@ uint32_t se_encuentra_en_tlb(uint32_t pagina_buscada)
     format_info_log("tlb.c@se_encuentra_en_tlb", "[TLB HIT] - Pagina: %d se encuentra en TLB", pagina_buscada);
     uint32_t marco_asignado = get_marco_de_pagina_TLB(pagina_buscada);
 
-    if(cpu_config->reemplazo_tlb == LRU){
-        long long nuevo_tiempo = get_timestamp();
-        array_tlb[marco_asignado].time_pagina = nuevo_tiempo;
-    }
 
     return marco_asignado;
   }
@@ -285,6 +281,6 @@ void imprimir_estado_array_TLB() {
     int entrada = 0;
     for (entrada = 0; entrada < cpu_config->entradas_tlb; entrada++) {
 
-        format_warning_log("[ESTADO DE LA TLB]", "Entrada: %d  Estado: %d PID: %d Pagina: %d Marco: %d\n", entrada, array_tlb[entrada].estado, array_tlb[entrada].id_proceso, array_tlb[entrada].nro_pagina, array_tlb[entrada].marco);
+        format_warning_log("[ESTADO DE LA TLB]", "Entrada: %d - Pagina: %d -  Marco: %d\n", entrada,   array_tlb[entrada].nro_pagina, array_tlb[entrada].marco);
     }
 }

@@ -8,7 +8,7 @@
 
 typedef struct {
   // indice del array seran las entradas de la tlb
-  uint32_t id_proceso;
+  //uint32_t id_proceso;
   uint32_t nro_pagina;
   uint32_t marco;
   int estado; // 0 -> libre 1-> ocupado 
