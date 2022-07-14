@@ -4,4 +4,4 @@ ir_a_cpu() {
 }
 ir_a_cpu
 make
-valgrind --leak-check=full ./bin/cpu.out ./arch_config/prueba_tlb_fifo.config
+./bin/cpu.out ./arch_config/prueba_integral/integral.config

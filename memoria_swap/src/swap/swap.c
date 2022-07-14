@@ -23,8 +23,10 @@ void destruir_list_swap(){
 
     void _eliminar_ficheros(archivo_pid_t* proceso_swap){
     	eliminar_archivo_directorio_swap(proceso_swap->pid);
+        free(proceso_swap->path_archivo);
+        free(proceso_swap->array_marcos_virtual_del_proceso);
+        free(proceso_swap->area_archivo_swap);
     }
-
 	list_iterate(list_archivos_swap,(void*) _eliminar_ficheros);
     list_destroy_and_destroy_elements(list_archivos_swap, (void*)free); 
     debug_log("swap.c@destruir_list_swap", "Se destruye la lista global de archivos de swap por proceso");

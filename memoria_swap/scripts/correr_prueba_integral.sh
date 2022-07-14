@@ -4,5 +4,5 @@ ir_a_memoria() {
 }
 ir_a_memoria
 make
-valgrind --leak-check=full ./bin/memoria_swap.out ./arch_config/prueba_tlb_fifo_clkmod.config
+./bin/memoria_swap.out ./arch_config/prueba_integral/integral.config
 
