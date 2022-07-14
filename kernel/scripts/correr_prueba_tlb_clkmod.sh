@@ -4,4 +4,4 @@ ir_a_kernel() {
 }
 ir_a_kernel
 make
-./bin/kernel.out ./arch_config/prueba_kernel_tlb.config
+valgrind --leak-check=full ./bin/kernel.out ./arch_config/prueba_kernel_tlb.config

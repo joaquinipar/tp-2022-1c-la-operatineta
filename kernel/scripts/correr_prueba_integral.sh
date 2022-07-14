@@ -1,6 +1,6 @@
 #!/bin/sh
 ir_a_kernel() {
-    cd "/home/utnso/Workspace/tp-2022-1c-la-operatineta/kernel/" || exit
+    cd "/home/utnso/tp-2022-1c-la-operatineta/kernel/" || exit
 }
 ir_a_kernel
 make
