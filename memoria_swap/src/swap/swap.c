@@ -25,7 +25,7 @@ void destruir_list_swap(){
     	eliminar_archivo_directorio_swap(proceso_swap->pid);
         free(proceso_swap->path_archivo);
         free(proceso_swap->array_marcos_virtual_del_proceso);
-        free(proceso_swap->area_archivo_swap);
+        munmap(proceso_swap->area_archivo_swap, proceso_swap->tam_proceso);
     }
 	list_iterate(list_archivos_swap,(void*) _eliminar_ficheros);
     list_destroy_and_destroy_elements(list_archivos_swap, (void*)free); 
