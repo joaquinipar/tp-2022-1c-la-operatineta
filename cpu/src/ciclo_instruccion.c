@@ -289,9 +289,9 @@ bool hay_interrupcion(pcb_t * proceso){
    //TODO Podria pasar que haya desalojo (i/o - exit ) e interrupcion al mismo tiempo.
 
    // Seteo pid en la TLB
-   for(int i=0; i < cpu_config->entradas_tlb; i++){
-       array_tlb[i].id_proceso = proceso->pid;
-   }
+   //for(int i=0; i < cpu_config->entradas_tlb; i++){
+   //    array_tlb[i].id_proceso = proceso->pid;
+   //}
 
    instruccion_t* instruccion_a_ejecutar; 
 
