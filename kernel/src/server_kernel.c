@@ -63,7 +63,7 @@ int escuchar_conexiones_nuevas(int *server_socket)
     {
       pthread_create(&thread_cliente, NULL, (void *)escuchar_mensajes_cliente, socket_cliente);
       pthread_detach(thread_cliente);
-      free(socket_cliente);
+      //free(socket_cliente);
       continue;
     }
 
@@ -100,6 +100,7 @@ pcb_t *deserealizar_nuevo_proceso(int *socket)
   recv(*socket, &(pcb->tamanio), sizeof(uint32_t), 0);
   format_debug_log("server_kernel.c@desearilizar_nuevo_proceso", "Tamaño proceso: %d", pcb->tamanio);
   pcb->socket = *socket;
+  free(socket);
   //void printear_instrucciones(instruccion_t * una_instruccion)
   //{
   //  format_debug_log("serializacion.c@printear_lista", "Instruccion(numero): %d", una_instruccion->instruccion);
