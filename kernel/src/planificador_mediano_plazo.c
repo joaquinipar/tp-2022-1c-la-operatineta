@@ -37,7 +37,7 @@ void despertar_procesos() {
  * */
 void io_dispositivo_finalizada(pcb_t *proceso) {
 
-  format_info_log("planificador_mediano_plazo.c@io_dispositivo_finalizada", "La io del proceso con pid: %d ha finalizado, se movera el proceso a (suspendido) listo", proceso->pid);
+  format_info_log("planificador_mediano_plazo.c@io_dispositivo_finalizada", "La io del proceso con pid: %d ha finalizado, se movera el proceso a suspendido-listo o listo", proceso->pid);
   if (proceso->estado == ESTADO_PROCESO_BLOCKED_SUSPENDED) {
     encolar_proceso_en_suspendidos_listos(proceso);
   } else {
