@@ -264,6 +264,11 @@ bool enviar_mensaje_proceso_desalojado_io(pcb_t* proceso_actualizado, int socket
 
     int send_result = send(socket, stream, stream_size , false);
 
+    //Liberar memoria
+    free(stream);
+    //destruir_proceso(proceso_actualizado);
+
+
     format_debug_log("conexion_clien.c@enviar_mensaje_proceso_desalojado_io", "Send Result %d", send_result); 
     if (send_result != -1) {
     bool response = recv_ack(socket);
@@ -325,6 +330,11 @@ bool enviar_mensaje_proceso_desalojado_interrupt(pcb_t* proceso_actualizado, int
     
     int send_result = send(socket, stream, stream_size , false);
     
+    //Liberar memoria
+    free(stream);
+    //destruir_proceso(proceso_actualizado);
+
+
     format_debug_log("conexion_clien.c@enviar_mensaje_proceso_desalojado_interrupt", "Send Result %d", send_result); 
     if (send_result != -1) {
     bool response = recv_ack(socket);
@@ -358,9 +368,15 @@ bool enviar_mensaje_proceso_desalojado_exit(pcb_t* proceso_actualizado, int sock
     uint32_t stream_size = serializar_proceso(proceso_actualizado,OPCODE_PROCESO_DESALOJADO_EXIT, &stream);
     int send_result = send(socket, stream, stream_size , false);
     
+    //Liberar memoria
+    free(stream);
+    //destruir_proceso(proceso_actualizado);
+
     format_debug_log("conexion_clien.c@enviar_mensaje_proceso_desalojado_exit", "Send Result %d", send_result); 
     if (send_result != -1) {
     bool response = recv_ack(socket);
+
+
 
     if (response) {
       info_log("conexion_client.c@enviar_mensaje_proceso_desalojado_exit", "Recepcion mensaje ACK OK - OPCODE_PROCESO_DESALOJADO_EXIT");
@@ -381,3 +397,6 @@ bool enviar_mensaje_proceso_desalojado_exit(pcb_t* proceso_actualizado, int sock
 
 
 }
+
+
+

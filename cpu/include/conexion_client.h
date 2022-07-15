@@ -28,4 +28,6 @@ bool enviar_mensaje_proceso_desalojado_io(pcb_t* proceso_actualizado, int socket
 bool enviar_mensaje_proceso_desalojado_interrupt(pcb_t* proceso_actualizado, int socket); 
 bool enviar_mensaje_proceso_desalojado_exit(pcb_t* proceso_actualizado, int socket); 
 
+
+
 #endif /* CPU_INCLUDE_CONEXION_CLIENT_H_ */

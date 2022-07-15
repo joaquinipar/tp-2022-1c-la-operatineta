@@ -140,6 +140,7 @@ uint32_t serializar_proceso(pcb_t *proceso, op_code_t codigo_operacion, void **s
 	desplazamiento += sizeof(uint32_t);
 	serializar_lista_de_instrucciones(proceso->lista_instrucciones, desplazamiento, *stream);
 
+
 	return stream_size;
 }
 

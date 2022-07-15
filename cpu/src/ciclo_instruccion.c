@@ -303,4 +303,15 @@ bool hay_interrupcion(pcb_t * proceso){
 		
    }while(!requiere_desalojo(instruccion_a_ejecutar) && !hay_interrupcion(proceso));
 
+   destruir_proceso(proceso);
+
+ }
+
+
+
+ void destruir_proceso(pcb_t* proceso_actualizado){
+
+ 	list_destroy_and_destroy_elements(proceso_actualizado->lista_instrucciones, (void*)&free);
+ 	free(proceso_actualizado);
+
  }
