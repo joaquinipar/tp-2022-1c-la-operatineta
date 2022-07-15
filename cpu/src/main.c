@@ -7,7 +7,7 @@
 
 int main(int argc, char* argv[]) {
     logger_set_module("CPU"); 
-    logger_set_loglevel(LOG_LEVEL_DEBUG);
+    logger_set_loglevel(LOG_LEVEL_INFO);
     info_log("main.c", "Bienvenido a CPU!!");
 
     iniciar_config(argc,argv);

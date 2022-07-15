@@ -12,7 +12,7 @@ void sighandler(int signal){
 int main(int argc, char* argv[]) {
 
     logger_set_module("KERNEL"); 
-    logger_set_loglevel(LOG_LEVEL_DEBUG);
+    logger_set_loglevel(LOG_LEVEL_INFO);
     info_log("main.c", "Bienvenido a KERNEL!!");
     signal(SIGINT, sighandler);
     inicializar_kernel(argc, argv);
