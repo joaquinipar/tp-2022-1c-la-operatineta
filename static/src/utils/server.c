@@ -26,6 +26,12 @@ int iniciar_servidor(char *ubicacion, const char *nameCliente, char *ip,char *pu
     break;
   }
 
+  if (setsockopt(socket_servidor, SOL_SOCKET, SO_REUSEADDR, &(int){1}, sizeof(int)) < 0)
+    error_log("server.c@iniciar_servidor.c", "setsockopt(SO_REUSEADDR) failed");
+
+  if (setsockopt(socket_servidor, SOL_SOCKET, SO_REUSEPORT, &(int){1}, sizeof(int)) < 0)
+    error_log("server.c@iniciar_servidor.c", "setsockopt(SO_REUSEPORT) failed");
+
   listen(socket_servidor, SOMAXCONN);
  // debug_log("server.c@iniciar_servidor", "Servidor listo para recibir al cliente");
 
