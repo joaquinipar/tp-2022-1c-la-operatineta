@@ -22,9 +22,10 @@ void iniciar_swap() {
 void destruir_list_swap(){
 
     void _eliminar_ficheros(archivo_pid_t* proceso_swap){
-    	eliminar_archivo_directorio_swap(proceso_swap->pid);
+    	//eliminar_archivo_directorio_swap(proceso_swap->pid);
         free(proceso_swap->path_archivo);
         free(proceso_swap->array_marcos_virtual_del_proceso);
+        format_info_log("swap.c@destruir_list_swap", "ELIMINO ARCHIVO PID %d TAMANIO ", proceso_swap->pid, proceso_swap->tam_proceso);
         munmap(proceso_swap->area_archivo_swap, proceso_swap->tam_proceso);
     }
 	list_iterate(list_archivos_swap,(void*) _eliminar_ficheros);
@@ -105,6 +106,7 @@ int eliminar_proceso_en_lista_global_swap(uint32_t pid) {
     }
   archivo_pid_t *proceso_a_eliminar =list_remove_by_condition(list_archivos_swap, (void *)is_pid);
 
+  eliminar_archivo_directorio_swap(pid);
 
   if (proceso_a_eliminar == NULL) {
       error_log("swap.c@eliminar_proceso_en_lista_global_swap", "[ERROR] - No se pudo eliminar proceso de la lista global de swap"); 
@@ -230,7 +232,7 @@ void eliminar_archivo_directorio_swap(uint32_t pid){
     format_debug_log("swap.c@eliminar_archivo_directorio_swap", "Se genera el PATH + ARCHIVO a eliminar: %s",path);
 
     if(remove(path)==0){ // Eliminamos el archivo. Retorna 0 en caso de exito
-    	format_debug_log("eliminar_archivo_swap.c@eliminar_archivo_swap","[ELIMINACION EXITOSA DE ARCHIVO SWAP] - Proceso: %d", pid);
+    	format_info_log("eliminar_archivo_swap.c@eliminar_archivo_swap","[ELIMINACION EXITOSA DE ARCHIVO SWAP] - Proceso: %d", pid);
 
     }else{
         format_warning_log("eliminar_archivo_swap.c@eliminar_archivo_swap","[ELIMINACION FALLIDA DE ARCHIVO SWAP] - Proceso: %d", pid);
