@@ -9,7 +9,7 @@
 ## Integrantes
 
 |Apellido|Nombre|Legajo|Curso|
-|:---|:---|:---|
+|:---|:---|:---|:---|
 |Alvarez|Luis|122.216-8|K3013|
 |Di Paulo|María Belén|124.088-2|K3013|
 |Ipar|Joaquin|168.859-5|K3013|
