@@ -19,6 +19,7 @@ void gestionar_instruccion_copy(pcb_t* proceso, instruccion_t* instruccion);
 pcb_t* execute_instruction(instruccion_t* instruccion_a_ejecutar, pcb_t* proceso);
 bool requiere_desalojo(instruccion_t* instruccion); 
 bool hay_interrupcion(pcb_t * proceso); 
+void destruir_proceso(pcb_t* proceso_actualizado);
 
 void encender_flag_interrupt(); 
 void apagar_flag_interrupt();
